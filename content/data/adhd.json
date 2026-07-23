@@ -1,0 +1,386 @@
+{
+  "topic": {
+    "id": "adhd",
+    "slug": "adhd",
+    "title": "ADHD",
+    "fullTitle": "ADHD in Children & Teens",
+    "subtitle": "Neurobiology, behavioral impact, and evidence-based parenting approaches",
+    "sourceDocs": ["ResearchBible_ADHD.md", "adhd_parent_guide_v2"],
+    "lastUpdated": "2026-06"
+  },
+
+  "heroStat": {
+    "value": "74–76%",
+    "label": "Heritability across twin studies",
+    "detail": "ADHD is one of the most heritable behavioral conditions in medicine — it runs in families more than almost any other condition.",
+    "citationId": "faraone2021"
+  },
+
+  "quickStats": [
+    {
+      "id": "cortical-delay",
+      "value": "3–5 years",
+      "label": "Delay in cortical maturation",
+      "detail": "Longitudinal NIH research found children with ADHD show a delay in prefrontal cortex maturation of roughly 3–5 years. A 15-year-old may be operating with the self-regulation capacity of a 10 or 11-year-old.",
+      "citationId": "shaw2007"
+    },
+    {
+      "id": "persists-adolescence",
+      "value": "60–80%",
+      "label": "Continue to meet criteria in adolescence",
+      "citationId": "faraone2021"
+    },
+    {
+      "id": "persists-adulthood",
+      "value": "40–60%",
+      "label": "Carry significant functional impairment into adulthood",
+      "citationId": "faraone2021"
+    },
+    {
+      "id": "stimulant-effect-size",
+      "value": "0.8–1.0",
+      "label": "Effect size for stimulant medication",
+      "detail": "Among the largest effect sizes of any psychiatric pharmacotherapy.",
+      "citationId": "faraone2010"
+    },
+    {
+      "id": "diagnosis-ratio",
+      "value": "2–3 : 1",
+      "label": "Male-to-female diagnosis ratio (clinical samples)",
+      "detail": "Community samples show a smaller gap (1.6:1), suggesting underidentification in girls.",
+      "citationId": "gershon2002"
+    },
+    {
+      "id": "odd-checklist",
+      "value": "35–50%",
+      "label": "Co-occurring oppositional defiant disorder (ODD)",
+      "citationId": "biederman1996"
+    }
+  ],
+
+  "consensusMeter": {
+    "title": "Where Experts Agree: Treatment Effectiveness",
+    "description": "Relative strength of evidence for interventions used with ADHD in children and adolescents.",
+    "unit": "evidence strength (qualitative + effect size where available)",
+    "items": [
+      {
+        "treatment": "Stimulant medication",
+        "evidenceLevel": "Robust",
+        "effectSize": "0.8–1.0",
+        "note": "Most effective single intervention for symptom reduction across age groups.",
+        "citationId": "greenhill2002"
+      },
+      {
+        "treatment": "Behavioral Parent Training (BPT)",
+        "evidenceLevel": "Well-established (Level 1)",
+        "effectSize": "Large",
+        "note": "Most thoroughly researched psychosocial intervention for children under 12.",
+        "citationId": "fabiano2009"
+      },
+      {
+        "treatment": "Combined treatment (medication + behavioral)",
+        "evidenceLevel": "Gold standard",
+        "effectSize": "Broadest outcomes",
+        "note": "Superior to behavioral-only; equivalent to medication-only on core symptoms but with lower doses needed and wider benefits.",
+        "citationId": "mta1999"
+      },
+      {
+        "treatment": "Organizational Skills Training (OST)",
+        "evidenceLevel": "RCT-supported",
+        "effectSize": "Moderate",
+        "note": "Best evidence for middle-school-age children; targets time/materials management.",
+        "citationId": "langberg2012"
+      },
+      {
+        "treatment": "Classroom-based interventions (daily report card, seating, chunking)",
+        "evidenceLevel": "Well-established for school setting",
+        "effectSize": "Moderate",
+        "note": "Best evidence when coordinated between home and school.",
+        "citationId": "fabiano2010"
+      },
+      {
+        "treatment": "Exercise",
+        "evidenceLevel": "Emerging",
+        "effectSize": "Small–moderate, short-term",
+        "note": "Useful adjunct, not a primary treatment; no meaningful risk.",
+        "citationId": "pontifex2013"
+      },
+      {
+        "treatment": "Neurofeedback",
+        "evidenceLevel": "Level 3 — possibly efficacious",
+        "effectSize": "Mixed",
+        "note": "Blinding limitations make trials hard to interpret. Not equivalent to BPT or medication.",
+        "citationId": "hirshberg2007"
+      },
+      {
+        "treatment": "Dietary interventions (omega-3, elimination diets)",
+        "evidenceLevel": "Limited",
+        "effectSize": "Small, subgroup-specific",
+        "note": "Low-risk adjuncts only; benefit unclear population-wide.",
+        "citationId": "bloch2011"
+      }
+    ]
+  },
+
+  "whereExpertsDisagree": {
+    "title": "Where Experts Disagree (or the evidence is still developing)",
+    "description": "Claims below are split into what current research supports strongly versus what should be held more loosely.",
+    "rows": [
+      {
+        "topic": "Genetic/neurological basis",
+        "strongClaim": "ADHD is a neurodevelopmental disorder with strong genetic heritability (~74–76%); neuroimaging shows consistent, replicated structural and functional differences vs. neurotypical brains.",
+        "softerClaim": "Brain imaging findings are group-level findings — they do not predict any individual child's outcome.",
+        "citationId": "cortese2012"
+      },
+      {
+        "topic": "Medication, long-term",
+        "strongClaim": "Stimulant medication is the most effective single intervention, with robust effect sizes (0.8–1.0).",
+        "softerClaim": "Long-term outcomes of medication-only treatment remain uncertain — evidence beyond 3 years is limited and mixed.",
+        "citationId": "jensen2007"
+      },
+      {
+        "topic": "Neurofeedback",
+        "strongClaim": "Some meta-analyses report effects on inattention and impulsivity.",
+        "softerClaim": "Methodological limitations (especially blinding) prevent a strong endorsement; classified Level 3, 'possibly efficacious.'",
+        "citationId": "hirshberg2007"
+      },
+      {
+        "topic": "Diet (omega-3, elimination diets)",
+        "strongClaim": "Omega-3 supplementation shows modest, consistent effects in some studies, particularly for children with low baseline levels.",
+        "softerClaim": "Evidence is emerging/limited and likely benefits only a subgroup — not a primary intervention.",
+        "citationId": "nigg2012"
+      },
+      {
+        "topic": "Executive function theory",
+        "strongClaim": "Barkley's inhibition model (executive function deficits cascading from impaired inhibition) is consistently supported and widely used.",
+        "softerClaim": "The dual-pathway model (executive function + motivational pathways) is a dominant theoretical frame but remains a model, not a settled fact.",
+        "citationId": "sonugabarke2003"
+      },
+      {
+        "topic": "Learning disability co-occurrence rate",
+        "strongClaim": "Research Bible: 20–30% of children with ADHD have a co-occurring learning disability (Mayes & Calhoun, 2006).",
+        "softerClaim": "Parent Guide states ~46% — sources differ on exact rate. Flagged for reconciliation; both agree LD co-occurrence is common enough to warrant screening.",
+        "citationId": "mayes2006",
+        "flaggedForReview": true
+      }
+    ]
+  },
+
+  "coOccurringConditions": {
+    "title": "Co-Occurring Conditions",
+    "description": "Co-occurring conditions in ADHD are the rule, not the exception.",
+    "rows": [
+      { "condition": "Oppositional Defiant Disorder (ODD)", "rate": "35–50%", "citationId": "biederman1996", "note": "Most common pairing; largely maintained by coercive parenting cycles." },
+      { "condition": "Anxiety disorders", "rate": "25–50%", "citationId": "schatz2006", "note": "Can mimic inattention; stimulants may worsen anxiety in some children." },
+      { "condition": "Learning disabilities", "rate": "20–30%", "citationId": "mayes2006", "note": "Parent guide cites ~46% — see 'Where Experts Disagree.' Needs psychoeducational testing to confirm." },
+      { "condition": "Depression", "rate": "15–20%", "citationId": "jensen2001", "note": "Elevates suicide risk; screen directly." },
+      { "condition": "Autism Spectrum Disorder (AuDHD)", "rate": "17–50%", "citationId": "leitner2014", "note": "Wide range depending on sample; increases behavioral complexity and complicates medication choice." },
+      { "condition": "Tic disorders / Tourette's", "rate": "10–20%", "citationId": "spencer1999", "note": "Requires specialist evaluation before stimulant initiation." }
+    ]
+  },
+
+  "panels": {
+    "whatIsIt": {
+      "title": "What Is It?",
+      "parent": "ADHD is a highly heritable, chronic condition that affects the brain's ability to manage the demands of daily life — a disorder of self-management, not a behavior problem. It has nothing to do with intelligence; the issue is consistency and execution, not ability. More than half of kids diagnosed continue to struggle significantly as adults.",
+      "practitioner": "Attention-Deficit/Hyperactivity Disorder is a neurodevelopmental disorder (APA, 2022) characterized by persistent, developmentally inappropriate inattention, hyperactivity, and/or impulsivity causing functional impairment across settings. It is classified as a disorder of executive function and self-regulation, with heritability estimates of ~74–76% (Faraone et al., 2021) and robust, replicated neuroimaging differences in prefrontal cortex, basal ganglia, and dopaminergic/noradrenergic transmission (Cortese, 2012). It is not caused by poor parenting, screen time, sugar, or lack of discipline, though these can exacerbate symptoms in a predisposed child.",
+      "citationIds": ["faraone2021", "cortese2012", "apa2022"]
+    },
+
+    "whatItMeansInYourKidsBrain": {
+      "title": "What It Means in Your Kid's Brain",
+      "parent": "Two brain chemicals — dopamine and norepinephrine — act as fuel for focus, motivation, and self-regulation, and the ADHD brain doesn't maintain optimal levels of them consistently. That's why a teen can focus for hours on a video game (constant built-in feedback) but can't sustain attention on homework (no such feedback) — it's brain chemistry, not preference. Three key regions are involved: the prefrontal cortex (the brain's 'CEO' — planning, impulse control), the basal ganglia (the 'go signal' for starting tasks), and the cerebellum (coordinating scattered thinking). Researchers increasingly see ADHD as a network/connectivity issue — like poor cell signal — rather than one broken part.",
+      "practitioner": "Core neurochemical substrate involves deficits in dopaminergic and noradrenergic signaling in prefrontal and subcortical circuits (Volkow et al., 2009): reduced DA receptor density in PFC and increased DA transporter activity in the striatum, causing rapid reuptake and insufficient signal duration. Barkley's (1997, 2015) inhibition model frames ADHD as a deficit in behavioral inhibition cascading into working memory, self-talk, emotion/motivation regulation, and flexible planning deficits. A distinct motivational pathway (mesolimbic dopamine system) explains why salience/immediacy of reward directly gates performance (Sonuga-Barke, 2003 dual-pathway model). Meta-analyses show volumetric reductions in PFC, caudate, putamen, and cerebellum, with cortical maturation delayed ~3–5 years in prefrontal regions (Shaw et al., 2007).",
+      "citationIds": ["volkow2009", "barkley1997", "sonugabarke2003", "shaw2007"]
+    },
+
+    "howToSupportThem": {
+      "title": "How to Support Them",
+      "parent": [
+        {
+          "strategy": "Positive reinforcement first",
+          "detail": "Catch one specific thing your teen does well every day and name it. Build reward systems that are immediate — long-term rewards have almost no motivational value for the ADHD brain."
+        },
+        {
+          "strategy": "Executive function coaching",
+          "detail": "Break tasks into the smallest possible steps. Ask 'what's the very next thing you're going to do?' and get a specific answer. Think out loud together instead of solving it for them. Debrief without blame after something goes wrong."
+        },
+        {
+          "strategy": "Structure as scaffolding",
+          "detail": "Visual schedules and checklists, consistent time structures, 5-minute transition warnings, and reducing decision fatigue (set things out the night before) all reduce the demand on a brain that can't reliably self-structure."
+        },
+        {
+          "strategy": "Manage your own reactions",
+          "detail": "A dysregulated parent's nervous system activates dysregulation in the teen (co-regulation). Pause before responding, separate the behavior from the relationship, and repair openly when you lose your patience."
+        }
+      ],
+      "practitioner": "Behavioral Parent Training (BPT) is a well-established, Level 1 evidence-based intervention: clear one-step commands, immediate labeled praise, planned ignoring of minor attention-seeking behavior, consistent mild immediate consequences, and predictable routines. Effects are largest while intervention is active and are diminished when parents have untreated ADHD, depression, or trauma history (Chronis et al., 2004). Environmental scaffolding (visual schedules, external timers, reduced distractors, chunked tasks) reduces the demand on ADHD executive function and prevents the majority of ADHD-driven behavior problems.",
+      "citationIds": ["fabiano2009", "chronis2004"]
+    },
+
+    "whatToLearn": {
+      "title": "What to Learn: The Six Clusters",
+      "description": "Most teens with ADHD struggle in several of these areas at once.",
+      "clusters": [
+        { "cluster": "Activation", "challenge": "Getting started", "athome": "Sits down to do homework but scrolls their phone for an hour; knows it needs to be done but can't begin." },
+        { "cluster": "Focus", "challenge": "Staying on task", "athome": "Gets distracted mid-sentence, loses track of conversations, needs every instruction repeated." },
+        { "cluster": "Effort", "challenge": "Sustaining alertness", "athome": "Falls asleep doing work, seems sluggish for no reason, can't maintain effort on boring tasks." },
+        { "cluster": "Emotion", "challenge": "Managing reactions", "athome": "Explodes over small disappointments, can't let things go, gets overwhelmed when plans change." },
+        { "cluster": "Memory", "challenge": "Holding info in mind", "athome": "Forgets what you said 5 minutes ago, loses things constantly, can't multi-step follow directions." },
+        { "cluster": "Action", "challenge": "Monitoring behavior", "athome": "Acts without thinking, makes impulsive decisions, struggles to pause before responding." }
+      ],
+      "emotionalDysregulation": "Deficient Emotional Self-Regulation (DESR) is now recognized as a core feature of ADHD, not a side effect. The emotional regulation 'hot circuit' is directly impaired, so emotions hit harder and faster with less buffer between feeling and reacting. This is not manipulation — it's an overflow, not a strategy.",
+      "citationIds": []
+    },
+
+    "practicalInfo": {
+      "title": "Practical Info: Treatment & School Supports",
+      "medication": {
+        "stimulants": "Methylphenidate (Ritalin, Concerta) and amphetamine salts (Adderall, Vyvanse) increase dopamine/norepinephrine availability in the prefrontal cortex. Most effective single intervention; effect sizes 0.8–1.0. Requires monitoring of heart rate, blood pressure, growth, sleep, and appetite; cardiology clearance needed with cardiac history.",
+        "nonStimulants": "Strattera (atomoxetine), Intuniv, and newer options like Viloxazine — a legitimate alternative for teens who don't respond well to stimulants. Take several weeks to build up in the system.",
+        "whatMedicationCannotDo": "Teach organization, planning, or time management; repair damaged relationships; eliminate all symptoms entirely; replace the need for supportive structure at home."
+      },
+      "schoolSupports": {
+        "plan504": "Accommodations (extended time, preferential seating, reduced homework quantity, sensory breaks) — appropriate when ADHD impacts access to learning but specialized instruction isn't required.",
+        "iep": "Specialized instruction and related services (resource room, speech-language therapy, social skills groups) — required when ADHD significantly impairs academic performance. IEP quality accounts for ~25% of variance in child outcomes (Ruble et al., 2010) — push for specific, measurable, time-bound goals."
+      },
+      "digitalTools": [
+        "EndeavorRx — FDA-authorized video game-based attention therapy",
+        "Body doubling — having another person present while your teen works activates the brain's focus system",
+        "External reminders/systems — alarms, timers, checklists are prosthetics for working memory, not crutches"
+      ],
+      "citationIds": ["greenhill2002", "ruble2010"]
+    },
+
+    "whatToPractice": {
+      "title": "What to Practice",
+      "dailyChecklist": [
+        "Give one specific piece of praise today — name the behavior, not just the result",
+        "Provide a transition warning before any schedule change",
+        "Break any new task into the smallest possible first step",
+        "Check in after a hard moment: 'What do you need from me?'",
+        "End the day with one moment of connection — not about performance"
+      ],
+      "minimalViablePracticePlan": [
+        "One-step commands delivered with physical proximity and eye contact",
+        "A visual schedule or checklist for at least one high-conflict routine (morning or homework)",
+        "A specific, labeled praise contingency for one target behavior",
+        "One structural modification to the environment (reduce distractions, add timer, simplify task)",
+        "Contact with the child's teacher/school about current functioning and available supports"
+      ],
+      "note": "These five elements, consistently applied, tend to produce observable change within 2–4 weeks.",
+      "citationIds": []
+    },
+
+    "specificSituationPaths": [
+      {
+        "id": "homework-battle",
+        "title": "The Homework Battle",
+        "scenario": "An 8-year-old with ADHD-Combined starts homework, loses focus within 5 minutes, begins doodling, and melts down when redirected.",
+        "whatsReallyHappening": "A sustained attention and task re-engagement failure driven by executive function deficit, compounded by low motivation salience (homework is non-preferred) and insufficient external structure.",
+        "response": "Break homework into 10-minute chunks with 5-minute movement breaks. Use a visual timer. Do the hardest subject first when medication is most effective. Give immediate reinforcement for completed segments."
+      },
+      {
+        "id": "morning-routine",
+        "title": "The Morning Routine Meltdown",
+        "scenario": "Repeated verbal reminders about the morning routine stop working; the child loses track of the next step.",
+        "whatsReallyHappening": "Working memory deficit means the child loses track of the next step once distracted; the parent's voice becomes background noise through intermittent reinforcement.",
+        "response": "Create a visual, self-monitored morning checklist posted at eye level. Pair each step with a timer. Remove verbal reminders — let the environment prompt, not the parent."
+      },
+      {
+        "id": "after-school-crash",
+        "title": "The After-School Crash",
+        "scenario": "A 7-year-old holds it together at school but explodes at home starting around 3:30 PM.",
+        "whatsReallyHappening": "'After-school restraint collapse' — the child expends enormous regulatory energy masking symptoms at school; home is safe enough for the accumulated regulatory debt to surface. Medication may also be wearing off.",
+        "response": "Reduce demands for the first 30–60 minutes after school. Offer a snack, low-demand activity, and physical decompression time before homework or chores."
+      }
+    ],
+
+    "commonlyAskedQuestions": [
+      {
+        "q": "Is my teen just being lazy or defiant?",
+        "a": "No. This is the core distinction: ADHD is a 'doing' problem, not a 'knowing' problem. Your teen genuinely intends to do the task; the part of the brain responsible for starting, sustaining, and completing that action is impaired ('point of performance' failure)."
+      },
+      {
+        "q": "Why can my kid focus for hours on a video game but not on homework?",
+        "a": "Video games are engineered for constant dopamine feedback — points, levels, unpredictability. Homework provides no such feedback. The ADHD brain genuinely cannot sustain attention the same way on low-stimulation tasks — it's chemistry, not choice."
+      },
+      {
+        "q": "Are girls under-diagnosed?",
+        "a": "Yes. Girls more often present with the inattentive subtype, mask symptoms socially, and are more likely to have their struggles mislabeled as mood or anxiety problems rather than ADHD. Diagnosis in community samples runs ~1.6:1 male-to-female versus ~2–3:1 in clinical samples — a real equity gap."
+      },
+      {
+        "q": "Will my teen outgrow this?",
+        "a": "Not in the sense of the neurological differences resolving entirely. Overt hyperactivity often decreases, but executive function deficits typically persist without intervention — 60–80% still meet criteria in adolescence and 40–60% carry impairment into adulthood. Many teens do develop strong compensatory strategies with the right support, and the brain continues developing into the mid-20s."
+      },
+      {
+        "q": "Does my teen have something else going on too?",
+        "a": "Very possibly — co-occurring conditions are the rule, not the exception (ODD, anxiety, learning disabilities, depression, autism, tics). A full psychoeducational evaluation, not just an ADHD screening, is the right next step if you suspect this."
+      },
+      {
+        "q": "Should we try medication?",
+        "a": "That's a decision for you and your teen's doctor, not this dashboard — but the evidence is clear that combined treatment (medication + behavioral support) produces the broadest outcomes. Medication creates the neurochemical window for skills to be learned; it doesn't teach them on its own."
+      }
+    ]
+  },
+
+  "redFlags": {
+    "title": "Red Flags — When to Seek Additional Help",
+    "items": [
+      "Significant withdrawal from activities they used to enjoy",
+      "Expressions of hopelessness, worthlessness, or not wanting to be here",
+      "Rapid or extreme mood changes beyond typical ADHD reactivity",
+      "Dropping grades combined with social withdrawal",
+      "Risky behavior that is escalating rather than stabilizing",
+      "Sleep significantly disrupted for more than two weeks"
+    ],
+    "clinicalNote": "Adolescents with ADHD have approximately 3–7x the population rate of suicide attempts, largely mediated through co-occurring depression and substance use. Any report of self-harm ideation, hopelessness, or significant mood deterioration should trigger immediate referral.",
+    "citationId": null
+  },
+
+  "resources": {
+    "title": "Rhode Island Resources",
+    "items": [
+      { "name": "DCYF Family Support", "contact": "(401) 528-3502" },
+      { "name": "RI Crisis Line", "contact": "988 (call or text)" },
+      { "name": "Bradley Hospital (Child & Adolescent)", "contact": "(401) 432-1000" },
+      { "name": "RI Parent Information Network (RIPIN)", "contact": "(401) 270-0101" }
+    ],
+    "note": "Ask your CPRS about school-based supports and IEP/504 plan advocacy."
+  },
+
+  "citations": {
+    "faraone2021": "Faraone, S. V., Banaschewski, T., Coghill, D., et al. (2021). The World Federation of ADHD International Consensus Statement: 208 evidence-based conclusions about the disorder. Neuroscience & Biobehavioral Reviews, 128, 789–818.",
+    "shaw2007": "Shaw, P., Eckstrand, K., Sharp, W., et al. (2007). Attention-deficit/hyperactivity disorder is characterized by a delay in cortical maturation. Proceedings of the National Academy of Sciences, 104(49), 19649–19654.",
+    "faraone2010": "Faraone, S. V., & Buitelaar, J. (2010). Comparing the efficacy of stimulants for ADHD in children and adolescents using meta-analysis. European Child & Adolescent Psychiatry, 19(4), 353–364.",
+    "gershon2002": "Gershon, J. (2002). A meta-analytic review of gender differences in ADHD. Journal of Attention Disorders, 5(3), 183–198.",
+    "biederman1996": "Biederman, J., Faraone, S. V., Milberger, S., et al. (1996). Is childhood oppositional defiant disorder a precursor to adolescent conduct disorder? Journal of the American Academy of Child and Adolescent Psychiatry, 35(9), 1193–1204.",
+    "greenhill2002": "Greenhill, L. L., Pliszka, S., Dulcan, M. K., et al. (2002). Practice parameter for the use of stimulant medications. Journal of the American Academy of Child and Adolescent Psychiatry, 41(2 Suppl.), 26S–49S.",
+    "fabiano2009": "Fabiano, G. A., Pelham, W. E., Coles, E. K., et al. (2009). A meta-analysis of behavioral treatments for attention-deficit/hyperactivity disorder. Clinical Psychology Review, 29(2), 129–140.",
+    "mta1999": "MTA Cooperative Group. (1999). A 14-month randomized clinical trial of treatment strategies for ADHD. Archives of General Psychiatry, 56(12), 1073–1086.",
+    "langberg2012": "Langberg, J. M., Epstein, J. N., Becker, S. P., et al. (2012). Evaluation of the HOPS intervention for middle school students with ADHD. School Psychology Review, 41(3), 342–364.",
+    "fabiano2010": "Fabiano, G. A., Vujnovic, R. K., Pelham, W. E., et al. (2010). Enhancing special education programming using a daily report card. School Psychology Review, 39(2), 219–239.",
+    "pontifex2013": "Pontifex, M. B., Saliba, B. J., Raine, L. B., et al. (2013). Exercise improves behavioral, neurocognitive, and scholastic performance in children with ADHD. Journal of Pediatrics, 162(3), 543–551.",
+    "hirshberg2007": "Hirshberg, L. M. (2007). Place of EEG biofeedback for ADHD. Expert Review of Neurotherapeutics, 7(4), 315–317.",
+    "bloch2011": "Bloch, M. H., & Qawasmi, A. (2011). Omega-3 fatty acid supplementation for ADHD symptomatology. Journal of the American Academy of Child and Adolescent Psychiatry, 50(10), 991–1000.",
+    "cortese2012": "Cortese, S. (2012). The neurobiology and genetics of ADHD: What every clinician should know. European Journal of Paediatric Neurology, 16(5), 422–433.",
+    "jensen2007": "Jensen, P. S., Arnold, L. E., Swanson, J. M., et al. (2007). 3-year follow-up of the NIMH MTA study. Journal of the American Academy of Child and Adolescent Psychiatry, 46(8), 989–1002.",
+    "nigg2012": "Nigg, J. T., Lewis, K., Edinger, T., & Falk, M. (2012). Meta-analysis of ADHD, restriction diet, and synthetic food color additives. Journal of the American Academy of Child and Adolescent Psychiatry, 51(1), 86–97.",
+    "sonugabarke2003": "Sonuga-Barke, E. J. (2003). The dual pathway model of AD/HD. Neuroscience & Biobehavioral Reviews, 27(7), 593–604.",
+    "mayes2006": "Mayes, S. D., & Calhoun, S. L. (2006). Frequency of reading, math, and writing disabilities in children with clinical disorders. Learning and Individual Differences, 16(2), 145–157.",
+    "schatz2006": "Schatz, D. B., & Rostain, A. L. (2006). ADHD with comorbid anxiety: A review. Journal of Attention Disorders, 10(2), 141–149.",
+    "jensen2001": "Jensen, P. S., et al. (2001). [Depression co-occurrence rate as cited in Research Bible §3.4].",
+    "leitner2014": "Leitner, Y. (2014). The co-occurrence of autism and ADHD in children: What do we know? Frontiers in Human Neuroscience, 8, 268.",
+    "spencer1999": "Spencer, T., Biederman, J., & Wilens, T. (1999). ADHD and comorbidity. Pediatric Clinics of North America, 46(5), 915–927.",
+    "ruble2010": "Ruble, L., McGrew, J. H., & Toland, M. D. (2010). Goal attainment scaling as an outcome measure. Journal of Autism and Developmental Disorders, 40(10), 1210–1220.",
+    "volkow2009": "Volkow, N. D., Wang, G. J., Kollins, S. H., et al. (2009). Evaluating dopamine reward pathway in ADHD: Clinical implications. JAMA, 302(10), 1084–1091.",
+    "barkley1997": "Barkley, R. A. (1997). Behavioral inhibition, sustained attention, and executive functions. Psychological Bulletin, 121(1), 65–94.",
+    "chronis2004": "Chronis, A. M., Chacko, A., Fabiano, G. A., et al. (2004). Enhancements to the behavioral parent training paradigm for families of children with ADHD. Clinical Child and Family Psychology Review, 7(1), 1–27.",
+    "apa2022": "American Psychiatric Association. (2022). Diagnostic and Statistical Manual of Mental Disorders (5th ed., text rev.)."
+  },
+
+  "openQuestionsForReview": [
+    "Learning-disability co-occurrence rate differs between the Research Bible (20–30%) and the Parent Guide (~46%) — reconcile before publishing, or present both with a note.",
+    "jensen2001 citation for depression co-occurrence (15–20%) is referenced in the Research Bible's inline text but is missing from its AMA reference list — needs the full citation added."
+  ]
+}
