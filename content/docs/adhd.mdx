@@ -3,6 +3,8 @@ title: ADHD in Children & Teens
 description: Neurobiology, behavioral impact, and evidence-based parenting approaches
 ---
 
+import adhdData from "@/content/data/adhd.json";
+
 ## What Is It?
 
 ADHD — Attention-Deficit/Hyperactivity Disorder — is a neurodevelopmental disorder marked by persistent, developmentally inappropriate inattention, hyperactivity, and/or impulsivity that causes real functional impairment across settings (APA, 2022). It's classified as a disorder of executive function and self-regulation, not a behavior problem, and it has nothing to do with intelligence — the issue is consistency and follow-through, not ability.
@@ -51,6 +53,12 @@ Most teens with ADHD struggle in several of these at once:
 - Build predictable routines that reduce the demand on the child's self-regulation
 
 BPT effects are largest while active, and are weaker when the parent has their own untreated ADHD, depression, or trauma history (Chronis et al., 2004) — worth naming rather than ignoring.
+
+<ConsensusMeter
+  title={adhdData.consensusMeter.title}
+  description={adhdData.consensusMeter.description}
+  items={adhdData.consensusMeter.items}
+/>
 
 **Environmental scaffolding** does most of the preventive work: visual schedules and checklists (at eye level, self-monitored), external timers (Time Timer-style visual clocks especially), reduced distractors in workspaces, structured routines, and chunked task presentation (one step at a time).
 
@@ -116,6 +124,14 @@ Co-occurring conditions are the rule with ADHD, not the exception:
 | Depression | 15–20% | Elevates suicide risk; screen directly |
 | Autism Spectrum Disorder | 17–50% | Increases behavioral complexity; complicates medication choice |
 | Tic disorders / Tourette's | 10–20% | Requires specialist evaluation before stimulant initiation |
+
+## Where Experts Disagree
+
+<ComparisonPanel
+  title={adhdData.whereExpertsDisagree.title}
+  description={adhdData.whereExpertsDisagree.description}
+  rows={adhdData.whereExpertsDisagree.rows}
+/>
 
 ## Commonly Asked Questions
 

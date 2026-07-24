@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "fumadocs-ui/css/preset.css";
 @import "fumadocs-ui/css/lib/default-colors.css";
+@import "@neondatabase/auth-ui/tailwind";
 
 @custom-variant dark (&:is(.dark *));
 
