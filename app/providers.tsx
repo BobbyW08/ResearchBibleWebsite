@@ -22,7 +22,7 @@ export function Providers({ children }: { children: ReactNode }) {
       replace={router.replace}
       onSessionChange={() => router.refresh()}
       redirectTo="/onboarding"
-      defaultTheme="dark"
+      defaultTheme="light"
       Link={Link}
     >
       {children}
