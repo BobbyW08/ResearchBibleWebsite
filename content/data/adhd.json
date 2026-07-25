@@ -158,8 +158,8 @@
       },
       {
         "topic": "Learning disability co-occurrence rate",
-        "strongClaim": "Research Bible: 20–30% of children with ADHD have a co-occurring learning disability (Mayes & Calhoun, 2006).",
-        "softerClaim": "Parent Guide states ~46% — sources differ on exact rate. Flagged for reconciliation; both agree LD co-occurrence is common enough to warrant screening.",
+        "strongClaim": "Research Bible: 20–30% of children with ADHD have a co-occurring learning disability (Mayes & Calhoun, 2006) — the only rate in this chain backed by a specifically named, citable study.",
+        "softerClaim": "Parent Guide states ~46%, with no citation given. Presented as a softer, uncited claim rather than a competing peer-reviewed estimate. Flagged for reconciliation; both agree LD co-occurrence is common enough to warrant screening.",
         "citationId": "mayes2006",
         "flaggedForReview": true
       }
@@ -172,7 +172,7 @@
     "rows": [
       { "condition": "Oppositional Defiant Disorder (ODD)", "rate": "35–50%", "citationId": "biederman1996", "note": "Most common pairing; largely maintained by coercive parenting cycles." },
       { "condition": "Anxiety disorders", "rate": "25–50%", "citationId": "schatz2006", "note": "Can mimic inattention; stimulants may worsen anxiety in some children." },
-      { "condition": "Learning disabilities", "rate": "20–30%", "citationId": "mayes2006", "note": "Parent guide cites ~46% — see 'Where Experts Disagree.' Needs psychoeducational testing to confirm." },
+      { "condition": "Learning disabilities", "rate": "20–30%", "citationId": "mayes2006", "note": "Parent guide cites ~46%, uncited — see 'Where Experts Disagree.' Needs psychoeducational testing to confirm." },
       { "condition": "Depression", "rate": "15–20%", "citationId": "jensen2001", "note": "Elevates suicide risk; screen directly." },
       { "condition": "Autism Spectrum Disorder (AuDHD)", "rate": "17–50%", "citationId": "leitner2014", "note": "Wide range depending on sample; increases behavioral complexity and complicates medication choice." },
       { "condition": "Tic disorders / Tourette's", "rate": "10–20%", "citationId": "spencer1999", "note": "Requires specialist evaluation before stimulant initiation." }
@@ -369,7 +369,7 @@
     "sonugabarke2003": "Sonuga-Barke, E. J. (2003). The dual pathway model of AD/HD. Neuroscience & Biobehavioral Reviews, 27(7), 593–604.",
     "mayes2006": "Mayes, S. D., & Calhoun, S. L. (2006). Frequency of reading, math, and writing disabilities in children with clinical disorders. Learning and Individual Differences, 16(2), 145–157.",
     "schatz2006": "Schatz, D. B., & Rostain, A. L. (2006). ADHD with comorbid anxiety: A review. Journal of Attention Disorders, 10(2), 141–149.",
-    "jensen2001": "Jensen, P. S., et al. (2001). [Depression co-occurrence rate as cited in Research Bible §3.4].",
+    "jensen2001": "UNCONFIRMED — likely candidate: Jensen, P. S., Hinshaw, S. P., Kraemer, H. C., et al. (2001). ADHD comorbidity findings from the MTA study: Comparing comorbid subgroups. Journal of the American Academy of Child and Adolescent Psychiatry, 40(2), 147–158. Right author/year/topic (ADHD comorbidity, MTA study), but the abstract does not confirm the specific 15–20% depression figure — full text is paywalled. Do not cite as confirmed until verified against the full paper.",
     "leitner2014": "Leitner, Y. (2014). The co-occurrence of autism and ADHD in children: What do we know? Frontiers in Human Neuroscience, 8, 268.",
     "spencer1999": "Spencer, T., Biederman, J., & Wilens, T. (1999). ADHD and comorbidity. Pediatric Clinics of North America, 46(5), 915–927.",
     "ruble2010": "Ruble, L., McGrew, J. H., & Toland, M. D. (2010). Goal attainment scaling as an outcome measure. Journal of Autism and Developmental Disorders, 40(10), 1210–1220.",
@@ -380,7 +380,7 @@
   },
 
   "openQuestionsForReview": [
-    "Learning-disability co-occurrence rate differs between the Research Bible (20–30%) and the Parent Guide (~46%) — reconcile before publishing, or present both with a note.",
-    "jensen2001 citation for depression co-occurrence (15–20%) is referenced in the Research Bible's inline text but is missing from its AMA reference list — needs the full citation added."
+    "Learning-disability co-occurrence rate differs between the Research Bible (20–30%, citing Mayes & Calhoun 2006) and the Parent Guide (~46%, uncited) — reconciled 2026-07-24 by keeping the citable 20–30% figure as primary; the Parent Guide's number is presented as an explicitly uncited softer claim, not a competing study.",
+    "jensen2001 citation for depression co-occurrence (15–20%) is referenced in the Research Bible's inline text but is missing from its AMA reference list. A likely candidate was found (Jensen, Hinshaw, Kraemer, et al., 2001, JAACAP 40(2):147-158) but the specific 15–20% figure could not be confirmed from the abstract alone — needs verification against the full text before citing as confirmed."
   ]
 }

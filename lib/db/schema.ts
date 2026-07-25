@@ -43,3 +43,21 @@ export const topicProgress = pgTable(
   },
   (table) => [unique().on(table.userId, table.topicId)],
 );
+
+// Pending content reviews — research bible changes staged for approval
+export const pendingReviews = pgTable("pending_reviews", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  topic: text("topic").notNull(),
+  status: text("status", {
+    enum: ["pending_review", "approved", "rejected", "published"],
+  })
+    .notNull()
+    .default("pending_review"),
+  generatedMdx: text("generated_mdx").notNull(),
+  generatedJson: text("generated_json").notNull(),
+  changedSections: text("changed_sections").array(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  approvedAt: timestamp("approved_at", { withTimezone: true }),
+  approvedBy: uuid("approved_by").references(() => user.id, { onDelete: "set null" }),
+  publishedAt: timestamp("published_at", { withTimezone: true }),
+});

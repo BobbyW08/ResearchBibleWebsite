@@ -212,6 +212,125 @@ Sheet rows are tagged by a `section` column (`heroStat`, `quickStat`, `consensus
 5. Paste `Code.gs` from `drive_sync_setup` into script.google.com with matching IDs/secret, run `setup()` once.
 6. Build the ADHD dashboard Sheet (migrating `adhd.json`'s flat fields into the `section`-tagged row layout above) — not yet done, currently only hand-edited JSON exists.
 
+## Content Publication Pipeline (MVP Phase 1 & 2; v1 Phase 3)
+
+**Goal:** Research bible changes automatically trigger parent-facing website updates with an approval gate, cascading to downstream content formats.
+
+### Phase 1: Change Detection (MVP)
+
+**Trigger:** Google Apps Script webhook on research bible Doc
+
+A lightweight on-edit trigger embedded in the ADHD research bible Doc (and replicated per-topic as new bibles launch). When the Doc changes, fires a webhook to `/api/research-bible/notify-change`.
+
+```javascript
+// Google Apps Script (deploy via script.google.com)
+function onEdit(e) {
+  const topic = "adhd"; // or read from Doc properties
+  const payload = {
+    topic,
+    changedAt: new Date().toISOString(),
+  };
+  
+  UrlFetchApp.fetch("https://your-domain.vercel.app/api/research-bible/notify-change", {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify(payload),
+    headers: { "Authorization": `Bearer ${WEBHOOK_SECRET}` },
+  });
+}
+```
+
+**Does NOT catch:** Programmatic changes from Cloud Functions (research-bible-refinement). Layer Option B (Cloud Function polling) in v1 if needed.
+
+### Phase 2: Pipeline + Approval Gate (MVP)
+
+**Core workflow:**
+
+1. Webhook lands at `/api/research-bible/notify-change`
+2. Fetch fresh research bible Doc (via `lib/google/docs.ts`) → convert to MDX
+3. Fetch fresh dashboard Sheet (via `lib/google/sheets.ts`) → convert to JSON
+4. Store both in `pendingReviews` table with `status: 'pending_review'`
+5. Email notification to user: "_ADHD research bible updated — review & publish._"
+6. User visits `/account/pending-reviews`, sees diff (old vs. new)
+7. User clicks **Approve** → writes MDX + JSON to disk, runs `revalidatePath`, sets `status: 'published'`
+
+**New database table:**
+
+```typescript
+// lib/db/schema.ts
+export const pendingReviews = pgTable('pending_reviews', {
+  id: uuid().primaryKey().defaultRandom(),
+  topic: text().notNull(),
+  status: text().notNull().default('pending_review'), 
+  // pending_review | approved | rejected | published
+  generatedMdx: text().notNull(), // converted Doc
+  generatedJson: text().notNull(), // converted Sheet
+  createdAt: timestamp().notNull().defaultNow(),
+  approvedAt: timestamp(),
+  approvedBy: uuid(), // FK to users table
+  publishedAt: timestamp(),
+});
+```
+
+**New API endpoints:**
+
+- `POST /api/research-bible/notify-change` — webhook receiver, creates pending review
+- `GET /api/account/pending-reviews` — list all pending for the logged-in user
+- `POST /api/account/pending-reviews/[id]/approve` — write + publish + notify
+- `POST /api/account/pending-reviews/[id]/reject` — discard, no changes
+
+**New UI page:**
+
+- `/app/account/pending-reviews/page.tsx` — dashboard showing pending reviews, side-by-side diff viewer, approve/reject buttons
+
+**Notification:** Email via Resend (already in Vercel) when a review is pending or approved.
+
+**Revalidation:** On approve, call `revalidatePath('/docs/[topic]')` and `revalidatePath('/dashboard/[topic]')` to bust the static cache.
+
+**Phase 2 deliverables (MVP):**
+- [ ] `app/api/research-bible/notify-change/route.ts` (webhook handler)
+- [ ] `app/api/account/pending-reviews/route.ts` (list + approve/reject logic)
+- [ ] `lib/db/schema.ts` (add `pendingReviews` table)
+- [ ] `app/account/pending-reviews/page.tsx` (review dashboard with diff viewer)
+- [ ] Notification emails via Resend
+- [ ] Database migration: `npm run db:push` to create `pendingReviews`
+- [ ] Google Apps Script: Deploy webhook listener to research bible Doc
+- [ ] `.env.local`: Add `WEBHOOK_SECRET` (32+ random chars)
+
+**Phase 2 result:** Research bible Doc changes → auto-sync to website with human approval. No more manual `npm run refresh`.
+
+---
+
+### Phase 3: Cascade Updates (v1)
+
+Once a review is approved and published to the website, trigger downstream regeneration:
+
+#### PowerPoint Decks (NotebookLM-assisted, manual publish for MVP)
+- **For MVP:** Research bible updates trigger email → "_New research data available in NotebookLM_" → user manually regenerates slides in NotebookLM → uploads to Google Drive
+- **v1 roadmap:** Could automate via Canva API if decks move to Canva, or python-pptx templating, but manual loop is acceptable for MVP
+
+#### Word Documents (Handouts, Workbooks — template-driven)
+- Each topic has a `.docx` template in Google Drive with placeholder text blocks (e.g., `{{KEY_FINDINGS}}`, `{{COPING_STRATEGIES}}`)
+- `POST /api/cascade/update-word-doc/route.ts` reads the approval payload (topic, mdx, json) → extracts key sections → replaces placeholders → writes updated `.docx` to Google Drive
+- Uses `python-docx` (via a Cloud Function) or `docx` npm package to programmatically edit the file
+- Watches for manual updates and doesn't overwrite user-made changes (versioning via timestamp)
+
+#### Video Scripts (voice-script-format templates)
+- Each topic has 2-3 video script templates (e.g., "Parent Quick Tip", "Deep Dive", "Q&A")
+- `POST /api/cascade/update-video-script/route.ts` reads approval payload → maps research bible sections to script sections → regenerates the script outline → writes to Google Drive as a `.txt` or `.md`
+- Manual step: User reviews script, may re-record voice audio
+
+**Phase 3 does NOT include:** Automatic video generation, automatic deck slide generation, or automatic audio recording. Those remain manual or require human curation.
+
+**Phase 3 deliverables (v1):**
+- [ ] `app/api/cascade/update-word-doc/route.ts` (template-driven .docx regeneration via Cloud Function)
+- [ ] `app/api/cascade/update-video-script/route.ts` (script template swapping)
+- [ ] Google Drive templates for each content format (handout, workbook, script outline)
+- [ ] Cascade trigger wired to approval flow (call both endpoints after publish, emit jobs to Cloud Tasks)
+- [ ] Emails to user with links to updated files in Google Drive
+
+---
+
 ## Why these choices (context if questioned later)
 
 - **Fumadocs over Framer**: Framer can't support future auth/booking/paywall needs. Fumadocs' headless core (fumadocs-core/fumadocs-ui split) can be fully reskinned without fighting the framework.
@@ -219,7 +338,9 @@ Sheet rows are tagged by a `section` column (`heroStat`, `quickStat`, `consensus
 - **ShadcnSpace over Aceternity/Magic UI**: same shadcn/Tailwind/Motion foundation, but free tier (371+ blocks, 385+ components, 25+ pages) covers everything needed with no paid tier required. Built by an established team (WrapPixel), not a solo project.
 - **Lean Next.js app over a full SaaS boilerplate**: avoids inheriting *unused* billing/multi-tenancy plumbing bundled into SaaS starter repos. This does not mean "no auth" — auth and progress tracking are real product requirements, which is why Neon + Better Auth were added individually (see Auth & Data Layer) instead of adopting a full boilerplate.
 
-## Next Steps
+## Next Steps (MVP)
+
+### Immediate (before going live)
 
 1. ~~Scaffold Next.js + Fumadocs project~~ — done, committed as initial scaffold
 2. ~~Set up shadcn/ui + theme tokens above~~ — done
@@ -229,10 +350,40 @@ Sheet rows are tagged by a `section` column (`heroStat`, `quickStat`, `consensus
 6. Set up Cal.com event type + embed
 7. Set up Substack embed on homepage
 8. ~~Build out Google Drive Integration~~ — code side done: `app/api/refresh/route.ts` + `lib/google/` (see Google Drive Integration section above), `npm run build`/`lint`/`tsc` all pass, conversion logic verified against fixtures; not yet committed. Still needs the "To go live" manual steps (real service account, real Doc/Sheet IDs, Apps Script deployed) before it syncs real content.
-9. ~~Provision Neon Postgres database + run one-click Better Auth install~~ — code side done (architecture pivoted to Managed Better Auth, see Auth & Data Layer above); the user still needs to actually enable Managed Better Auth in the Neon console and supply real env vars — not yet committed
+9. ~~Provision Neon Postgres database + run one-click Better Auth install~~ — **CURRENTLY HERE**: Create Neon project "researchbiblewebsite", enable Managed Better Auth in Integrations, get real env vars (see Auth & Data Layer "To go live" section)
 10. ~~Install Better Auth UI components and wire up Sign Up, Sign In, and Account Settings pages~~ — done via `@neondatabase/auth-ui` (not the originally-planned `bunx shadcn add .../auth.json` command — see Auth & Data Layer architecture pivot), not yet committed
 11. ~~Design and create the lesson/topic progress tracking table in Neon~~ — schema done (`topic_progress` in `lib/db/schema.ts`), not yet migrated against a real database, not yet committed
 12. ~~Add role field (parent vs. practitioner) to the Better Auth user record, set at signup/purchase~~ — done as `profiles.account_type`, set via `/onboarding` gate rather than the Better Auth user record itself (see "Role field decision" above), not yet committed
 13. Build Homepage's About Bobby page and remaining placeholder swaps
-14. Once the user has enabled Managed Better Auth in the Neon console and dropped real env vars into `.env.local`: run `npm run db:push`, then smoke-test sign-up → onboarding → account end-to-end
-15. Watch `npm audit` for a patched `@neondatabase/auth`/`better-auth` release (currently a critical advisory in the bundled version) before ever enabling social login or the organization/admin plugins
+14. **Enable Managed Better Auth in Neon console** → get credentials → fill `.env.local` with real values
+15. Run `npm run db:push` to migrate `profiles`, `topic_progress`, and `pendingReviews` tables to real Neon database
+16. Smoke-test sign-up → onboarding → account end-to-end
+17. Commit all code (auth UI, Google Drive sync, dashboard, MDX components, database schema)
+18. Deploy to Vercel
+19. Watch `npm audit` for a patched `@neondatabase/auth`/`better-auth` release (currently a critical advisory in the bundled version) before ever enabling social login or the organization/admin plugins
+
+### Phase 2: Content Publication Pipeline (MVP)
+
+20. Create Google Cloud service account + JSON key, enable Drive/Docs/Sheets APIs
+21. Share real ADHD research bible Doc + dashboard Sheet with service account (Viewer role)
+22. Fill in real Doc/Sheet IDs in `content/sync-config.json`
+23. Put real Google Cloud credentials in `.env.local` + Vercel
+24. Build `app/api/research-bible/notify-change/route.ts` (webhook handler for research bible changes)
+25. Add `pendingReviews` table schema to `lib/db/schema.ts` (if not already there)
+26. Build `app/api/account/pending-reviews/route.ts` (list, approve, reject endpoints)
+27. Build `/app/account/pending-reviews/page.tsx` (review dashboard with side-by-side diff viewer)
+28. Wire up email notifications via Resend when a review is pending or approved
+29. Deploy Google Apps Script to ADHD research bible Doc (`onEdit` trigger → webhook call)
+30. End-to-end test: Edit research bible → webhook fires → pending review created → user approves → website updates automatically
+
+---
+
+## v1 Roadmap (Phase 3: Cascades)
+
+- [ ] `app/api/cascade/update-word-doc/route.ts` — Cloud Function that regenerates handout/workbook .docx from template
+- [ ] `app/api/cascade/update-video-script/route.ts` — Cloud Function that regenerates video script outline
+- [ ] Google Drive templates for Word (.docx), video script outline (.md/.txt)
+- [ ] Wire cascade triggers to approval flow (call both after publish)
+- [ ] Emails to user with links to updated files
+- [ ] Layer Cloud Function polling (Option B) to catch programmatic changes from research-bible-refinement Cloud Function
+- [ ] Canva API integration if decks move to Canva (or python-pptx templating as fallback)

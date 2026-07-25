@@ -45,3 +45,6 @@ next-env.d.ts
 
 # local Claude Code tool settings (machine-specific)
 .claude/settings.local.json
+
+# Google Drive sync temp cache
+.tmp.driveupload/
