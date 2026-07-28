@@ -34,11 +34,14 @@ const navigationData: NavigationSection[] = [
   { title: "Services", href: "#services" },
   { title: "Testimonials", href: "#testimonials" },
   { title: "Research Bible", href: "/docs" },
+  { title: "Subscribe", href: "https://roughlyeducated.substack.com/subscribe" },
 ];
 
 const BookACallButton = ({ className }: { className?: string }) => (
   <Link
-    href="#book-a-call"
+    href="https://cal.com/bobby-washburn/1on1"
+    target="_blank"
+    rel="noopener noreferrer"
     className={cn(
       "relative inline-flex items-center bg-primary text-primary-foreground hover:bg-primary/80 text-sm font-medium rounded-full h-10 p-1 ps-4 pe-12 group transition-all duration-500 hover:ps-12 hover:pe-4 w-fit overflow-hidden",
       className,
@@ -171,13 +174,17 @@ const Header = () => {
                   <div className="mt-auto flex flex-col gap-4">
                     <div className="flex gap-3">
                       <a
-                        href="#"
+                        href="https://www.instagram.com/bobby__washburn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
                       >
                         <InstagramIcon />
                       </a>
                       <a
-                        href="#"
+                        href="https://www.linkedin.com/in/bobby-washburn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
                       >
                         <LinkedinIcon />

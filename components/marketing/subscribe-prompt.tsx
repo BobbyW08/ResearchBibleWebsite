@@ -25,9 +25,14 @@ function SubscribePrompt() {
             Subscribe to unlock every guide, get new research as it lands, and
             hear what&apos;s actually working for other families.
           </p>
-          <div className="mt-2 flex w-full max-w-sm flex-col gap-3 rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-            Substack embed goes here
-          </div>
+          <a
+            href="https://roughlyeducated.substack.com/subscribe"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/80 transition-colors"
+          >
+            Subscribe on Substack
+          </a>
         </motion.div>
       </div>
     </section>

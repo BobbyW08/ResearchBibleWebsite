@@ -16,12 +16,13 @@ const footerSections: FooterSection[] = [
       { title: "Services", href: "#services" },
       { title: "Testimonials", href: "#testimonials" },
       { title: "Research bible", href: "/docs" },
+      { title: "Subscribe", href: "https://roughlyeducated.substack.com/subscribe" },
     ],
   },
   {
     title: "Other pages",
     links: [
-      { title: "Book a call", href: "#book-a-call" },
+      { title: "Book a call", href: "https://cal.com/bobby-washburn/1on1" },
       { title: "FAQ", href: "#faq" },
       { title: "Privacy policy", href: "#" },
     ],
@@ -43,10 +44,10 @@ function Footer() {
                   Practical, research-grounded parenting support.
                 </p>
                 <div className="flex items-center gap-4">
-                  <a href="#" className="text-muted-foreground hover:text-foreground">
+                  <a href="https://www.instagram.com/bobby__washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                     <InstagramIcon />
                   </a>
-                  <a href="#" className="text-muted-foreground hover:text-foreground">
+                  <a href="https://www.linkedin.com/in/bobby-washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                     <LinkedinIcon />
                   </a>
                 </div>
@@ -83,10 +84,10 @@ function Footer() {
                 <ul className="flex flex-col gap-3">
                   <li>
                     <a
-                      href="mailto:hello@example.com"
+                      href="mailto:bobbywashburn0@gmail.com"
                       className="text-base font-normal text-muted-foreground hover:text-foreground"
                     >
-                      hello@example.com
+                      bobbywashburn0@gmail.com
                     </a>
                   </li>
                 </ul>
