@@ -30,6 +30,7 @@ type NavigationSection = {
 const navigationData: NavigationSection[] = [
   { title: "Home", href: "/" },
   { title: "About", href: "#about" },
+  { title: "Guides", href: "#guides" },
   { title: "Services", href: "#services" },
   { title: "Testimonials", href: "#testimonials" },
   { title: "Research Bible", href: "/docs" },

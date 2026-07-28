@@ -21,7 +21,7 @@ function Testimonials() {
           <Badge className="text-sm h-auto py-1 px-3 border-0 w-fit">
             Testimonials
           </Badge>
-          <h2 className="sm:text-5xl text-2xl leading-none font-medium tracking-tight">
+          <h2 className="font-heading sm:text-5xl text-2xl leading-none font-medium tracking-tight">
             Success Stories
           </h2>
         </motion.div>

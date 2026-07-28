@@ -48,7 +48,7 @@ function Services() {
               <Badge variant="outline" className="px-3 py-1 h-auto text-sm">
                 Services
               </Badge>
-              <h2 className="text-3xl md:text-4xl font-medium text-center tracking-tight">
+              <h2 className="font-heading text-3xl md:text-4xl font-medium text-center tracking-tight">
                 Support at every level
               </h2>
             </motion.div>
@@ -78,7 +78,7 @@ function Services() {
                         strokeWidth={1.2}
                       />
                       <div className="flex flex-col gap-3">
-                        <h3 className="text-xl font-medium">
+                        <h3 className="font-heading text-xl font-medium">
                           {service.title}
                         </h3>
                         <p className="text-base font-normal text-muted-foreground">
