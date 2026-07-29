@@ -38,10 +38,10 @@ export function TemperamentTimeline({ stages }: TemperamentTimelineProps) {
                 border: `1px solid ${isActive ? '#4A7A9B' : 'var(--border)'}`,
               }}
             >
-              <div className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: 'var(--muted-foreground)' }}>
+              <div className="text-xs uppercase tracking-widest mb-0.5" style={{ color: 'var(--muted-foreground)' }}>
                 {s.age}
               </div>
-              <div className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>
+              <div className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
                 {s.label}
               </div>
             </button>
@@ -50,21 +50,21 @@ export function TemperamentTimeline({ stages }: TemperamentTimelineProps) {
       </div>
 
       <div id={`stage-panel-${active}`} className="rounded-lg p-4" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-        <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: '#5B8DB8' }}>
+        <div className="text-xs uppercase tracking-widest mb-1" style={{ color: '#5B8DB8' }}>
           Primary presentation
         </div>
-        <p className="text-xs font-semibold mb-4" style={{ color: 'var(--foreground)' }}>
+        <p className="text-base font-semibold mb-4" style={{ color: 'var(--foreground)' }}>
           {stage.primaryPresentation}
         </p>
 
-        <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
+        <div className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
           What you see
         </div>
         <ul className="mb-4">
           {stage.whatYouSee.map((item, i) => (
             <li
               key={i}
-              className="text-[11px] leading-relaxed mb-1.5 pl-3"
+              className="text-base leading-relaxed mb-1.5 pl-3"
               style={{ color: 'var(--muted-foreground)', borderLeft: '2px solid #5B8DB840' }}
             >
               {item}
@@ -72,14 +72,14 @@ export function TemperamentTimeline({ stages }: TemperamentTimelineProps) {
           ))}
         </ul>
 
-        <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
+        <div className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
           What helps
         </div>
-        <p className="text-[11px] leading-relaxed mb-4" style={{ color: 'var(--foreground)' }}>
+        <p className="text-base leading-relaxed mb-4" style={{ color: 'var(--foreground)' }}>
           {stage.whatHelps}
         </p>
 
-        <p className="text-[10px] leading-relaxed italic" style={{ color: 'var(--muted-foreground)' }}>
+        <p className="text-base leading-relaxed italic" style={{ color: 'var(--muted-foreground)' }}>
           {stage.diagnosisNote}
         </p>
       </div>

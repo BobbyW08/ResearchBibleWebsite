@@ -35,7 +35,7 @@ export function StrategyExplorer({ situations }: StrategyExplorerProps) {
 
   return (
     <div className="my-6">
-      <div className="text-[10px] uppercase tracking-widest mb-3" style={{ color: 'var(--muted-foreground)' }}>
+      <div className="text-xs uppercase tracking-widest mb-3" style={{ color: 'var(--muted-foreground)' }}>
         What are you seeing?
       </div>
 
@@ -48,7 +48,7 @@ export function StrategyExplorer({ situations }: StrategyExplorerProps) {
               type="button"
               aria-pressed={isSelected}
               onClick={() => toggle(sit.id)}
-              className="shrink-0 rounded-lg px-3 py-2.5 text-[11px] text-left leading-tight whitespace-nowrap transition-all duration-150"
+              className="shrink-0 rounded-lg px-3 py-2.5 text-sm text-left leading-tight whitespace-nowrap transition-all duration-150"
               style={{
                 border: `1px solid ${isSelected ? '#C4B896' : 'var(--border)'}`,
                 background: isSelected ? '#C4B89618' : 'transparent',
@@ -69,7 +69,7 @@ export function StrategyExplorer({ situations }: StrategyExplorerProps) {
 
       {selected.size === 0 && (
         <div
-          className="rounded-lg px-5 py-8 text-center text-xs"
+          className="rounded-lg px-5 py-8 text-center text-base"
           style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
         >
           Select one or more situations above to see strategies
@@ -78,20 +78,20 @@ export function StrategyExplorer({ situations }: StrategyExplorerProps) {
 
       {active.map((sit) => (
         <div key={sit.id} className="mb-6">
-          <div className="text-[11px] font-bold mb-3" style={{ color: '#C4B896' }}>
+          <div className="text-sm font-bold mb-3" style={{ color: '#C4B896' }}>
             When: {sit.label}
           </div>
           {sit.strategies.map((strat, i) => (
             <div key={i} className="rounded-lg px-4 py-4 mb-2.5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
               <div className="flex items-baseline justify-between gap-3 mb-1.5">
-                <div className="text-xs font-semibold" style={{ color: 'var(--foreground)' }}>
+                <div className="text-base font-semibold" style={{ color: 'var(--foreground)' }}>
                   {strat.name}
                 </div>
-                <div className="text-[9px] uppercase tracking-wide shrink-0" style={{ color: 'var(--muted-foreground)' }}>
+                <div className="text-xs uppercase tracking-wide shrink-0" style={{ color: 'var(--muted-foreground)' }}>
                   Tier {strat.tier}
                 </div>
               </div>
-              <div className="text-[11px] leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
+              <div className="text-base leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
                 {strat.detail}
               </div>
             </div>

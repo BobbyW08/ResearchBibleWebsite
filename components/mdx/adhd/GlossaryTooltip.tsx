@@ -106,22 +106,19 @@ export function GlossaryTooltip({ term }: GlossaryTooltipProps) {
             bottom: 'calc(100% + 10px)',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: 280,
-            maxWidth: '80vw',
+            width: 320,
+            maxWidth: '85vw',
             background: '#1E3A5A',
             border: '1px solid var(--border)',
             borderRadius: 8,
             padding: '12px 14px',
-            fontSize: 12,
-            color: 'var(--muted-foreground)',
+            fontSize: '1rem',
+            color: '#FFFFFF',
             lineHeight: 1.6,
             boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
             pointerEvents: 'auto',
           }}
         >
-          <span className="block mb-1.5 font-bold" style={{ color: 'var(--foreground)' }}>
-            {term}
-          </span>
           {definition}
           <span
             className="absolute"

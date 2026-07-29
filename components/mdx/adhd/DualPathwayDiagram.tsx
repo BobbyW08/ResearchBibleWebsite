@@ -36,7 +36,7 @@ const STATE_STYLE: Record<PathwayStepState, { border: string; dashed?: boolean }
 function StepColumn({ side, color }: { side: PathwaySide; color: string }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-widest mb-2 text-center" style={{ color }}>
+      <div className="text-xs uppercase tracking-widest mb-2 text-center" style={{ color }}>
         {side.label}
       </div>
       <div className="flex flex-col items-stretch">
@@ -51,11 +51,11 @@ function StepColumn({ side, color }: { side: PathwaySide; color: string }) {
                   border: `1px ${style.dashed ? 'dashed' : 'solid'} ${style.border}`,
                 }}
               >
-                <div className="text-[11px] leading-snug" style={{ color: 'var(--foreground)' }}>
+                <div className="text-base leading-snug" style={{ color: 'var(--foreground)' }}>
                   {step.node}
                 </div>
                 {step.note && (
-                  <div className="text-[9px] mt-1" style={{ color: 'var(--muted-foreground)' }}>
+                  <div className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
                     {step.note}
                   </div>
                 )}
@@ -85,7 +85,7 @@ export function DualPathwayDiagram({ pathways }: DualPathwayDiagramProps) {
             role="tab"
             aria-selected={active === i}
             onClick={() => setActive(i)}
-            className="flex-1 py-2 rounded-lg text-[11px] font-semibold transition-all duration-150"
+            className="flex-1 py-2 rounded-lg text-base font-semibold transition-all duration-150"
             style={{
               border: `1px solid ${active === i ? '#5B8DB8' : 'var(--border)'}`,
               background: active === i ? '#5B8DB815' : 'transparent',

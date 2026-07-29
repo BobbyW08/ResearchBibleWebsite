@@ -34,7 +34,7 @@ export function DelayAversionSlider({ timePoints, captions }: DelayAversionSlide
 
   return (
     <div className="my-6">
-      <div className="text-[10px] uppercase tracking-widest mb-3" style={{ color: 'var(--muted-foreground)' }}>
+      <div className="text-xs uppercase tracking-widest mb-3" style={{ color: 'var(--muted-foreground)' }}>
         Motivational response as the reward gets farther away
       </div>
 
@@ -90,14 +90,14 @@ export function DelayAversionSlider({ timePoints, captions }: DelayAversionSlide
         className="w-full mt-3"
         style={{ accentColor: '#C4B896' }}
       />
-      <div className="flex justify-between text-[10px] mt-1" style={{ color: 'var(--muted-foreground)' }}>
+      <div className="flex justify-between text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
         <span>Right now</span>
         <span className="font-semibold" style={{ color: 'var(--foreground)' }}>{point.label}</span>
         <span>Next week</span>
       </div>
 
       <div
-        className="mt-4 rounded-lg px-5 py-4 text-xs leading-relaxed italic"
+        className="mt-4 rounded-lg px-5 py-4 text-base leading-relaxed italic"
         style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--muted-foreground)', minHeight: 56 }}
       >
         {caption}

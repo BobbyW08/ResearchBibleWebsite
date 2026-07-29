@@ -1,5 +1,6 @@
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
+import { Callout } from "@/components/mdx/callout";
 import { ComparisonPanel } from "@/components/mdx/comparison-panel";
 import { ConsensusMeter } from "@/components/mdx/consensus-meter";
 import { ImageGallery } from "@/components/mdx/image-gallery";
@@ -12,6 +13,7 @@ import { VideoEmbed } from "@/components/mdx/video-embed";
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
+    Callout,
     ComparisonPanel,
     ConsensusMeter,
     ImageGallery,

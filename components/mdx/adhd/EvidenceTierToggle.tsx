@@ -36,7 +36,7 @@ export function EvidenceTierToggle({ tiers }: EvidenceTierToggleProps) {
             role="tab"
             aria-selected={activeLevel === tier.level}
             onClick={() => setActiveLevel(tier.level)}
-            className="flex-1 min-w-[110px] py-2.5 rounded-lg text-[11px] font-semibold transition-all duration-150"
+            className="flex-1 min-w-[110px] py-2.5 rounded-lg text-sm font-semibold transition-all duration-150"
             style={{
               border: `1px solid ${activeLevel === tier.level ? TIER_COLOR[i] : 'var(--border)'}`,
               background: activeLevel === tier.level ? `${TIER_COLOR[i]}15` : 'transparent',
@@ -51,7 +51,7 @@ export function EvidenceTierToggle({ tiers }: EvidenceTierToggleProps) {
           role="tab"
           aria-selected={activeLevel === 'all'}
           onClick={() => setActiveLevel('all')}
-          className="py-2.5 px-4 rounded-lg text-[11px] font-semibold transition-all duration-150"
+          className="py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-150"
           style={{
             border: `1px solid ${activeLevel === 'all' ? 'var(--foreground)' : 'var(--border)'}`,
             color: activeLevel === 'all' ? 'var(--foreground)' : 'var(--muted-foreground)',
@@ -67,11 +67,11 @@ export function EvidenceTierToggle({ tiers }: EvidenceTierToggleProps) {
           return (
             <div key={tier.level}>
               {activeLevel === 'all' && (
-                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color }}>
+                <div className="text-xs uppercase tracking-widest mb-2" style={{ color }}>
                   {tier.label}
                 </div>
               )}
-              <p className="text-[11px] leading-relaxed mb-2.5 italic" style={{ color: 'var(--muted-foreground)' }}>
+              <p className="text-base leading-relaxed mb-2.5 italic" style={{ color: 'var(--muted-foreground)' }}>
                 {tier.description}
               </p>
               <div className="flex flex-col gap-2.5">
@@ -88,14 +88,14 @@ export function EvidenceTierToggle({ tiers }: EvidenceTierToggleProps) {
                     }}
                   >
                     <div className="flex items-baseline justify-between gap-3 mb-1.5">
-                      <div className="text-xs font-semibold" style={{ color: 'var(--foreground)' }}>
+                      <div className="text-base font-semibold" style={{ color: 'var(--foreground)' }}>
                         {t.name}
                       </div>
-                      <div className="text-[10px] shrink-0" style={{ color }}>
+                      <div className="text-xs shrink-0" style={{ color }}>
                         {t.effectSize}
                       </div>
                     </div>
-                    <div className="text-[11px] leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
+                    <div className="text-base leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
                       {t.notes}
                     </div>
                   </div>
