@@ -1,72 +1,69 @@
-'use client';
-
-import { useState } from 'react';
-
-export interface PathwayPattern {
-  key: string;
-  label: string;
-  color: string;
-  intro: string;
-  patterns: string[];
+export interface ComparisonSide {
+  title: string;
+  subtitle: string;
+  rightFor: string;
+  provides: string;
+  examples: string[];
+  doesNotProvide: string;
+  askFor: string;
 }
 
 export interface PathwayComparisonProps {
-  pathways: PathwayPattern[];
-  disclaimer?: string;
+  left: ComparisonSide;
+  right: ComparisonSide;
 }
 
-export function PathwayComparison({ pathways, disclaimer }: PathwayComparisonProps) {
-  const [activeKey, setActiveKey] = useState<string | null>(null);
-
-  const visiblePathways = activeKey
-    ? pathways.filter(p => p.key === activeKey)
-    : pathways;
-
+function ComparisonColumn({ side }: { side: ComparisonSide }) {
   return (
-    <div className="my-6">
-      {/* Filter tabs */}
-      <div className="flex gap-2 mb-4">
-        {pathways.map(p => (
-          <button key={p.key}
-            onClick={() => setActiveKey(activeKey === p.key ? null : p.key)}
-            className="flex-1 py-2 px-2 rounded-lg text-[10px] font-semibold leading-tight transition-all duration-150"
-            style={{
-              border: `1px solid ${activeKey === null || activeKey === p.key ? p.color : 'var(--border)'}`,
-              background: activeKey === p.key ? `${p.color}18` : 'transparent',
-              color: activeKey === null || activeKey === p.key ? p.color : 'var(--muted-foreground)',
-            }}>
-            {p.label}
-          </button>
-        ))}
+    <div className="rounded-lg p-4" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+      <div className="mb-3">
+        <div className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
+          {side.title}
+        </div>
+        <div className="text-[10px]" style={{ color: 'var(--muted-foreground)' }}>{side.subtitle}</div>
       </div>
 
-      {/* Pathway cards */}
-      <div className={`grid gap-3 ${visiblePathways.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
-        {visiblePathways.map(p => (
-          <div key={p.key} className="rounded-lg p-4"
-            style={{
-              background: 'var(--card)',
-              borderTop: `3px solid ${p.color}`,
-              border: `1px solid var(--border)`,
-              borderTopWidth: 3,
-            }}>
-            <div className="text-xs font-bold mb-1" style={{ color: p.color }}>{p.label}</div>
-            <div className="text-[10px] italic mb-3" style={{ color: 'var(--muted-foreground)' }}>{p.intro}</div>
-            {p.patterns.map((pattern, i) => (
-              <div key={i} className="text-[11px] leading-relaxed mb-2 pl-3 italic"
-                style={{ color: 'var(--foreground)', borderLeft: `2px solid ${p.color}30` }}>
-                {pattern}
-              </div>
-            ))}
-          </div>
-        ))}
+      <div className="rounded-md px-3 py-2 mb-3 text-[11px] font-semibold" style={{ background: '#5B8DB818', color: '#5B8DB8' }}>
+        {side.provides}
       </div>
 
-      {disclaimer && (
-        <p className="text-[10px] leading-relaxed mt-3" style={{ color: 'var(--muted-foreground)' }}>
-          {disclaimer}
-        </p>
-      )}
+      <p className="text-[11px] leading-relaxed mb-3" style={{ color: 'var(--foreground)' }}>
+        {side.rightFor}
+      </p>
+
+      <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
+        Examples
+      </div>
+      <ul className="mb-3">
+        {side.examples.map((ex, i) => (
+          <li
+            key={i}
+            className="text-[11px] leading-relaxed mb-1.5 pl-3"
+            style={{ color: 'var(--muted-foreground)', borderLeft: '2px solid var(--border)' }}
+          >
+            {ex}
+          </li>
+        ))}
+      </ul>
+
+      <div className="text-[10px] leading-relaxed mb-3" style={{ color: 'var(--muted-foreground)' }}>
+        <span className="font-semibold">Does not provide: </span>
+        {side.doesNotProvide}
+      </div>
+
+      <div className="rounded-md px-3 py-2 text-[11px] leading-relaxed" style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--foreground)' }}>
+        <span className="font-semibold" style={{ color: '#C4B896' }}>Ask for: </span>
+        {side.askFor}
+      </div>
+    </div>
+  );
+}
+
+export function PathwayComparison({ left, right }: PathwayComparisonProps) {
+  return (
+    <div className="my-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <ComparisonColumn side={left} />
+      <ComparisonColumn side={right} />
     </div>
   );
 }

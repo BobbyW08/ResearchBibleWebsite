@@ -2,108 +2,109 @@
 
 import { useState } from 'react';
 
-export interface Pathway {
-  key: string;
+export type PathwayStepState = 'normal' | 'active' | 'success' | 'impaired' | 'failure';
+
+export interface PathwayStep {
+  node: string;
+  state: PathwayStepState;
+  note?: string;
+}
+
+export interface PathwaySide {
   label: string;
-  subtitle: string;
-  color: string;
-  mechanism: string;
-  signs: string[];
-  screen: string;
+  steps: PathwayStep[];
+}
+
+export interface Pathway {
+  name: string;
+  neurotypical: PathwaySide;
+  adhd: PathwaySide;
 }
 
 export interface DualPathwayDiagramProps {
   pathways: Pathway[];
-  centralLabel?: string;
 }
 
-export function DualPathwayDiagram({ pathways, centralLabel = 'ADHD' }: DualPathwayDiagramProps) {
-  const [open, setOpen] = useState<string | null>(null);
+const STATE_STYLE: Record<PathwayStepState, { border: string; dashed?: boolean }> = {
+  normal: { border: 'var(--border)' },
+  active: { border: '#5B8DB8' },
+  success: { border: '#5B8DB8' },
+  impaired: { border: '#C4645A', dashed: true },
+  failure: { border: '#C4645A', dashed: true },
+};
+
+function StepColumn({ side, color }: { side: PathwaySide; color: string }) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-widest mb-2 text-center" style={{ color }}>
+        {side.label}
+      </div>
+      <div className="flex flex-col items-stretch">
+        {side.steps.map((step, i) => {
+          const style = STATE_STYLE[step.state];
+          return (
+            <div key={i} className="flex flex-col items-center">
+              <div
+                className="w-full rounded-lg px-3 py-2.5 text-center"
+                style={{
+                  background: 'var(--card)',
+                  border: `1px ${style.dashed ? 'dashed' : 'solid'} ${style.border}`,
+                }}
+              >
+                <div className="text-[11px] leading-snug" style={{ color: 'var(--foreground)' }}>
+                  {step.node}
+                </div>
+                {step.note && (
+                  <div className="text-[9px] mt-1" style={{ color: 'var(--muted-foreground)' }}>
+                    {step.note}
+                  </div>
+                )}
+              </div>
+              {i < side.steps.length - 1 && (
+                <div style={{ width: 1, height: 14, background: 'var(--border)' }} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function DualPathwayDiagram({ pathways }: DualPathwayDiagramProps) {
+  const [active, setActive] = useState(0);
+  const pathway = pathways[active];
 
   return (
-    <div className="my-6 font-sans">
-      {/* Central node */}
-      <div className="flex justify-center mb-4">
-        <div style={{ background: '#1E3A5A', border: '2px solid #4A7A9B', borderRadius: 50 }}
-          className="px-7 py-3 text-sm font-bold tracking-wide text-[var(--foreground)]">
-          {centralLabel}
-        </div>
-      </div>
-
-      {/* Connector */}
-      <div className="flex justify-center">
-        <div style={{ width: 1, height: 16, background: 'var(--border)' }} />
-      </div>
-      <div className="flex justify-center mb-0">
-        <div style={{
-          width: '60%', height: 20,
-          borderTop: '1px solid var(--border)',
-          borderLeft: '1px solid var(--border)',
-          borderRight: '1px solid var(--border)',
-          borderTopLeftRadius: 4, borderTopRightRadius: 4,
-        }} />
-      </div>
-
-      {/* Pathway cards */}
-      <div className="grid grid-cols-2 gap-3">
-        {pathways.map((pathway) => (
+    <div className="my-6">
+      <div className="flex gap-2 mb-4" role="tablist">
+        {pathways.map((p, i) => (
           <button
-            key={pathway.key}
-            onClick={() => setOpen(open === pathway.key ? null : pathway.key)}
-            className="text-left rounded-lg p-4 transition-all duration-200"
+            key={p.name}
+            type="button"
+            role="tab"
+            aria-selected={active === i}
+            onClick={() => setActive(i)}
+            className="flex-1 py-2 rounded-lg text-[11px] font-semibold transition-all duration-150"
             style={{
-              background: 'var(--card)',
-              border: `1px solid ${open === pathway.key ? pathway.color : 'var(--border)'}`,
+              border: `1px solid ${active === i ? '#5B8DB8' : 'var(--border)'}`,
+              background: active === i ? '#5B8DB815' : 'transparent',
+              color: active === i ? '#5B8DB8' : 'var(--muted-foreground)',
             }}
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1 min-w-0 mr-2">
-                <div className="text-xs font-bold mb-1" style={{ color: pathway.color }}>
-                  {pathway.label}
-                </div>
-                <div className="text-[10px]" style={{ color: 'var(--muted-foreground)' }}>
-                  {pathway.subtitle}
-                </div>
-              </div>
-              <span style={{
-                color: 'var(--muted-foreground)', fontSize: 14,
-                transform: open === pathway.key ? 'rotate(180deg)' : 'none',
-                transition: 'transform 0.2s',
-                flexShrink: 0,
-              }}>▾</span>
-            </div>
-
-            {open === pathway.key && (
-              <div className="mt-4 text-left">
-                <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--foreground)' }}>
-                  {pathway.mechanism}
-                </p>
-                <div className="mb-4">
-                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
-                    Day-to-day signs
-                  </div>
-                  {pathway.signs.map((sign, i) => (
-                    <div key={i} className="text-[11px] leading-relaxed mb-1.5 pl-3"
-                      style={{ color: 'var(--muted-foreground)', borderLeft: `2px solid ${pathway.color}40` }}>
-                      {sign}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
-                    With screens
-                  </div>
-                  <p className="text-[11px] leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-                    {pathway.screen}
-                  </p>
-                </div>
-              </div>
-            )}
+            {p.name}
           </button>
         ))}
       </div>
-      <p className="text-center text-[10px] mt-3" style={{ color: 'var(--muted-foreground)' }}>
-        Tap a pathway to expand
+
+      <div className="grid grid-cols-2 gap-4">
+        <StepColumn side={pathway.neurotypical} color="var(--muted-foreground)" />
+        <StepColumn side={pathway.adhd} color="#C4645A" />
+      </div>
+
+      <p className="sr-only">
+        {pathway.name}. {pathway.neurotypical.label}: {pathway.neurotypical.steps.map((s) => s.node).join(' → ')}.{' '}
+        {pathway.adhd.label}: {pathway.adhd.steps.map((s) => s.node).join(' → ')}.
       </p>
     </div>
   );

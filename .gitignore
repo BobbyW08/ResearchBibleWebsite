@@ -48,3 +48,5 @@ next-env.d.ts
 
 # Google Drive sync temp cache
 .tmp.driveupload/
+
+.vercel

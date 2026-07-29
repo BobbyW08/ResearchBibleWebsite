@@ -264,7 +264,7 @@ function Tooltip({ term, children }) {
 function GlossaryDemo() {
   return (
     <div style={{ ...card(), lineHeight:1.8, fontSize:13, color:C.fg }}>
-      <p>Sonuga-Barke's <Tooltip term="dual-pathway model">dual-pathway model</Tooltip> proposes that ADHD symptoms emerge through two distinct routes. The first — <Tooltip term="inhibitory control">inhibitory control</Tooltip> deficits — involves difficulty suppressing automatic responses. The second — <Tooltip term="delay aversion">delay aversion</Tooltip> — involves heightened <Tooltip term="reward sensitivity">reward sensitivity</Tooltip> and waiting discomfort. Note: <Tooltip term="mediation">mediation</Tooltip> studies haven't confirmed the specific mechanism linking ADHD to problematic gaming.</p>
+      <p>Sonuga-Barke&apos;s <Tooltip term="dual-pathway model">dual-pathway model</Tooltip> proposes that ADHD symptoms emerge through two distinct routes. The first — <Tooltip term="inhibitory control">inhibitory control</Tooltip> deficits — involves difficulty suppressing automatic responses. The second — <Tooltip term="delay aversion">delay aversion</Tooltip> — involves heightened <Tooltip term="reward sensitivity">reward sensitivity</Tooltip> and waiting discomfort. Note: <Tooltip term="mediation">mediation</Tooltip> studies haven&apos;t confirmed the specific mechanism linking ADHD to problematic gaming.</p>
     </div>
   );
 }

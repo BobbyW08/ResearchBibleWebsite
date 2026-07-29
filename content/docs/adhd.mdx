@@ -1,174 +1,849 @@
 ---
-title: ADHD in Children & Teens
-description: Neurobiology, behavioral impact, and evidence-based parenting approaches
+title: Understanding ADHD in Children
+description: A comprehensive parent-facing guide to ADHD — what it is, how the brain actually works differently, what it looks like across every setting, and which interventions have real evidence behind them.
 ---
 
-import adhdData from "@/content/data/adhd.json";
+import {
+  MythbusterCards,
+  GlossaryTooltip,
+  DualPathwayDiagram,
+  DelayAversionSlider,
+  TemperamentTimeline,
+  PathwayComparison,
+  EvidenceTierToggle,
+  StrategyExplorer,
+} from "@/components/mdx/adhd";
 
-## What Is It?
+## What ADHD Actually Is
 
-ADHD — Attention-Deficit/Hyperactivity Disorder — is a neurodevelopmental disorder marked by persistent, developmentally inappropriate inattention, hyperactivity, and/or impulsivity that causes real functional impairment across settings (APA, 2022). It's classified as a disorder of executive function and self-regulation, not a behavior problem, and it has nothing to do with intelligence — the issue is consistency and follow-through, not ability.
+ADHD is a difference in how the brain works. Not a character flaw. Not the result of poor parenting. Not a phase your child will grow out of if you're firm enough. It is a <GlossaryTooltip term="neurodevelopmental disorder" /> — meaning it is wired into the structure and chemistry of the brain from birth — and it affects how a child's brain regulates attention, impulse control, motivation, and emotional reactivity.
 
-It is one of the most heritable conditions in behavioral health, with heritability estimates of roughly 74–76% across twin studies (Faraone et al., 2021). It is not caused by poor parenting, screen time, sugar, or lack of discipline — though these factors can make symptoms worse in a child who's already predisposed.
+That word *neurodevelopmental* is doing a lot of work. It means the condition originates in how the brain develops, not in what a child decides to do. The behaviors you see — the interrupting, the forgetting, the meltdowns, the refusals, the inability to start or finish tasks — are not choices. They are symptoms of a brain that is genuinely impaired in systems that most of us take for granted.
 
-## What It Means in Your Kid's Brain
+### The Heritability Reality
 
-Two brain chemicals — dopamine and norepinephrine — act as the brain's fuel for focus, motivation, and self-regulation, and the ADHD brain doesn't maintain optimal levels of them consistently (Volkow et al., 2009). That's why a teen can focus for hours on a video game (engineered for constant dopamine feedback) but can't sustain attention on homework, which offers none of that feedback. It isn't preference — it's chemistry.
+Approximately 74–76% of ADHD is inherited. That is a heritability estimate in the range of height and eye color — among the highest of any psychiatric condition. Twin studies confirm it repeatedly. If you or your partner have ADHD (diagnosed or not), your child is meaningfully more likely to have it. If you are reading this guide and recognizing yourself in it, that is not a coincidence.
 
-Three brain regions are central:
+The practical implication: if you blamed yourself — or if anyone blamed you — you can stop. The genetic loading for this condition is massive. Environment shapes how ADHD presents and how impaired a child becomes, but it does not cause ADHD.
 
-- **Prefrontal cortex** — the brain's "CEO": planning, decision-making, impulse control, attention. Develops more slowly in ADHD; longitudinal research found a delay in cortical maturation of roughly 3–5 years in prefrontal regions (Shaw et al., 2007). A 15-year-old may be operating with the self-regulation skills of a 10 or 11-year-old.
-- **Basal ganglia** — coordinates the handoff between thinking and acting. When it's not working well, starting tasks feels nearly impossible because the "go signal" doesn't reliably fire.
-- **Cerebellum** — beyond movement, it helps coordinate thought; impairments here contribute to scattered thinking.
+### What the Brain Scans Actually Show
 
-Barkley's inhibition model (1997, 2015) frames ADHD as a deficit in behavioral inhibition that cascades into four executive functions: working memory, internal self-talk, emotion/motivation regulation, and flexible planning. A separate "dual pathway" model (Sonuga-Barke, 2003) explains the motivational piece — reward salience and immediacy directly gate performance, which is why some ADHD kids look completely capable on preferred tasks and completely unable on non-preferred ones.
+Brain imaging research on ADHD is not subtle or preliminary. Meta-analyses of neuroimaging studies show consistent, replicated differences in:
 
-Researchers increasingly frame ADHD as a **network disorder** rather than a single broken part — like a poor cell signal, where individual components work but communication between them is unreliable. That's why symptoms can seem so inconsistent day to day, and why ADHD can't simply be "tried away."
+- **<GlossaryTooltip term="prefrontal cortex" /> volume and activity** — the brain's executive control center, responsible for planning, impulse control, working memory, and regulating emotion
+- **<GlossaryTooltip term="basal ganglia" /> function** — involved in motor control, habit formation, and reward processing
+- **Dopaminergic transmission** — <GlossaryTooltip term="dopamine" /> receptor density in the prefrontal cortex is reduced; dopamine transporters in the <GlossaryTooltip term="striatum" /> are increased, causing dopamine to be cleared too quickly and too completely
+- **Noradrenergic signaling** — <GlossaryTooltip term="norepinephrine" />, which modulates sustained attention and alertness, is also insufficient in key circuits
 
-## What to Learn: The Six Clusters
+These are not subtle statistical artifacts — they are robust, peer-reviewed, reproducible findings across thousands of scanned brains. The ADHD brain is structurally and functionally different from a neurotypical brain in ways that directly explain every symptom a parent observes at home.
 
-Most teens with ADHD struggle in several of these at once:
+### What ADHD Is Not Caused By
 
-| Cluster | The Challenge | What You Might See at Home |
-|---|---|---|
-| Activation | Getting started | Sits down for homework but scrolls for an hour; knows it needs doing but can't begin |
-| Focus | Staying on task | Gets distracted mid-sentence, loses conversations, needs instructions repeated |
-| Effort | Sustaining alertness | Falls asleep doing work, seems sluggish, can't sustain effort on boring tasks |
-| Emotion | Managing reactions | Explodes over small disappointments, can't let things go, overwhelmed by changed plans |
-| Memory | Holding info in mind | Forgets what you said 5 minutes ago, loses things, can't follow multi-step directions |
-| Action | Monitoring behavior | Acts without thinking, impulsive decisions, struggles to pause before responding |
+This is worth stating directly because the myths are so persistent — and because they shape whether parents blame themselves.
 
-**Emotional dysregulation** (DESR) is now recognized as a core feature of ADHD, not a side effect. The emotional "hot circuit" is directly impaired, so reactions hit harder and faster with less buffer between feeling and responding. A meltdown over something small isn't a strategy — it's an overflow.
-
-**Girls are underdiagnosed.** Diagnosis runs roughly 2–3:1 male-to-female in clinical samples but only 1.6:1 in community samples (Gershon, 2002) — a gap that points to real underidentification. Girls more often present with the inattentive subtype, mask socially, and get labeled with anxiety or mood problems instead.
-
-## How to Support Them
-
-**Behavioral Parent Training (BPT)** is the most thoroughly researched psychosocial intervention for children under 12, and a well-established Level 1 evidence-based treatment (Fabiano et al., 2009). It teaches parents to:
-
-- Deliver clear, specific, one-step commands
-- Use labeled praise immediately after compliance
-- Apply planned ignoring to minor attention-seeking behavior
-- Apply consistent, mild, *immediate* consequences for non-compliance
-- Build predictable routines that reduce the demand on the child's self-regulation
-
-BPT effects are largest while active, and are weaker when the parent has their own untreated ADHD, depression, or trauma history (Chronis et al., 2004) — worth naming rather than ignoring.
-
-<ConsensusMeter
-  title={adhdData.consensusMeter.title}
-  description={adhdData.consensusMeter.description}
-  items={adhdData.consensusMeter.items}
+<MythbusterCards
+  cards={[
+    {
+      myth: "ADHD is caused by too much screen time",
+      fact: "Screen time can worsen inattention in any child, but it cannot create ADHD in a brain not already wired for it. ADHD is 74–76% heritable — it originates in brain development, not environment.",
+    },
+    {
+      myth: "It's a sugar or diet problem",
+      fact: "Diet does not cause ADHD. Some children have sensitivities to artificial food dyes that worsen symptoms, but this affects a subset and is not the underlying cause. The root is genetic and neurobiological.",
+    },
+    {
+      myth: "More discipline would fix it",
+      fact: "ADHD symptoms are equally present in strictly disciplined homes and permissive ones. Discipline cannot restructure a brain. The impairment is in the neurological systems that regulate attention and impulse — not in a child's willingness to comply.",
+    },
+    {
+      myth: "It's a parenting failure",
+      fact: "Research shows parents of children with ADHD use more corrective and directive strategies than parents of neurotypical children — because the behavior demands it. The parenting adapts to ADHD, not the other way around.",
+    },
+    {
+      myth: "They could focus if they really tried",
+      fact: "The effort is there. What's impaired is the neurological capacity to convert effort into the expected output. The prefrontal cortex systems that sustain attention and regulate impulse are genuinely underperforming — not conserving themselves.",
+    },
+    {
+      myth: "If they can focus on video games, they don't really have ADHD",
+      fact: "The ability to hyperfocus on preferred, high-intensity activities is one of the most diagnostic features of ADHD — not evidence against it. High-salience activities trigger the reward system; low-salience ones don't. This is exactly what ADHD looks like.",
+    },
+    {
+      myth: "They'll grow out of it",
+      fact: "60–80% of children with ADHD continue to meet diagnostic criteria in adolescence. 40–60% carry significant functional impairment into adulthood. Waiting produces years of preventable academic failure, peer rejection, and shame.",
+    },
+  ]}
 />
 
-**Environmental scaffolding** does most of the preventive work: visual schedules and checklists (at eye level, self-monitored), external timers (Time Timer-style visual clocks especially), reduced distractors in workspaces, structured routines, and chunked task presentation (one step at a time).
+Understanding this — really absorbing it, not just intellectually accepting it — changes how you respond to your child's behavior in every moment. The blame cycle ends when the accurate explanation begins.
 
-**Managing your own reactions matters as much as any technique.** Co-regulation research shows a dysregulated parent's nervous system activates dysregulation in the teen. Pause before responding, separate the behavior from the relationship ("I'm frustrated by what happened" vs. "I'm frustrated with you"), and repair openly when you lose your patience — the repair teaches more than the consequence does.
+## Why the ADHD Brain Works the Way It Does
 
-## Practical Info: Treatment & School Supports
+Understanding *why* ADHD produces the behaviors it does is more useful than a symptom list. When you understand the mechanism, you can predict what your child will struggle with before it happens, and design your responses accordingly. Two <GlossaryTooltip term="executive function" /> pathways are doing most of the work here — and both look different in an ADHD brain than in a neurotypical one.
 
-### Medication
+<DualPathwayDiagram
+  pathways={[
+    {
+      name: "Executive Function Pathway",
+      neurotypical: {
+        label: "Neurotypical",
+        steps: [
+          { node: "Impulse fires", state: "normal" },
+          { node: "Behavioral inhibition", state: "active", note: "Brain hits pause" },
+          { node: "Working memory holds task", state: "active" },
+          { node: "Self-talk guides behavior", state: "active" },
+          { node: "Emotion stays regulated", state: "active" },
+          { node: "Task completed", state: "success" },
+        ],
+      },
+      adhd: {
+        label: "ADHD Brain",
+        steps: [
+          { node: "Impulse fires", state: "normal" },
+          { node: "Behavioral inhibition", state: "impaired", note: "Brake pedal is soft" },
+          { node: "Working memory loses thread", state: "impaired" },
+          { node: "Self-talk gets drowned out", state: "impaired" },
+          { node: "Frustration floods in", state: "impaired" },
+          { node: "Task collapses or stalls", state: "failure" },
+        ],
+      },
+    },
+    {
+      name: "Motivational Pathway",
+      neurotypical: {
+        label: "Neurotypical",
+        steps: [
+          { node: "Future reward anticipated", state: "normal" },
+          { node: "Dopamine releases", state: "active", note: "Motivation activates" },
+          { node: "Effort sustains toward goal", state: "active" },
+          { node: "Reward received — cycle reinforced", state: "success" },
+        ],
+      },
+      adhd: {
+        label: "ADHD Brain",
+        steps: [
+          { node: "Future reward anticipated", state: "normal" },
+          { node: "Dopamine barely registers", state: "impaired", note: "Signal too weak" },
+          { node: "Motivation doesn't activate", state: "impaired" },
+          { node: "Immediate distraction wins", state: "failure" },
+        ],
+      },
+    },
+  ]}
+/>
 
-**Stimulants** (methylphenidate — Ritalin, Concerta; amphetamine salts — Adderall, Vyvanse) increase dopamine/norepinephrine availability in the prefrontal cortex. They are the most effective single intervention for symptom reduction, with effect sizes of 0.8–1.0 — among the largest in psychiatric pharmacotherapy (Faraone & Buitelaar, 2010). Requires monitoring of heart rate, blood pressure, growth, sleep, and appetite; cardiology clearance is needed with a cardiac history.
+### The Dopamine Problem: Why Rewards Feel Broken
 
-**Non-stimulants** (Strattera/atomoxetine, Intuniv, newer options like Viloxazine) are a legitimate alternative when stimulants don't fit, though they take several weeks to build up in the system.
+In a neurotypical brain, dopamine is released when a reward is anticipated. The mere promise of something good — finishing homework to earn screen time, waiting patiently for dessert — activates dopamine circuits and provides enough motivational pull to sustain behavior toward that future goal.
 
-**What medication does and doesn't do:** it opens a neurochemical window during which skills can be learned — it does not teach organization, planning, or time management on its own, and doesn't replace the need for supportive structure at home. The landmark MTA Study (1999) found combined treatment (medication + behavioral) produced the broadest benefits, particularly for academic functioning and social skills, and required lower medication doses than medication alone.
+In the ADHD brain, this system is blunted. Dopamine receptor density in the prefrontal cortex is reduced. Dopamine transporters in the striatum reuptake dopamine too aggressively, cutting off the signal before it can do its work. The result: **future and low-salience rewards produce almost no dopamine response.** The motivational system simply does not activate.
 
-### School Supports
+This is not a decision. It is neurochemistry.
 
-- **504 Plan** — accommodations (extended time, preferential seating, reduced homework quantity, sensory breaks) when ADHD affects access to learning but specialized instruction isn't needed.
-- **IEP** — specialized instruction and related services when ADHD significantly impairs academic performance. IEP *quality* — not just existence — accounts for roughly 25% of variance in outcomes (Ruble et al., 2010), so push for specific, measurable, time-bound goals.
+What this explains about your child's behavior:
 
-### Other Tools Worth Knowing
+- A video game in the next room produces an intense, immediate dopamine response. Homework with a reward next week does not. This is why your child can "focus perfectly" on games but cannot focus on anything else — the brain is not broken, it is behaving exactly as its reward circuitry predicts.
+- "You can have screen time when you finish your homework" does not work the way you'd expect, because "next week" might as well not exist neurochemically. The future is blurry. Now is vivid.
+- Preferred activities are not evidence that your child *can* focus when they want to — they are evidence that the motivational pathway activates for high-salience stimuli and fails for low-salience ones. This is the disorder.
 
-- **EndeavorRx** — FDA-authorized video-game-based attention therapy
-- **Body doubling** — having another person present while your teen works activates the brain's focus system, regardless of what that person is doing
-- **External reminders/systems** — alarms, timers, checklists are prosthetics for working memory, not crutches
+<DelayAversionSlider
+  timePoints={[
+    { label: "Right now", neurotypical: 95, adhd: 90 },
+    { label: "5 minutes", neurotypical: 88, adhd: 65 },
+    { label: "30 minutes", neurotypical: 80, adhd: 40 },
+    { label: "Tonight", neurotypical: 72, adhd: 22 },
+    { label: "Tomorrow", neurotypical: 65, adhd: 10 },
+    { label: "This weekend", neurotypical: 55, adhd: 5 },
+    { label: "Next week", neurotypical: 45, adhd: 2 },
+  ]}
+  captions={[
+    "At this instant, both a neurotypical brain and an ADHD brain feel roughly the same pull toward the reward.",
+    "A five-minute wait, and the ADHD brain's motivational response is already dropping fast — the neurotypical brain barely notices the delay.",
+    "Half an hour out. The ADHD brain's response has fallen by more than half. The wait is starting to feel like losing.",
+    "At 'tonight,' a neurotypical brain still feels meaningful pull toward the reward. The ADHD brain is barely registering it.",
+    "Tomorrow. For the ADHD brain, this is close to psychologically indistinguishable from never.",
+    "This weekend. The neurotypical brain still sees real, if faded, value. The ADHD brain's response is nearly flat.",
+    "Next week might as well not exist. The neurotypical brain retains a modest pull; the ADHD brain's motivational signal has all but disappeared.",
+  ]}
+/>
 
-## What to Practice
+**The practical takeaway:** The ADHD brain needs *now*, not *later*. Immediate, specific reinforcement — praise or a small reward within seconds of the desired behavior — is neurochemically useful in a way that a promised reward next Friday simply is not.
 
-**Daily support checklist:**
-- Give one specific piece of praise today — name the behavior, not just the result
-- Provide a transition warning before any schedule change
-- Break any new task into the smallest possible first step
-- Check in after a hard moment: "What do you need from me?"
-- End the day with one moment of connection — not about performance
+### The Executive Function Cascade
 
-**Minimal viable practice plan** — five elements that, applied consistently, tend to produce observable change within 2–4 weeks:
-1. One-step commands delivered with physical proximity and eye contact
-2. A visual schedule/checklist for at least one high-conflict routine
-3. A specific, labeled praise contingency for one target behavior
-4. One structural modification to the environment
-5. Contact with the child's teacher/school about current functioning and supports
+Executive functions are the brain's management system — the set of mental skills that let you plan, initiate, sustain effort, monitor your own behavior, shift flexibly between tasks, regulate emotions, and hold information in mind while using it. These are the skills that make it possible to sit down, start your homework, notice when you've drifted, get yourself back on track, manage frustration, and finish.
 
-## Specific Situation Paths
+Psychologist Russell Barkley's model frames ADHD primarily as a deficit in <GlossaryTooltip term="behavioral inhibition" /> — the ability to stop yourself from responding to an impulse, delay a prepotent response, and protect an ongoing task from distraction. When behavioral inhibition fails, four downstream executive functions also fail:
 
-### The Homework Battle
-An 8-year-old starts homework, loses focus within 5 minutes, and melts down when redirected. **What's really happening:** a sustained-attention and task re-engagement failure, compounded by low motivation salience and insufficient structure. **Response:** 10-minute chunks with 5-minute movement breaks, a visual timer, hardest subject first (when medication is most active), immediate reinforcement for completed segments.
+1. **<GlossaryTooltip term="working memory" />** — the ability to hold information in mind and work with it. Not broken entirely — just smaller and more fragile. Instructions evaporate. The step they just completed disappears before they start the next one. They forget what they were going to say mid-sentence.
+2. **Internalized speech (self-talk)** — the internal monologue that guides behavior. "I need to finish this before I do that." "Wait, I was supposed to be doing something." This voice is quieter in ADHD, or gets drowned out more easily.
+3. **Emotion and motivation regulation** — the ability to generate or sustain motivation for a non-preferred task; to modulate emotional responses to frustration. ADHD brains experience frustration faster and more intensely, and have less internal machinery to dampen it.
+4. **Reconstitution (flexible planning)** — the ability to break tasks into steps, generate new strategies when one doesn't work, shift approach mid-task. ADHD brains get stuck on a failed approach, or cannot generate the next step, or fall apart when the plan doesn't unfold as expected.
 
-### The Morning Routine Meltdown
-Repeated verbal reminders stop working. **What's really happening:** a working-memory deficit means the next step is lost once distracted, and the parent's voice becomes background noise through intermittent reinforcement. **Response:** a visual, self-monitored checklist at eye level, paired with a timer; remove verbal reminders and let the environment prompt instead.
+What this means in your kitchen on a Tuesday evening: when your child sits down to do homework, the brain systems that would normally manage that task — holding the assignment in working memory, generating a start, noticing distraction and self-correcting, managing the frustration of difficult problems, breaking the task into manageable steps — are all impaired simultaneously. The task is not just harder. It requires external scaffolding to replace the internal scaffolding the brain is not providing.
+
+### The Development Lag: Brain Age vs. Calendar Age
+
+One of the most important findings in ADHD neuroscience is this: the prefrontal cortex in children with ADHD undergoes <GlossaryTooltip term="cortical maturation" /> approximately **3 to 5 years later** than in neurotypical peers. The cortical maturation eventually catches up — but later.
+
+What this means concretely: an 8-year-old with ADHD may have the self-regulation capacity of a 5 or 6-year-old. A 12-year-old may function emotionally more like a 9-year-old. The expectations you set, the responsibilities you assign, the level of independence you assume — all of these need to be calibrated to developmental age, not calendar age.
+
+This does not mean lowering expectations permanently. It means adjusting them now, building scaffold, and gradually transferring responsibility as the brain catches up and develops compensatory strategies. The goal is not permanent accommodation — it is bridging the developmental gap with enough support that failures don't compound into shame, academic failure, and secondary mental health problems.
+
+## The Three Subtypes: What ADHD Looks Like in Practice
+
+DSM-5 identifies three presentations of ADHD. They produce different behavioral profiles, are often missed in different ways, and respond to slightly different environmental approaches.
+
+### Predominantly Inattentive (ADHD-I)
+
+**What parents see:** A child who appears to be listening but wasn't. Who starts tasks and never finishes them, or doesn't start them at all. Who loses things constantly — their shoes, their homework, their phone, the thought they were about to say. Who seems to live in their own head. Who is described by teachers as "bright but unfocused" or "not working to potential." Who has no disciplinary issues at school and whose ADHD goes unnoticed for years because no one is being disrupted.
+
+**What's actually happening:** Sustained attention deficit, working memory impairment, and task initiation difficulties. The child is not daydreaming by choice — their attentional system cannot maintain engagement without high external salience. The inattentive presentation has less hyperactivity and impulsivity, so it generates less friction with adults — and therefore gets missed.
+
+**Who it affects most:** Girls and quieter children are disproportionately likely to have the inattentive subtype and to be diagnosed late, sometimes not until adolescence or adulthood. By the time the diagnosis arrives, they often have years of internalized shame about underperforming and "not trying hard enough."
+
+**What's often mistaken for:** Laziness. Spaciness. Not caring. Intellectual underachievement relative to apparent ability.
+
+### Predominantly Hyperactive-Impulsive (ADHD-HI)
+
+**What parents see:** A child who cannot sit still. Who taps, fidgets, runs when they should walk, climbs when they should sit, talks when they should listen. Who blurts out answers before questions are finished. Who cannot wait in line. Who interrupts conversations. Who acts before thinking about consequences — jumping off things, grabbing, speaking without a filter.
+
+**What's actually happening:** Impaired behavioral inhibition — the brake pedal in the brain is soft. The impulse fires before the suppression mechanism can catch it. Hyperactivity in younger children often reflects the motor component of poor inhibitory control — the body is also in motion because nothing is telling it to stop.
+
+**Who it affects most:** Boys are diagnosed at higher rates here, partly because the hyperactive-impulsive presentation is more visible and more disruptive to adult environments. It generates referrals earlier because it creates problems for others.
+
+**What's often mistaken for:** Oppositional behavior. Intentional disruption. A child who just needs more discipline or firmer boundaries.
+
+**Important note:** Hyperactivity in the classic sense typically decreases through adolescence. But it is often replaced by inner restlessness, impulsivity in higher-stakes domains (driving, substance use, social decisions), and persistent executive function deficits. The brain quiets the motor component but the underlying impairment continues.
+
+### Combined Presentation (ADHD-C)
+
+**What parents see:** The full picture — inattention, hyperactivity, and impulsivity all present. This is the most common presentation among school-age children referred to clinical settings. These children tend to have the widest range of impairments across academic, social, and home settings.
+
+**What's actually happening:** Deficits across both the attentional and inhibitory systems, with motivational pathway dysfunction layered on top. Combined-presentation children often show the most severe functional impairment and benefit most from comprehensive, multi-modal intervention.
+
+<TemperamentTimeline
+  stages={[
+    {
+      age: "Ages 3–6",
+      label: "Early Childhood",
+      primaryPresentation: "Hyperactive-Impulsive",
+      whatYouSee: [
+        "Can't sit still, runs constantly",
+        "Grabs objects without asking",
+        "Can't wait their turn",
+        "Interrupts constantly",
+        "Accidents from acting without thinking",
+      ],
+      whatHelps: "High structure, short tasks, immediate praise, physical outlets. Set up the environment — not the child.",
+      diagnosisNote: "Symptoms most visible; referrals often start here for boys.",
+    },
+    {
+      age: "Ages 7–10",
+      label: "Early Elementary",
+      primaryPresentation: "Combined most common in referrals",
+      whatYouSee: [
+        "Homework battles begin",
+        "Forgetting assignments, losing materials",
+        "Teacher feedback: 'not working to potential'",
+        "Peer friction from impulsivity",
+        "Inattentive kids often missed — no disruption",
+      ],
+      whatHelps: "Visual schedules, daily report card, Behavioral Parent Training, consider evaluation if not already done.",
+      diagnosisNote: "Academic demands expose inattentive subtype. Girls frequently missed here.",
+    },
+    {
+      age: "Ages 11–13",
+      label: "Middle School",
+      primaryPresentation: "Inattentive and organizational deficits dominate",
+      whatYouSee: [
+        "Organizational demands spike — multiple teachers, multiple assignments",
+        "Grades drop sharply",
+        "Social consequences of impulsivity increase",
+        "Inner restlessness replaces overt hyperactivity",
+        "Shame and anxiety begin to layer on",
+      ],
+      whatHelps: "HOPS/organizational skills training, IEP review, medication re-evaluation as weight/needs change.",
+      diagnosisNote: "Many late-diagnosed girls receive their first evaluation here.",
+    },
+    {
+      age: "Ages 14–18",
+      label: "High School",
+      primaryPresentation: "Executive function and risk-taking",
+      whatYouSee: [
+        "Impulsivity shifts to higher-stakes domains: driving, substances, social decisions",
+        "Difficulty with long-term projects and deadlines",
+        "Depression and anxiety common as secondary conditions",
+        "60–80% still meet ADHD criteria",
+      ],
+      whatHelps: "Self-advocacy skills, driving safety planning, monitor for co-occurring mood disorders, transition planning.",
+      diagnosisNote: "Substance use risk is elevated in untreated ADHD. Early treatment is protective.",
+    },
+  ]}
+/>
+
+## What ADHD Actually Looks Like Day-to-Day
+
+The most useful thing a parent can understand is the gap between **what the behavior looks like** and **what is actually producing it**. Almost every parenting mistake in ADHD comes from misreading one for the other.
+
+### The Behavior-Mechanism Translation Table
+
+| What You See at Home | What's Actually Happening in the Brain | What That Means for Your Response |
+|---|---|---|
+| "She ignores my instructions" | Attention wasn't captured before the instruction began; working memory didn't encode it; it evaporated before action | Get physical proximity, make eye contact, wait for acknowledgment, give one step at a time, follow up with written reminders |
+| "He starts tasks but never finishes them" | Task initiation deficit + sustained attention failure + low motivation salience for non-preferred tasks | Break tasks into timed segments, provide immediate reinforcement per segment, use external timers, stay nearby during first segment |
+| "She explodes at every transition" | Cognitive rigidity + emotional dysregulation from reward loss + poor anticipatory processing (can't mentally prepare for what's coming) | Transition warnings at 10, 5, and 2 minutes; preview what comes next; acknowledge what's ending, not just what's beginning |
+| "He knows the rule but doesn't follow it" | Performance deficit, not a knowledge deficit — inhibitory failure in the moment of impulse under conditions of low external structure | In-the-moment environmental prompts; immediate (not delayed) consequences; remove the assumption that knowing = being able to do |
+| "She focuses for hours on games but can't focus on anything else" | Neurochemical — preferred, high-intensity activities produce the dopamine response that activates focus; non-preferred activities don't trigger the system | Pair non-preferred tasks with preferred access; don't use focus on games as evidence that ADHD isn't "real" — it is exactly what ADHD looks like |
+| "He has no sense of time at all" | Temporal processing deficit — the ADHD brain does not perceive time intervals accurately; "10 minutes" is not a felt experience, it is an abstraction | External visual timers (Time Timer clocks are particularly effective); explicit time markers; never rely on "we're leaving soon" |
+| "She always has to argue about everything" | Emotional dysregulation + poor impulse inhibition + frustration tolerance deficit — the strong feeling fires and there is limited internal capacity to pause it | Don't engage the argument in the moment; wait for regulation; then debrief and problem-solve. Arguing with a dysregulated ADHD brain escalates every time |
+| "He's a totally different child at the doctor's office/school" | Environment-dependent performance — high structure, 1:1 adult attention, and novelty all temporarily normalize performance | This is ADHD, not evidence against ADHD. Identify what those environments provide and replicate it at home |
 
 ### The After-School Crash
-A 7-year-old holds it together at school but explodes at home around 3:30 PM. **What's really happening:** "after-school restraint collapse" — enormous regulatory energy spent masking at school, with home safe enough for the debt to surface (medication may also be wearing off). **Response:** reduce demands for the first 30–60 minutes home — snack, low-demand activity, decompression — before homework or chores.
 
-## Co-Occurring Conditions
+This pattern deserves its own section because it confuses so many parents and generates so much self-blame.
 
-Co-occurring conditions are the rule with ADHD, not the exception:
+Your child is cooperative at school. Teachers report no major issues. Then 3:30 PM arrives and the child who walked into the house looks at you like a stranger, refuses a simple request, and explodes over nothing.
 
-| Condition | Rate | Note |
-|---|---|---|
-| Oppositional Defiant Disorder | 35–50% | Most common pairing; largely maintained by coercive parenting cycles |
-| Anxiety disorders | 25–50% | Can mimic inattention; stimulants may worsen anxiety in some children |
-| Learning disabilities | 20–30%* | *Parent guide cites ~46%, uncited — sources differ, flagged for review |
-| Depression | 15–20% | Elevates suicide risk; screen directly |
-| Autism Spectrum Disorder | 17–50% | Increases behavioral complexity; complicates medication choice |
-| Tic disorders / Tourette's | 10–20% | Requires specialist evaluation before stimulant initiation |
+**What's actually happening:** Your child spent the entire school day using enormous regulatory energy to hold it together under structured, adult-supervised conditions. The ADHD brain, given consistent external scaffolding, can often perform near-normally — but at a significant neurological cost. By 3:30, the regulatory tank is empty.
 
-## Where Experts Disagree
+Home is where your child feels safe enough to let it collapse. That is not a sign of your failure — it is a sign of your child's trust that you will not reject them when they fall apart. The meltdown is not about you. It is the discharge of a day's worth of accumulated regulatory debt.
 
-<ComparisonPanel
-  title={adhdData.whereExpertsDisagree.title}
-  description={adhdData.whereExpertsDisagree.description}
-  rows={adhdData.whereExpertsDisagree.rows}
+If your child is also medicated, the timing matters here: stimulant medication typically wears off in the late afternoon. The combination of regulatory depletion and medication wearing off is what you're seeing at 3:30.
+
+**What helps:**
+
+- Reduce demands for 30–60 minutes after school. No homework, no chores, no big questions.
+- Provide a snack (medication often suppresses appetite at school; hungry + depleted is a difficult combination).
+- Allow free movement or unstructured play — this is decompression, not reward.
+- Hold structured demands until the regulation window has closed and your child has had time to reset.
+
+This feels counterintuitive if you have things that need to get done. But attempting homework with a child in regulatory collapse takes 3 hours and produces nothing except conflict. Waiting 45 minutes and attempting it with a regulated child takes 30 minutes.
+
+### The Coercive Cycle: How ADHD and Parenting Get Tangled
+
+Psychologist Gerald Patterson described a pattern called the <GlossaryTooltip term="coercive cycle" />. It works like this:
+
+1. Parent makes a request.
+2. Child with ADHD resists, ignores, or escalates.
+3. Parent escalates in return — louder, more emphatic, more threatening.
+4. Child escalates further.
+5. At some point, one of two things happens: the parent wins through sufficient threat, or the parent withdraws the demand to end the conflict.
+
+When the parent withdraws, the child learns: escalation works. When the parent succeeds through threat, the parent learns: sufficient pressure produces compliance. Neither lesson is useful.
+
+This cycle is not caused by bad parenting. Research documents that parents of children with ADHD use more critical, disapproving, and coercive parenting strategies than parents of neurotypical children — *because ADHD behaviors reliably elicit those responses from any adult not specifically trained to respond differently.* The behavior is that provocative. The coercive escalation makes sense as a reaction. It just doesn't help.
+
+Breaking the cycle requires understanding that the child is not choosing the behavior, which means responding to the mechanism (the executive function deficit) rather than the surface behavior. <GlossaryTooltip term="Behavioral Parent Training" /> teaches exactly this.
+
+## What's Going On at School
+
+ADHD does not stay home. It is present in every setting that requires sustained attention, behavioral control, impulse management, and organization — which describes most of what school demands.
+
+### How ADHD Creates Academic Problems
+
+The academic challenges of ADHD are not primarily about intelligence. They are about the gap between what a child understands and what a child can *produce* given their executive function limitations.
+
+- **Listening to a 20-minute lecture** requires sustained attention that ADHD cannot reliably provide after the first 5 minutes without significant external support.
+- **Multi-step assignments** require working memory to hold earlier steps while executing later ones — a consistently impaired system in ADHD.
+- **Homework** requires task initiation (hard), sustained effort (hard), distraction resistance (hard), and internal motivation for a non-preferred activity (hardest). Every impaired executive function stacks.
+- **Tests under time pressure** require organized retrieval and efficient production — both disrupted by ADHD.
+- **Organizational systems** (tracking assignments, managing materials, meeting deadlines) are themselves executive function demands that ADHD children cannot manage without external scaffolding.
+
+The result is a child who is often described by teachers as "not working to potential" — which is accurate, but the reason is not effort. The potential is there. The regulatory infrastructure to access it under typical classroom conditions is not.
+
+### How School Environments Make It Worse
+
+Several features of standard classroom environments are particularly hard for ADHD children:
+
+- Open-plan classrooms with high visual and auditory distraction
+- Long unstructured blocks of work time
+- Homework assigned without in-school support for initiating it
+- Consequences that are delayed (losing recess tomorrow for behavior today)
+- Teacher feedback that focuses on what was wrong rather than what was done correctly
+- Group work that requires self-management without direct adult structure
+
+Research shows that teacher frustration with ADHD behavior often leads to increased adult attention during off-task behavior — which inadvertently reinforces it — and to lowered academic expectations, which become self-fulfilling as the child picks up on the signal that less is expected of them.
+
+### IEPs vs. 504 Plans: Which One Your Child Needs
+
+Children with ADHD may qualify for formal school supports under two different legal frameworks.
+
+<PathwayComparison
+  left={{
+    title: "504 Plan",
+    subtitle: "Section 504 of the Rehabilitation Act",
+    rightFor: "ADHD affects access to learning — child needs changes to how content is delivered, not a fundamentally different approach to instruction.",
+    provides: "Accommodations only",
+    examples: [
+      "Extended time on tests (50–100%)",
+      "Preferential seating — near teacher, away from distractors",
+      "Reduced homework quantity (same rigor, less volume)",
+      "Permission to use fidget tools",
+      "Scheduled movement breaks",
+      "Written directions in addition to verbal",
+      "Testing in a low-distraction environment",
+      "Daily planner reviewed by teacher",
+      "Weekly check-in with counselor",
+    ],
+    doesNotProvide: "Specialized instruction or services (speech, OT, resource room)",
+    askFor: "Specific, measurable goals tied to executive function deficits — not a generic checklist.",
+  }}
+  right={{
+    title: "IEP",
+    subtitle: "Individualized Education Program under IDEA",
+    rightFor: "ADHD significantly impairs academic performance and the child needs individualized instruction — not just access modifications.",
+    provides: "Specialized instruction + related services",
+    examples: [
+      "Resource room in core subjects",
+      "Social skills group",
+      "Occupational therapy",
+      "Speech-language therapy",
+      "Behavior Support Plan (BSP)",
+      "Modified curriculum if significantly below grade level",
+      "All 504 accommodations, plus services",
+    ],
+    doesNotProvide: "Nothing a 504 provides is excluded — an IEP is more comprehensive.",
+    askFor: "Goals that are specific, observable, measurable, and time-bound. Who measures, how often, and what the target looks like.",
+  }}
 />
 
-## Commonly Asked Questions
+**What to actually say in IEP and 504 meetings**
 
-**Is my teen just being lazy or defiant?** No — this is a "doing" problem, not a "knowing" problem. Your teen genuinely intends to follow through; the brain system responsible for starting, sustaining, and completing the action is impaired (a "point of performance" failure).
+The most common mistake parents make is accepting vague goals. "Will improve organizational skills" is not an IEP goal — it is an aspiration. "Will use a planner to record all homework assignments independently in 4 out of 5 opportunities, measured weekly by the homeroom teacher" is an IEP goal.
 
-**Will my teen outgrow this?** Not in the sense of the neurological differences resolving. Hyperactivity often decreases, but executive function deficits typically persist without support — 60–80% still meet criteria in adolescence, 40–60% carry impairment into adulthood. Many teens build strong compensatory strategies with the right support, and the brain keeps developing into the mid-20s.
+Push for:
 
-**Should we try medication?** That's a conversation for you and your teen's doctor — but combined treatment (medication + behavioral support) has the broadest evidence behind it. Medication opens the window for skills to be learned; it doesn't teach them by itself.
+- Goals that are specific, observable, and measurable
+- Goals that specify who is measuring and how often
+- Accommodations that address the specific executive function deficits your child has, not a generic ADHD accommodation checklist
+- A daily or weekly communication system between school and home (a daily report card is the evidence-based format)
+- A review of what's working and what isn't at least annually, and more often if things are not going well
 
-## Red Flags — When to Seek Additional Help
+## Evidence-Based Treatments: What Actually Works
 
-Contact your teen's doctor, therapist, or school if you notice:
-- Significant withdrawal from activities they used to enjoy
-- Expressions of hopelessness, worthlessness, or not wanting to be here
-- Rapid or extreme mood changes beyond typical ADHD reactivity
-- Dropping grades combined with social withdrawal
-- Risky behavior that is escalating rather than stabilizing
-- Sleep significantly disrupted for more than two weeks
+Not all interventions are created equal. This tells you where the evidence is strongest before you read the detail below.
 
-Adolescents with ADHD have roughly 3–7x the population rate of suicide attempts, largely mediated through co-occurring depression and substance use — any report of self-harm ideation or significant mood deterioration should trigger immediate referral.
+<EvidenceTierToggle
+  tiers={[
+    {
+      level: 1,
+      label: "Well-Established",
+      description: "Multiple high-quality RCTs, large effect sizes, replicated across populations.",
+      treatments: [
+        {
+          name: "Behavioral Parent Training (BPT)",
+          effectSize: "Large (meta-analytic)",
+          notes: "The evidence-based first-line psychosocial intervention. Most effective when consistently applied.",
+        },
+        {
+          name: "Stimulant Medication",
+          effectSize: "0.8–1.0 (among highest in psychiatric pharmacotherapy)",
+          notes: "Most effective single intervention for symptom reduction. Creates a window for skill-building.",
+        },
+        {
+          name: "Combined Treatment (BPT + Medication)",
+          effectSize: "Broadest outcomes across settings",
+          notes: "Gold standard. Lower medication doses needed; better academic and social outcomes.",
+        },
+      ],
+    },
+    {
+      level: 2,
+      label: "Probably Efficacious",
+      description: "Good evidence base, but fewer RCTs or less replication than Level 1.",
+      treatments: [
+        {
+          name: "Classroom-Based Behavioral Interventions",
+          effectSize: "Moderate, especially when coordinated with home",
+          notes: "Daily Report Card, strategic seating, task chunking. Highly practical; the Daily Report Card is the strongest specific tool.",
+        },
+        {
+          name: "Organizational Skills Training (HOPS)",
+          effectSize: "RCT support for middle-school age",
+          notes: "Specifically addresses planning and materials management — skills ADHD children don't acquire naturally.",
+        },
+        {
+          name: "Exercise (aerobic)",
+          effectSize: "Significant effects on inhibitory control and working memory",
+          notes: "2025 systematic review confirms. Best as a 30–60 min adjunct before high-demand tasks.",
+        },
+      ],
+    },
+    {
+      level: 3,
+      label: "Possibly Efficacious / Emerging",
+      description: "Some positive evidence but methodological limitations or limited replication.",
+      treatments: [
+        {
+          name: "Neurofeedback",
+          effectSize: "Inconsistent; blinding is difficult",
+          notes: "AAP rates as Level 3. May be worth adding for families seeking non-pharmacological options — should not replace Level 1 interventions.",
+        },
+        {
+          name: "Omega-3 Supplementation",
+          effectSize: "Modest, consistent in some studies",
+          notes: "Low-risk adjunct. Particularly for children with low baseline omega-3. Not a primary treatment.",
+        },
+        {
+          name: "Elimination Diets",
+          effectSize: "Small evidence base for a subset",
+          notes: "May reduce symptoms in children sensitive to artificial colors/preservatives. Trial methodically if desired.",
+        },
+      ],
+    },
+  ]}
+/>
 
-## Rhode Island Resources
+### 1. Behavioral Parent Training (BPT)
 
-- **DCYF Family Support:** (401) 528-3502
-- **RI Crisis Line:** 988 (call or text)
-- **Bradley Hospital (Child & Adolescent):** (401) 432-1000
-- **RI Parent Information Network (RIPIN):** (401) 270-0101
+**What it is:** A structured program in which *parents* (not children) learn strategies for structuring the environment, delivering clear commands, applying consistent consequences, and using praise effectively. BPT is not therapy for the child — it is skills training for the adults in the child's environment, on the premise that changing the environment is more powerful than trying to change a brain you cannot reach directly.
 
-Ask your CPRS about school-based supports and IEP/504 plan advocacy.
+**Evidence level:** BPT is classified as a well-established, Level 1 evidence-based treatment for ADHD in children under 12. Meta-analyses report large effect sizes on parent-rated functional impairment and behavioral outcomes. The research base spans decades and is among the strongest in child psychology.
 
-## References
+**Established programs:** The Incredible Years, Triple P – Positive Parenting Program, Parent-Child Interaction Therapy (PCIT), and Barkley's Defiant Children protocol all have strong evidence bases.
 
-American Psychiatric Association. (2022). *Diagnostic and Statistical Manual of Mental Disorders* (5th ed., text rev.).
+**What you actually learn in BPT:**
+
+*Giving instructions differently.* Most parents give instructions from across the room, mid-task, while doing something else, in multi-step sequences. For ADHD, this means the instruction was never captured. BPT teaches: move to proximity, establish eye contact, wait for attention, give *one* step, verify acknowledgment, and follow up.
+
+*Labeled praise delivered immediately.* Generic praise ("good job") is less effective than specific, labeled praise ("I noticed you sat down at your desk the first time I asked — that's exactly what I was hoping for") delivered within seconds of the behavior. Immediacy matters neurochemically. What you label, you get more of.
+
+*Strategic ignoring.* Not all attention-seeking behavior warrants a response. Responding to minor, non-harmful behavior reinforces it. BPT teaches which behaviors to actively ignore (attention-seeking behaviors that aren't dangerous or significantly disruptive) and how to resist the pull to respond.
+
+*Immediate, mild, consistent consequences.* Delayed punishment is neurologically useless for ADHD. The behavior is already forgotten. The consequence has no connection to the action in the child's brain. Consequences need to be immediate (within seconds to minutes), predictable (always follow the same behavior), and mild (the point is the predictability, not the severity).
+
+*Predictable routines.* Every routine that becomes automatic is a reduction in executive function demand. Morning, after school, homework, bedtime — each routine that is structured and consistent reduces the moment-to-moment regulatory load on your child's brain.
+
+**Realistic expectations:** Observable behavioral change typically appears within 2–4 weeks of consistent implementation. "Consistent" is the operative word — inconsistent BPT application reliably produces non-response, which parents then attribute to the strategies not working. Understanding *why* each strategy works is what drives consistent implementation.
+
+**One critical limitation:** BPT effects are largest when the intervention is active. Parents who have untreated ADHD themselves, significant depression, or substantial trauma history show reduced learning and implementation fidelity. If this describes you — which it might, given the heritability of ADHD — your own treatment is part of the plan.
+
+### 2. Stimulant Medication
+
+**What it does:** <GlossaryTooltip term="stimulant medication" /> — <GlossaryTooltip term="methylphenidate" /> (Ritalin, Concerta, Focalin, Metadate) and <GlossaryTooltip term="amphetamine salts" /> (Adderall, Vyvanse, Dexedrine) — increase the synaptic availability of dopamine and norepinephrine in the prefrontal cortex. They directly address the neurochemical deficit that is central to ADHD.
+
+The result: the brake pedal gets firmer. Working memory expands somewhat. Sustained attention improves. Impulsivity decreases. The reward system responds to lower-salience activities. The brain is not fixed — it is given the neurochemical resources it was not producing adequately on its own.
+
+**The evidence is robust.** Meta-analyses report mean effect sizes of 0.8–1.0 for symptom reduction in children — among the largest effect sizes of any psychiatric pharmacotherapy. The MTA Study (1999), a landmark multisite RCT, found medication alone superior to behavioral-only treatment on core ADHD symptom measures.
+
+**What medication creates:** A window. A neurochemical window during which the executive functions that are typically impaired are more available — and during which behavioral strategies and skills can be practiced and learned. Medication does not teach skills. It creates conditions under which skills can be acquired. Medication without behavioral support and environmental scaffolding leaves many functional impairments unaddressed.
+
+**Medication types and how they differ:**
+
+*Short-acting formulations* (e.g., Ritalin, Adderall) take effect in 30–45 minutes and last 4–6 hours. Useful when medication coverage needs to be flexible — on/off on weekends, during high-demand times only. Require a midday dose at school, which some children find stigmatizing.
+
+*Long-acting formulations* (e.g., Concerta, Vyvanse, Adderall XR) release medication gradually, lasting 8–12 hours. Typically taken once in the morning. Cover the school day and homework hours without a midday dose. More practical for most families.
+
+**Managing side effects:**
+
+*Reduced appetite* — the most common complaint. The medication suppresses appetite most strongly when it's active, which corresponds to mealtimes. Strategy: a substantial breakfast before the first dose (when appetite is still present), and a larger snack or meal when medication is wearing off in the late afternoon or evening.
+
+*Sleep disruption* — if medication is taken too late in the day or if the dose is too high, it can delay sleep onset. Strategy: last dose before 3 PM; discuss with prescriber if sleep problems persist.
+
+*Growth deceleration* — stimulants can cause small, temporary decreases in growth velocity. This is real but typically modest and manageable. Height and weight should be tracked at every appointment. Drug holidays (medication breaks on weekends or summers) are sometimes recommended; discuss the tradeoffs with your prescriber.
+
+*Rebound effect* — mild irritability as medication wears off is common and is not a sign of a problem with the medication. It reflects the return to the brain's unmedicated baseline, which can feel like a crash. Plan low-demand time in the late afternoon.
+
+**What medication does NOT do:**
+
+- Change your child's personality. Focus and impulse control may improve; who they are does not change.
+- Create addiction. When dosed correctly for ADHD, stimulant medication actually reduces the later risk of substance use disorders — because untreated ADHD is a significant risk factor for adolescent substance use, and treatment reduces that risk.
+- Substitute for behavioral strategies. The children with the best long-term outcomes received both.
+
+**Questions worth asking your prescriber:**
+
+- Which formulation are you starting with, and why?
+- How will we know it's working? What do I watch for?
+- How long before we see an effect, and when do we reassess the dose?
+- What specific side effects should I report immediately vs. monitor and mention at the next visit?
+- If this medication doesn't work, what's the next option?
+- Should I track anything at home between appointments?
+
+### 3. Combined Treatment: The Gold Standard
+
+The MTA Study (the most rigorous ADHD treatment trial ever conducted) produced a clear finding: combined treatment — medication plus behavioral parent training — is superior to either alone, and produces:
+
+- Broader effects across settings (not just symptom reduction at home or school, but both)
+- Lower medication doses needed (which reduces side effect burden)
+- Better academic and social functioning (not just behavior)
+- Reduced risk of developing oppositional defiant disorder as a secondary condition
+- Better parent-child relationship quality
+
+If your child is on medication, behavioral parent training is still indicated. If you're doing behavioral parent training, medication may significantly enhance what you can accomplish. Neither replaces the other.
+
+### 4. Classroom-Based Behavioral Interventions
+
+Evidence-based school interventions include:
+
+**Daily Report Card (DRC):** A simple form that travels with the child through the school day, tracking target behaviors (e.g., completed work, raised hand before speaking, kept hands to self) in each class period. Teacher marks it, child brings it home, parent responds with a prespecified consequence or reward. Research shows DRCs are highly effective when coordinated between home and school — the key is the same behavior targets, the same measurement, and a consistent response at home.
+
+**Strategic seating:** Near the teacher, away from windows and high-traffic areas, away from socially distracting peers. This is a low-cost intervention with meaningful impact.
+
+**Task chunking:** Breaking a 30-minute task into three 10-minute segments with brief movement breaks is more productive than 30 continuous minutes for ADHD children — not because they need less work, but because breaking the task reduces the demand on sustained attention and gives more frequent opportunities for reinforcement.
+
+**Self-monitoring protocols:** Teach children to track their own on-task behavior at intervals (a gentle sound cue every 5 minutes; the child marks whether they were on task). This leverages the capacity for self-awareness that most ADHD children have to improve the behavior they're monitoring.
+
+### 5. Organizational Skills Training (OST)
+
+OST programs (such as HOPS — Homework, Organization, and Planning Skills) directly teach the organizational and time-management skills that ADHD children lack, rather than assuming they will develop naturally. OST has RCT support specifically for middle-school-age children, where organizational demands increase sharply and ADHD children who managed earlier grades often begin to fall apart.
+
+This is distinct from nagging your child to be organized. OST teaches explicit systems — how to use a planner, how to break a project into steps, how to manage materials — and practices them directly. Parents can adapt OST principles at home without a formal program.
+
+### 6. Exercise
+
+Aerobic exercise improves executive function and attention in children with ADHD in the short term. A 2025 systematic review confirmed significant effects on inhibitory control and working memory in school-age children with ADHD. The research is clear enough to call exercise a legitimate adjunct intervention — particularly useful in the 30–60 minutes before a high-demand task like homework.
+
+Exercise carries no risks and multiple collateral benefits (mood, sleep, physical health). It is not a substitute for primary treatments, but recommending morning exercise before school and afternoon exercise before homework is well-supported.
+
+### 7. Neurofeedback
+
+Neurofeedback trains children to regulate their own brainwave patterns. Some meta-analyses report effects on inattention and impulsivity; however, the methodological limitations of neurofeedback research — particularly the difficulty of blinding (children and parents know if they're getting real vs. sham neurofeedback) — make results difficult to interpret. The American Academy of Pediatrics currently categorizes it as "Level 3 — possibly efficacious."
+
+Neurofeedback should not be recommended as equivalent to BPT or medication. For families seeking non-pharmacological options who want to add something, it may be worth discussing with a qualified provider. It should not replace proven interventions.
+
+### 8. Dietary Interventions
+
+**Omega-3 supplementation:** Has modest, consistent effects on ADHD symptoms in some studies — particularly for children with low baseline omega-3 levels. Low-risk, low-cost, worth trying as an adjunct. Not a primary treatment.
+
+**Elimination diets (removing artificial colors/preservatives):** Small evidence base for a subset of children. If you want to trial an elimination diet, do so methodically: remove one thing at a time, track symptoms, and give it enough time (at least 3–4 weeks) to see a signal. This is an adjunct that may help some children and will not harm any.
+
+Neither dietary approach should be framed as a primary intervention or as a reason to forgo evidence-based treatment.
+
+## Co-Occurring Conditions: What Else Is Likely Going On
+
+ADHD rarely travels alone. Approximately 50–80% of children with ADHD have at least one co-occurring condition. Knowing what else is present changes everything about treatment planning — medication choices, behavioral strategies, what to prioritize, which specialists to involve.
+
+This section covers the most common pairings in order of prevalence.
+
+### ADHD + Oppositional Defiant Disorder (ODD) — 35–50%
+
+<GlossaryTooltip term="oppositional defiant disorder" /> is diagnosed in approximately 35–50% of children with ADHD, making it the most common pairing. Important framing: ODD in the ADHD context is largely *maintained* by the coercive parenting cycle and the child's accumulated frustration at not understanding their own brain. It is usually reactive, not an independent pathological drive to defy.
+
+The mechanism: an ADHD child who is consistently failing at tasks, being corrected repeatedly, experiencing misattribution ("you're doing this on purpose"), and receiving consequences that don't help often develops a secondary defensive posture — oppositional behavior as a way of exerting control in an environment that feels uncontrollable. The ODD is the response to the accumulated experience of ADHD.
+
+**What helps:** Behavioral Parent Training that specifically targets antecedent modification (reducing the conditions that produce conflict) and positive reinforcement — not just consequence management. Early intervention prevents secondary ODD development. If ODD is already established, it remains treatable with the same approaches, with more patience.
+
+### ADHD + Anxiety — 25–50%
+
+ADHD and anxiety co-occur in 25–50% of cases. This combination is particularly tricky because:
+
+- Anxiety can mimic inattention. A child who appears to be zoned out or daydreaming may actually be worrying intensely. The behavior looks like ADHD-I; the mechanism is anxiety.
+- Stimulant medication can worsen anxiety in some children. Careful dose titration is essential — start low, go slow, monitor anxiety symptoms actively.
+- Behavioral interventions for ADHD must be adapted for anxiety. Reward systems can backfire if the child is perfectionistic or afraid of failing to earn the reward.
+
+Alternative medications (atomoxetine, guanfacine, clonidine) are non-stimulants that may be better tolerated when anxiety is significant. This is a conversation for the prescribing clinician.
+
+BPT should be adapted to include more predictability and advance notice (anxiety thrives on uncertainty), and consequences should be calibrated carefully (threatened punishments can amplify anxiety rather than change behavior).
+
+### ADHD + Learning Disabilities — 30–50%
+
+Between 30–50% of children with ADHD have a co-occurring learning disability, with some studies showing rates as high as 50–60%. The most common specific learning disabilities paired with ADHD:
+
+- **Dyslexia** (reading) — disrupts phonemic awareness, decoding, and reading fluency
+- **Dyscalculia** (math) — disrupts number sense, calculation, and math reasoning
+- **Dysgraphia** (writing) — disrupts handwriting, spelling, and the physical-cognitive demands of composing on paper
+
+This combination is critical to understand because **ADHD treatment does not remediate learning disabilities.** Medication and behavioral strategies create better conditions for learning — but if a child cannot decode words or cannot reliably perform arithmetic, better conditions for learning still produce struggle. Academic remediation (Orton-Gillingham instruction for dyslexia, systematic math programs for dyscalculia) must be included in the plan alongside ADHD supports.
+
+In an IEP meeting, this means insisting on both categories: ADHD-specific accommodations (extended time, reduced distraction) *and* specialized academic instruction targeting the learning disability.
+
+<Callout title="Flagged for reconciliation">
+The internal Research Bible cites learning-disability co-occurrence at 20–30% (Mayes & Calhoun, 2006). This guide's source material uses 30–50%, with a note of up to 50–60%. This needs to be reconciled with the source before publication — see the note at the end of this page.
+</Callout>
+
+### ADHD + Autism Spectrum Disorder — 17–50%
+
+The co-occurrence of ADHD and ASD ranges from 17–50% depending on the sample. Until DSM-5, clinicians were not permitted to diagnose both simultaneously — which means many children were under-identified. Today, both can be diagnosed, and the combination significantly increases the complexity of the clinical picture.
+
+The interaction is meaningful: ASD-related cognitive rigidity and demand avoidance interact with ADHD impulsivity and poor inhibition. The result is often more severe and more unpredictable dysregulation than either condition alone produces. Medication management is more complex — stimulants can increase anxiety or repetitive behaviors in some ASD children.
+
+This combination requires specialist coordination — developmental pediatrician, child psychiatrist, and/or neuropsychologist — not just a primary care ADHD evaluation.
+
+### ADHD + Depression — 15–20%
+
+Depression co-occurs in approximately 15–20% of children with ADHD. The direction of causation often goes ADHD first: repeated failure, peer rejection, adult criticism, and the accumulated shame of performing below capacity for years are powerful depression-generating experiences. Depression in this context is largely a secondary consequence of untreated or inadequately treated ADHD.
+
+This matters for two reasons: it is preventable (early, effective ADHD treatment reduces the risk of secondary depression), and it requires a different treatment approach when present (depression and ADHD together may require antidepressant medication alongside or instead of stimulants, and therapy in addition to BPT).
+
+### ADHD in Girls: A Diagnostic Equity Issue
+
+Girls with ADHD are systemically underdiagnosed. The reasons are well-documented:
+
+- Girls present more commonly with the inattentive subtype — no hyperactivity, no disruption, no referrals
+- Girls use social masking more effectively — they observe and imitate neurotypical peers in ways that conceal their struggles from adults
+- Teachers refer girls for evaluation at lower rates than boys with equivalent impairment
+- Girls internalize distress rather than externalizing it — anxiety, depression, and low self-esteem rather than behavior problems
+- Assessment tools were historically developed primarily on male samples, which shapes clinical interpretation
+
+The result: girls with ADHD are diagnosed years later than boys with equivalent impairment, and by the time the diagnosis arrives, they often have significant secondary mental health problems — anxiety, depression, and a well-established internal narrative that they are lazy, stupid, or broken.
+
+If you have a girl who is struggling academically or socially but not creating behavioral problems at school, do not assume ADHD has been ruled out by the absence of disruption. Request an evaluation.
+
+## Common Parenting Mistakes (and the Accurate Model That Replaces Each One)
+
+### Mistake 1: Treating ADHD as a Reason to Abandon Limits
+
+Understanding ADHD does not mean "the brain difference explains everything, so expectations don't apply." That misapplication removes the scaffolding your child needs.
+
+The accurate model: calibrate expectations accurately to developmental age (not calendar age), and apply consistent consequences in ways the ADHD brain can actually learn from. Consequences must be immediate (within seconds), predictable (always follow the same behavior the same way), mild (the predictability matters more than the severity), and contingent (directly tied to the specific behavior, every time).
+
+Delayed punishment — sending a child to their room an hour after the behavior, taking away a privilege the next day — is neurologically inert for ADHD. The behavior is already disconnected in time and memory. Only the present consequence shapes future behavior.
+
+### Mistake 2: Medication as the Only Intervention
+
+Medication reduces symptoms effectively — but it does not build skills. A child who learns to focus with medication but never learns organizational strategies, never internalizes how to break tasks into steps, never practices self-monitoring — that child is dependent on the medication for functional performance in a way that leaves no resilience.
+
+Medication combined with behavioral support produces better outcomes, lower medication doses, and more durable gains. If your child is medicated, keep the BPT and school accommodations.
+
+### Mistake 3: "She'll Grow Out of It"
+
+Some ADHD presentations become less overtly hyperactive in adolescence. Approximately 60–80% of children with ADHD continue to meet criteria in adolescence. Approximately 40–60% carry significant functional impairment into adulthood.
+
+Waiting produces years of avoidable academic failure, peer rejection, shame, and secondary mental health problems — most of which are substantially preventable with early, effective intervention. The cost of waiting is not neutral.
+
+### Mistake 4: Ignoring Your Own ADHD
+
+Approximately 25–50% of parents of children with ADHD have ADHD themselves. Untreated parental ADHD directly interferes with behavioral parent training implementation — the consistency, the planning, the follow-through, the calm repetition that BPT requires is exactly what untreated ADHD undermines.
+
+Your treatment is part of the plan. If you suspect you have ADHD, getting evaluated and treated is not a side project — it is one of the highest-impact interventions available for your child.
+
+### Mistake 5: Inconsistent Implementation and Concluding "Nothing Works"
+
+BPT strategies are specifically designed around the neurological reality of ADHD. Immediate reinforcement works because the ADHD brain is neurochemically responsive to now. Visual schedules work because working memory cannot hold a sequence reliably. Transition warnings work because anticipatory processing is impaired.
+
+When these strategies are applied inconsistently, they produce inconsistent results — which parents attribute to the strategies failing. The strategies did not fail; they were never tested consistently. Understanding *why* each strategy works is what drives consistent implementation. If you find yourself abandoning a strategy after a week because it didn't work, the question is: was it applied every time, immediately, and predictably? Often the answer is no.
+
+## Find a Strategy for What You're Seeing
+
+<StrategyExplorer
+  situations={[
+    {
+      id: "homework",
+      label: "Homework battles",
+      strategies: [
+        { name: "Break tasks into timed 10-minute segments", detail: "Use a visual timer. Reinforce each completed segment immediately — before moving to the next.", tier: 1 },
+        { name: "Schedule homework after a decompression window", detail: "30–60 minutes of low-demand time post-school before any academic work. A regulated child completes homework in 30 min; a depleted child takes 3 hours.", tier: 1 },
+        { name: "Complete hardest subject first", detail: "Schedule the most demanding subject when stimulant medication is most effective (typically 1–3 hours post-dose).", tier: 2 },
+        { name: "Reduce distractors in workspace", detail: "Face a blank wall, noise-canceling headphones, phone in another room. Remove the need for willpower.", tier: 1 },
+      ],
+    },
+    {
+      id: "morning",
+      label: "Morning routine chaos",
+      strategies: [
+        { name: "Visual morning checklist at eye level", detail: "Replace verbal reminders with a self-monitored checklist. Each step has a checkbox. Child marks it; parent doesn't remind.", tier: 1 },
+        { name: "External timer for each step", detail: "\"You have 8 minutes to get dressed\" with a visible timer running. The timer is the authority, not your voice.", tier: 1 },
+        { name: "Prep the night before", detail: "Backpack packed, clothes chosen, lunch made. Remove executive function demands from the highest-stress window of the day.", tier: 1 },
+      ],
+    },
+    {
+      id: "transitions",
+      label: "Meltdowns at transitions",
+      strategies: [
+        { name: "Transition warnings: 10 / 5 / 2 minutes", detail: "Give three warnings before every transition. Name what's ending and what comes next. \"10 more minutes of Minecraft, then dinner.\"", tier: 1 },
+        { name: "Acknowledge what's ending", detail: "Don't only preview what's coming. \"I know you were in the middle of a good part\" signals you see the loss — which reduces the protest.", tier: 2 },
+        { name: "Make the next thing concrete", detail: "\"After dinner we're watching your show\" is more motivating than \"we'll do something fun later.\" The ADHD brain needs something real, not abstract.", tier: 1 },
+      ],
+    },
+    {
+      id: "afterschool",
+      label: "After-school crash",
+      strategies: [
+        { name: "30–60 minute decompression window", detail: "No homework, no chores, no big questions. Snack, movement, unstructured time. The regulatory tank is empty — fill it before demanding anything from it.", tier: 1 },
+        { name: "Snack before engagement", detail: "Stimulant medication suppresses appetite at school. Hungry + depleted = impossible. Food first.", tier: 1 },
+        { name: "Physical movement as reset", detail: "10–20 minutes of aerobic activity (trampoline, bike, shooting hoops) before homework is evidence-supported and practical.", tier: 2 },
+      ],
+    },
+    {
+      id: "impulse",
+      label: "Impulse control and outbursts",
+      strategies: [
+        { name: "Don't argue with a dysregulated brain", detail: "Engaging the argument in the moment escalates it every time. State the limit once, calmly. Wait for regulation. Debrief after.", tier: 1 },
+        { name: "Immediate, mild, consistent consequences", detail: "Consequence within seconds. Same consequence every time. Mild is fine — the predictability is what teaches, not the severity.", tier: 1 },
+        { name: "Proximity and one-step instructions", detail: "Move to the child. Eye contact before speaking. One instruction at a time. Verify they heard it. Then follow up.", tier: 1 },
+      ],
+    },
+    {
+      id: "school",
+      label: "School performance and accommodations",
+      strategies: [
+        { name: "Request a Daily Report Card", detail: "A simple form tracking 2–3 target behaviors across class periods. Teacher marks it; parent responds with a consistent consequence at home. Highly effective when both sides are aligned.", tier: 1 },
+        { name: "Advocate for specific IEP/504 goals", detail: "Push for measurable goals: who tracks it, how often, what the target looks like. Vague goals produce nothing.", tier: 1 },
+        { name: "Strategic seating", detail: "Near the teacher. Away from windows, doors, and distracting peers. Low-cost, high-impact.", tier: 1 },
+      ],
+    },
+  ]}
+/>
+
+## Frequently Asked Questions
+
+### Does ADHD medication turn kids into zombies?
+
+At correctly calibrated doses, no. Proper medication improves focus and reduces impulsivity without flattening affect, dulling personality, or producing sedation. If a child seems flat, withdrawn, or emotionally blunted, the dose is typically too high. This is worth communicating to the prescriber immediately — a dose adjustment is usually straightforward.
+
+### Will stimulant medication lead to addiction later?
+
+This is the most persistent medication myth and the evidence runs in the opposite direction. Early identification and appropriate treatment of ADHD — including medication when indicated — is associated with *reduced*, not increased, risk of substance use disorders in adolescence. Untreated ADHD is itself a risk factor for substance use. The fear of future addiction should not prevent effective treatment now.
+
+### Can my child have ADHD if they focus fine on things they enjoy?
+
+Yes — this is one of the most diagnostic features of ADHD. The ability to focus intensely on preferred, high-salience activities while being unable to sustain attention on non-preferred tasks reflects exactly the neurochemical reality of ADHD: the reward system activates for intrinsically motivating activities and fails for low-salience ones. The capacity to focus is not globally absent — it is context- and salience-dependent. This is ADHD, not evidence against it.
+
+### Does diet cause or cure ADHD?
+
+Diet does not cause ADHD. The condition is primarily genetic with strong neurobiological underpinning. Diet can affect symptom severity — some children are sensitive to artificial food dyes and preservatives, and eliminating these can reduce symptom severity in that subset. Omega-3 supplementation has modest evidence for a subset of children. Poor nutrition can worsen any child's ability to regulate attention and behavior. But dietary changes are adjuncts to, not replacements for, evidence-based treatment.
+
+### My child behaves well at school. Does that mean they don't really have ADHD?
+
+Environment-dependent performance is a hallmark of ADHD, not evidence against it. Highly structured, adult-supervised environments with clear expectations and immediate feedback can normalize ADHD performance — at a significant regulatory cost to the child. The after-school crash is often what you see when that structure is removed. This is still ADHD. The structure is doing the work that the child's brain cannot do internally.
+
+### How long does BPT actually take to work?
+
+Observable behavioral change typically appears within 2–4 weeks of consistent implementation. Full internalization and maintenance of strategies typically requires 8–12 weeks of structured practice. Most formal BPT programs run for 8–12 sessions. The strategies do not stop requiring practice after the program ends — they become less effortful over time, but they remain effortful.
+
+### What if my child's ADHD is severe and nothing seems to be helping?
+
+Evaluate the full picture: Is the diagnosis complete (are there co-occurring conditions — learning disability, anxiety, ASD — that haven't been identified)? Is medication adequately titrated? Is behavioral parent training being applied consistently? Are school supports in place? Are parents also functioning well enough to implement what's required?
+
+If all of those pieces are in place and impairment remains severe, a specialist evaluation is indicated: a developmental pediatrician, child psychiatrist, or neuropsychologist who can assess more comprehensively. Two adequate trials of stimulant medication without response, significant mood instability, suspected tics, or ASD co-occurrence all warrant specialist involvement.
+
+## When to Get More Help
+
+Most families can begin with a primary care provider who is familiar with ADHD diagnosis and medication management, combined with a behavioral parent training program. This is a sufficient starting point for many children with uncomplicated ADHD.
+
+Seek specialist involvement (child psychiatrist, developmental pediatrician, or neuropsychologist) when:
+
+- There is no response to two adequate medication trials
+- You suspect a co-occurring learning disability (neuropsychological evaluation needed)
+- There are significant mood episodes — especially anything that looks like mania or severe depression (stimulants can trigger manic episodes in children with bipolar vulnerability)
+- There is suspected ASD co-occurrence
+- There are tic symptoms (specialist consultation before stimulant initiation is indicated)
+- Your child reports self-harm ideation, hopelessness, or significant mood deterioration — this is a mental health emergency and requires immediate referral
+- History of physical or sexual abuse complicates the behavioral picture
+
+**On suicide risk:** Research shows adolescents with ADHD have approximately 3–7 times the population rate of suicide attempts, largely mediated through co-occurring depression and substance use. Any indication of self-harm ideation or suicidal thinking requires immediate professional support, not a wait-and-see approach.
+
+## The Five Things to Hold Onto
+
+The research base for ADHD is large and the detail can be overwhelming. If you take nothing else from this guide, take these:
+
+**1. The behavior is neurological, not moral.** Your child is not bad. Your child is not choosing to fail or to frustrate you. The brain systems that most people use automatically to regulate attention, impulse, and emotion are genuinely impaired. The behavior makes complete sense given the mechanism. Your response changes when you see the mechanism clearly.
+
+**2. Structure replaces what the brain isn't providing.** Checklists, visual schedules, timers, routines, proximity, one-step instructions — these are not coddling. They are the external scaffolding that temporarily substitutes for the internal executive function the brain is not generating on its own. Build the environment. Don't fight for willpower that isn't there.
+
+**3. Combined treatment produces the broadest outcomes.** Medication plus behavioral parent training plus school support is more effective than any single component. If you use medication, keep the behavioral strategies. If you do behavioral strategies, don't assume medication is off the table. The combination is the evidence-based answer.
+
+**4. Consistency matters more than perfection.** You will not implement any of this perfectly. You do not need to. You need to be predictable — the same response to the same behavior, most of the time. The ADHD brain learns from consistent, immediate, predictable feedback. It does not require perfect parenting. It requires reliable signals.
+
+**5. Early intervention prevents secondary problems.** Academic failure, peer rejection, shame, oppositional defiant disorder, depression, and anxiety are not inevitable consequences of ADHD. They are largely preventable outcomes of untreated or inadequately treated ADHD. The goal of early intervention is to keep those secondary problems from taking root while the brain is still developing. Don't wait.
+
+## Evidence Base
+
+American Psychiatric Association. (2022). *Diagnostic and statistical manual of mental disorders* (5th ed., text rev.).
 
 Barkley, R. A. (1997). Behavioral inhibition, sustained attention, and executive functions. *Psychological Bulletin, 121*(1), 65–94.
 
-Biederman, J., Faraone, S. V., Milberger, S., et al. (1996). Is childhood oppositional defiant disorder a precursor to adolescent conduct disorder? *Journal of the American Academy of Child and Adolescent Psychiatry, 35*(9), 1193–1204.
+Barkley, R. A. (2015). *Attention-deficit hyperactivity disorder: A handbook for diagnosis and treatment* (4th ed.). Guilford Press.
 
 Chronis, A. M., Chacko, A., Fabiano, G. A., et al. (2004). Enhancements to the behavioral parent training paradigm for families of children with ADHD. *Clinical Child and Family Psychology Review, 7*(1), 1–27.
 
@@ -176,24 +851,38 @@ Cortese, S. (2012). The neurobiology and genetics of ADHD. *European Journal of 
 
 Fabiano, G. A., Pelham, W. E., Coles, E. K., et al. (2009). A meta-analysis of behavioral treatments for ADHD. *Clinical Psychology Review, 29*(2), 129–140.
 
-Faraone, S. V., & Buitelaar, J. (2010). Comparing the efficacy of stimulants for ADHD. *European Child & Adolescent Psychiatry, 19*(4), 353–364.
+Faraone, S. V., & Buitelaar, J. (2010). Comparing the efficacy of stimulants for ADHD using meta-analysis. *European Child & Adolescent Psychiatry, 19*(4), 353–364.
 
-Faraone, S. V., Banaschewski, T., Coghill, D., et al. (2021). The World Federation of ADHD International Consensus Statement. *Neuroscience & Biobehavioral Reviews, 128*, 789–818.
+Faraone, S. V., Banaschewski, T., Coghill, D., et al. (2021). The World Federation of ADHD International Consensus Statement: 208 evidence-based conclusions about the disorder. *Neuroscience & Biobehavioral Reviews, 128*, 789–818.
 
 Gershon, J. (2002). A meta-analytic review of gender differences in ADHD. *Journal of Attention Disorders, 5*(3), 183–198.
 
-Greenhill, L. L., Pliszka, S., Dulcan, M. K., et al. (2002). Practice parameter for the use of stimulant medications. *Journal of the American Academy of Child and Adolescent Psychiatry, 41*(2 Suppl.), 26S–49S.
+Langberg, J. M., et al. (2012). Evaluation of the HOPS intervention for middle school students with ADHD. *School Psychology Review, 41*(3), 342–364.
+
+Leitner, Y. (2014). The co-occurrence of autism and ADHD in children. *Frontiers in Human Neuroscience, 8*, 268.
 
 MTA Cooperative Group. (1999). A 14-month randomized clinical trial of treatment strategies for ADHD. *Archives of General Psychiatry, 56*(12), 1073–1086.
 
-Ruble, L., McGrew, J. H., & Toland, M. D. (2010). Goal attainment scaling as an outcome measure. *Journal of Autism and Developmental Disorders, 40*(10), 1210–1220.
+Patterson, G. R. (1982). *Coercive family process.* Castalia.
+
+Pediatric Research. (2025). Efficacy of exercise interventions for executive function in children with ADHD. *Pediatric Research*.
+
+Pelham, W. E., & Fabiano, G. A. (2008). Evidence-based psychosocial treatments for ADHD. *Journal of Clinical Child and Adolescent Psychology, 37*(1), 184–214.
+
+Pontifex, M. B., et al. (2013). Exercise improves behavioral and neurocognitive performance in children with ADHD. *Journal of Pediatrics, 162*(3), 543–551.
 
 Shaw, P., Eckstrand, K., Sharp, W., et al. (2007). ADHD is characterized by a delay in cortical maturation. *Proceedings of the National Academy of Sciences, 104*(49), 19649–19654.
 
 Sonuga-Barke, E. J. (2003). The dual pathway model of AD/HD. *Neuroscience & Biobehavioral Reviews, 27*(7), 593–604.
 
+Theule, J., et al. (2013). Parenting stress in families of children with ADHD: A meta-analysis. *Journal of Emotional and Behavioral Disorders, 21*(1), 3–17.
+
+Valera, E. M., et al. (2007). Meta-analysis of structural imaging findings in ADHD. *Biological Psychiatry, 61*(12), 1361–1369.
+
 Volkow, N. D., Wang, G. J., Kollins, S. H., et al. (2009). Evaluating dopamine reward pathway in ADHD. *JAMA, 302*(10), 1084–1091.
 
+Wilens, T. E. (2004). ADHD and the substance use disorders. *Psychiatric Clinics of North America, 27*(2), 283–301.
+
 <Callout title="Note on sources">
-This page synthesizes the internal ADHD Research Bible and the ADHD Parent Guide (v2). One data point remains flagged for reconciliation: the Research Bible's only citable source (Mayes & Calhoun, 2006) reports a 20–30% learning-disability co-occurrence rate, while the Parent Guide states ~46% without citation. This page uses the cited 20–30% figure as primary until a specific, named study supports a higher rate.
+This page synthesizes the internal ADHD Research Bible and the ADHD Parent Guide (v2). One data point remains flagged for reconciliation: the Research Bible's cited source (Mayes & Calhoun, 2006) reports a 20–30% learning-disability co-occurrence rate, while this guide's source material states 30–50% (with a note of up to 50–60%) without a specific citation. This page currently uses the source material's 30–50% figure; reconcile against a named study before this goes live.
 </Callout>
