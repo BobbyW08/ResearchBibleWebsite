@@ -1,15 +1,18 @@
-"use client";
-
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PainPoint } from "@/lib/pain-points";
+import { Badge } from "@/components/ui/badge";
+import type { HelpEntry } from "@/lib/pain-points";
 
-type PainPointCardProps = PainPoint & {
+type PainPointCardProps = {
+  entry: HelpEntry;
   className?: string;
 };
 
-function PainPointCard({ title, label, body, slug, className }: PainPointCardProps) {
+function PainPointCard({ entry, className }: PainPointCardProps) {
+  const { icon: Icon, title, cardTeaser, slug, kind } = entry;
+  const isModule = kind === "module";
+
   return (
     <Link
       href={`/help/${slug}`}
@@ -18,11 +21,25 @@ function PainPointCard({ title, label, body, slug, className }: PainPointCardPro
         className,
       )}
     >
-      <p className="text-sm font-medium text-secondary">{label}</p>
-      <h3 className="font-heading text-xl font-medium text-foreground">{title}</h3>
-      <p className="text-base font-normal text-muted-foreground">{body}</p>
+      <div className="flex items-center justify-between gap-2">
+        <span
+          className={cn(
+            "flex h-9 w-9 items-center justify-center rounded-md",
+            isModule ? "bg-accent/10 text-accent-foreground" : "bg-primary/10 text-primary",
+          )}
+        >
+          <Icon className="h-5 w-5" />
+        </span>
+        {isModule && (
+          <Badge variant="outline" className="h-auto px-2 py-0.5 text-[10px] uppercase tracking-wide">
+            Context
+          </Badge>
+        )}
+      </div>
+      <h3 className="font-heading text-lg font-medium text-foreground">{title}</h3>
+      <p className="text-sm font-normal text-muted-foreground">{cardTeaser}</p>
       <span className="mt-auto inline-flex items-center gap-1 pt-1 text-sm font-medium text-secondary transition-all group-hover:gap-2">
-        See what&apos;s happening
+        {isModule ? "Read more" : "See what's happening"}
         <ArrowRight className="h-4 w-4" />
       </span>
     </Link>

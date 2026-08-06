@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "motion/react";
 import PainPointCard from "@/components/marketing/pain-point-card";
 import SwipeCarousel from "@/components/marketing/swipe-carousel";
-import { painPoints } from "@/lib/pain-points";
+import { getFeaturedPainPoints } from "@/lib/pain-points";
 
 function PainPoints() {
+  const featured = getFeaturedPainPoints();
+
   return (
     <section>
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
@@ -34,16 +36,16 @@ function PainPoints() {
 
         {/* Grid on md+ screens */}
         <div className="mt-12 hidden gap-6 md:grid md:grid-cols-3">
-          {painPoints.map((painPoint) => (
-            <PainPointCard key={painPoint.slug} {...painPoint} />
+          {featured.map((topic) => (
+            <PainPointCard key={topic.slug} entry={topic} />
           ))}
         </div>
 
         {/* Swipeable carousel on small screens */}
         <SwipeCarousel
           className="mt-10 md:hidden"
-          items={painPoints.map((painPoint) => (
-            <PainPointCard key={painPoint.slug} {...painPoint} />
+          items={featured.map((topic) => (
+            <PainPointCard key={topic.slug} entry={topic} />
           ))}
         />
 
