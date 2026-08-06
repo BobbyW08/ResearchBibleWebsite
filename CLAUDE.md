@@ -1,17 +1,17 @@
 # CLAUDE.md — ResearchBibleWebsite
-**Last updated:** 2026-08-03 (reconciled against Claude Code audit)
-**Repo:** BobbyW08/ResearchBibleWebsite · `master` branch
+**Last updated:** 2026-08-06 (reconciled after the CPRS peer-support homepage rebuild + 7-task handoff)
+**Repo:** BobbyW08/ResearchBibleWebsite · `main` branch
 **Local path:** `C:\Users\robwa\Documents\Claude\ResearchBibleWebsite`
 **Shell:** PowerShell
-**Hosting:** Vercel (watches `main` — force-push alignment required with `master`)
+**Hosting:** Vercel (watches `main`)
 
 ---
 
 ## What This Project Is
 
-**bobby-washburn.com** — a parenting education website for Bobby Washburn's private practice. The site:
-- Establishes Bobby as open for business and credible
-- Connects visitors to booking (Cal.com), newsletter (Substack), and social (LinkedIn, Facebook, Instagram)
+**bobby-washburn.com** — a parenting education / peer-support site for Bobby Washburn's private practice. The site:
+- Positions Bobby as a Certified Peer Recovery Specialist (CPRS) — peer support, not clinical treatment — open for business and credible
+- Connects visitors to booking (Cal.com `/intro-call`), an on-page newsletter signup modal (Substack embed), and social (LinkedIn live; Instagram disabled/"coming soon" — see Social & Integrations)
 - Provides free, ungated parent-facing content: Pain Point pages (triage) and Deep Dive pages (research-backed)
 - No paywall. No subscription. No auth. No gates. Launch first, monetize later.
 
@@ -44,9 +44,9 @@ Source: Fontpair "Agent" starter kit. Apply automatically to all parenting pract
 - **Docs/content shell:** Fumadocs
 - **UI components:** shadcn/ui + ShadcnSpace (free tier)
 - **Animation:** Motion
-- **Booking:** Cal.com embed
-- **Newsletter:** Substack embed
-- **CMS:** Keystatic (metadata layer; topic body content stays Google Drive–sourced)
+- **Booking:** Cal.com — direct outbound links to the `intro-call` event (not embedded)
+- **Newsletter:** Substack embed — inside an on-page `Dialog` (shadcn/base-ui) triggered from header, homepage Connect tile, footer, and `/about`. Not a full-page embed and not an outbound link anymore. Component: `components/marketing/newsletter-dialog.tsx`; subdomain constant in `lib/links.ts`.
+- **CMS:** Keystatic — **listed in this doc historically but no config actually exists in the repo** (`keystatic.config.ts` and friends were never found on disk as of 2026-08-06). Treat all "Keystatic manages X" claims below as aspirational until config files actually exist. Content is hardcoded in components for now.
 - **Database:** Neon (Postgres) — real and provisioned, all tables exist, `neon_auth` schema live
 - **Auth:** Better Auth via Neon Managed — enabled and committed; reachable but unproven past sign-up (1 real user signed up, never completed onboarding)
 - **Hosting:** Vercel
@@ -61,9 +61,10 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 
 | Route | Purpose | Status |
 |---|---|---|
-| `/` | Homepage | Live — some content placeholders remain (bio, testimonials, JSON-LD jobTitle) |
-| `/about` | Standalone About Bobby page | Live — bio/credential placeholders remain |
-| `/help/[slug]` | Pain Point pages (11 total) | Not built — template not yet designed |
+| `/` | Homepage | Live — Hero → Pain Points → Connect → Meet Bobby → Testimonials → FAQ → Footer. No more content placeholders (bio, testimonials, and JSON-LD `jobTitle` are all real now) |
+| `/about` | Standalone About Bobby page | Live — real bio/credentials (military → business → behavioral health path, CPRS ID, training list). One clearly-marked placeholder block remains (personal disclosure paragraph) plus a `{/* TODO: photo */}` slot — both intentionally left for Bobby, not invented |
+| `/help` | Pain Point index | Live — "Common situations" (10 pain-point cards) + "Big picture" (2 awareness-module cards) |
+| `/help/[slug]` | Pain Point pages | Live for 10 slugs: `meltdowns`, `screens`, `wontlisten`, `anxiety`, `bedtime`, `homework`, `aggression`, `routines`, `teen`, `burnout` — plus 2 awareness modules, `modern` and `mentalhealth`. See Pain Point Pages section below — slugs differ from the original 11-item plan, reconciled against real content from `CPRS_Interactive_Site.html` |
 | `/docs` | 36-topic categorized gallery (Stabilize / Connect / Structure / Adapt) | Live — all topic pages resolve |
 | `/docs/adhd` | ADHD Deep Dive — flagship, full interactive components | Live |
 | `/docs/[topic]` | 35 remaining deep dives — prose complete at webpage copy tier | Live as prose — no dashboard JSON yet |
@@ -75,8 +76,8 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 
 | Route | Purpose | Status |
 |---|---|---|
-| `/keystatic` | Keystatic CMS admin UI | Config complete |
-| `/api/keystatic` | Keystatic API handler | Config complete |
+| `/keystatic` | Keystatic CMS admin UI | **Not built.** No config files exist in the repo despite this doc previously claiming "Config complete" — corrected 2026-08-06 |
+| `/api/keystatic` | Keystatic API handler | **Not built.** Same correction as above |
 
 ### Dormant Routes (committed, reachable, not actively used)
 
@@ -95,52 +96,52 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 
 ## Homepage Structure
 
-Long-form landing page. Sections in order:
+Rebuilt around a CPRS peer-support positioning (superseding the earlier "research platform" framing). Section order in `app/page.tsx`:
 
-1. Hero / Banner — photo of Bobby, headline, who this is for
-2. Credentials / trust bar
-3. Cards for Immediate Help (3 featured cards linking to /help/[slug])
-4. Service Offerings (1-on-1, groups, CPRS training, etc.)
-5. Testimonials
-6. Deeper Content (links to /docs — positioned as free resource)
-7. About Bobby
-8. Book a Meeting (Cal.com embed)
-9. Subscribe (Substack embed)
-10. Contact
-11. Footer — social links (LinkedIn, Facebook, Instagram), email
+1. **Header** — wordmark "Bobby Washburn" (`<md`) / "Bobby Washburn Parenting Support" (`md+`), two-tier responsive text in the same link. Nav: About · Pain Points · FAQ (no "Guides" item — removed from the header nav specifically; the footer still links to `/docs` as "Guides")
+2. **Hero** — "You've tried everything... That's exactly where I come in." Primary CTA → `/help`, secondary → Cal.com `intro-call`
+3. **Pain Points** — 3 featured cards (`meltdowns`, `wontlisten`, `routines`, via a `featured` flag in `lib/pain-points.ts`) + "See all pain points" → `/help`
+4. **Connect** — 3 tiles: Newsletter (opens the signup modal), Instagram (disabled, "Coming soon"), Book a Call (→ Cal.com `intro-call`)
+5. **Meet Bobby** — condensed personal narrative (ADHD/depression/substance use lived experience → CPRS), links to `/about`
+6. **Testimonials** — full-bleed, auto-scrolling marquee, inverted navy colors (`bg-primary`/`text-primary-foreground`), 9 real quotes from `lib/testimonials.ts`. Pauses on hover/focus, respects `prefers-reduced-motion` (falls back to a swipeable row)
+7. **FAQ** — 6 Q&As, CPRS/peer-support framing (first question: "So this isn't therapy?")
+8. **Footer** — Sitemap (About/Pain Points/Guides/FAQ) + Connect (Book a Call/Newsletter modal/LinkedIn/Instagram-disabled)
 
-**Known placeholders still to replace before launch:**
-- About Bobby bio, credentials, years of experience (bracketed placeholders in both `/` and `/about`)
-- Real testimonial quote + name
-- Person JSON-LD `jobTitle` field
-- Cal.com link: `bobby-washburn/1on1` — implemented as direct outbound link (not embedded widget — by design)
-- Substack link: `roughlyeducated` — implemented as direct outbound link (not embedded widget — by design)
-- Social links: LinkedIn, Facebook, Instagram — implemented as direct outbound links (footer + nav)
-- Lorem Ipsum credibility strip in `hero.tsx` — to be removed (identified by Claude Code, not yet committed)
+**Resolved placeholders (previously listed here as open):**
+- Meet Bobby bio and About page bio — both real now (one disclosure paragraph + a photo slot remain on `/about`, intentionally left blank — see Site Map)
+- Testimonials — 9 real, attributed quotes (anonymized) — **consent to publish still needs Bobby's confirmation, even anonymized; peer support + potentially DCYF-involved families is consent-sensitive**
+- Person JSON-LD `jobTitle` → "Certified Peer Recovery Specialist (CPRS)"; Instagram removed from `sameAs`
+- Lorem Ipsum credibility strip in `hero.tsx` — removed entirely (no more credibility-strip section on the homepage at all)
+
+**Still open:**
+- Substack subdomain (`lib/links.ts` → `SUBSTACK_SUBDOMAIN`, currently `"roughlyeducated"`, reused from the pre-existing outbound links) needs Bobby's confirmation before the *embed* ships — an iframe embed is more consequential than an outbound link was
 
 ---
 
-## Pain Point Pages (`/help/[slug]`)
+## Pain Point Pages (`/help`, `/help/[slug]`)
 
-11 total. Custom layout — NOT Fumadocs. Template to be designed.
-Each card appears on the homepage and links to its `/help/[slug]` page.
+**Built and live** as of 2026-08-06. Custom layout — NOT Fumadocs. Content ported from `CPRS_Interactive_Site.html` (a standalone prototype Bobby supplied; still sits untracked at the repo root — fully incorporated into the site now, safe to delete or keep as reference, Bobby's call).
 
-| Slug | Topic |
-|---|---|
-| `/help/meltdowns` | Meltdowns / Tantrums |
-| `/help/screens` | What Do I Do About Screens? |
-| `/help/defiance` | Won't Listen / Defiance |
-| `/help/anxiety` | Anxiety / Worry / School Refusal |
-| `/help/sleep` | Sleep / Bedtime Battles |
-| `/help/homework` | Homework Wars |
-| `/help/aggression` | Aggression (Hitting, Biting, Throwing) |
-| `/help/routines` | Routines |
-| `/help/teens` | Teen Rebellion / Teen Brain |
-| `/help/parent-burnout` | Parent Burnout |
-| `/help/modern-parenting` | Modern Parenting |
+Data lives in `lib/pain-points.ts` — `painPoints: PainPointTopic[]` (10 topics) and `awarenessModules: AwarenessModule[]` (2 topics, a lighter-weight template: narrative sections instead of age-tabs/backfires/tries). `getHelpEntry(slug)` looks up either kind for `/help/[slug]`.
 
-Each page: ~600–900 words, triage format, links to relevant Deep Dive topics.
-Template not yet built — needs design pass before any pages are written.
+| Slug | Topic | Deep-dive link (`/docs/...`) |
+|---|---|---|
+| `meltdowns` | My kid melts down over everything | `de-escalation-crisis-planning` |
+| `screens` | What do I do about screens? | `screen-gaming-compulsive-use` |
+| `wontlisten` | My kid won't listen | `understanding-child-behavior` |
+| `anxiety` | My kid is anxious and won't go to school | `anxiety-depression-children` |
+| `bedtime` | Bedtime battles | `healthy-bodies-calm-homes` |
+| `homework` | The homework war | `school-assistance-parent-guide` |
+| `aggression` | My kid hits, bites, or throws things | `supporting-aggressive-children` |
+| `routines` | Morning chaos — routines | `structure-routines-parenting` |
+| `teen` | My teenager hates me | `teen-autonomy-identity-support` |
+| `burnout` | I'm burnt out | `parental-self-care` |
+| `modern` (module) | Why modern parenting is so hard | — |
+| `mentalhealth` (module) | Children's mental health in the U.S. | — |
+
+**Reconciliation note:** this slug list supersedes the 11-slug plan previously documented here (`meltdowns`, `screens`, `defiance`, `anxiety`, `sleep`, `homework`, `aggression`, `routines`, `teens`, `parent-burnout`, `modern-parenting`). The real content that shipped uses different slugs for some topics (`wontlisten` not `defiance`, `bedtime` not `sleep`, `teen`/`burnout` not `teens`/`parent-burnout`) and adds a `mentalhealth` context page that wasn't in the original plan. Don't reintroduce the old slugs without checking this table first.
+
+Each pain-point page: tag/eyebrow, headline, intro, an interactive age-band scenario switcher (2-5 / 6-9 / 10-12 / 13+), "What's happening" (mechanism explanation), "Why this usually makes it worse" (backfires list), "Try this week" (accordion), "When to get more support" (with 988/Crisis Text Line/211 resources on `burnout` and `mentalhealth`), and "Go deeper" links (one real `/docs/[slug]` link + related `/help/[slug]` links). Components: `pain-point-detail.tsx`, `awareness-module-detail.tsx`, `pain-point-age-tabs.tsx`, `pain-point-accordion.tsx`, `pain-point-support-callout.tsx`, `pain-point-content.tsx`, `pain-point-card.tsx`.
 
 ---
 
@@ -256,9 +257,9 @@ Data source: `content/data/[topic].json`.
 
 ## Keystatic CMS
 
-Four config files created: `keystatic.config.ts`, admin UI component, layout, API route handler.
-Manages: blog posts, testimonials, homepage copy, FAQ, footer, About Bobby page.
-Topic page body content stays Google Drive–sourced. Keystatic manages companion metadata (SEO, featured images, CTAs) as a hybrid layer.
+**Correction (2026-08-06):** this section previously claimed "four config files created" and "config complete" for `/keystatic` and `/api/keystatic`. Neither is true — a repo-wide search found no `keystatic.config.ts` or any other Keystatic config file, and both routes are unbuilt. All content this section describes (testimonials, homepage copy, FAQ, footer, About Bobby page) is currently hardcoded directly in components (`lib/testimonials.ts`, `components/marketing/*.tsx`, `app/about/page.tsx`), not CMS-managed.
+
+If Keystatic gets built for real later, the original intent still stands: manage blog posts, testimonials, homepage copy, FAQ, footer, and About Bobby page as a metadata layer, while topic page body content stays Google Drive–sourced.
 
 ---
 
@@ -266,13 +267,13 @@ Topic page body content stays Google Drive–sourced. Keystatic manages companio
 
 | Platform | Handle / URL | Status |
 |---|---|---|
-| LinkedIn | Bobby's personal account | Direct link in footer — live |
-| Facebook | Bobby's personal account | Direct link in footer — live |
-| Instagram | Bobby's personal account | Direct link in footer — live |
-| Cal.com | `bobby-washburn/1on1` | Direct outbound link — live (not an embedded widget, by design) |
-| Substack | `roughlyeducated` | Direct outbound link — live (not an embedded widget, by design) |
+| LinkedIn | Bobby's personal account | Direct outbound link — live (header, footer) |
+| Instagram | `bobby__washburn` | **Disabled, 2026-08-06.** Zero content lives there; Bobby doesn't want traffic going to an empty profile. Every instance site-wide (header, footer ×2, homepage Connect tile) now renders as a disabled trigger — `components/marketing/coming-soon-trigger.tsx` — with a "Coming soon" tooltip on hover/focus and a "Soon" text badge on touch devices. `aria-disabled="true"` + descriptive `aria-label`. Removed from the Person JSON-LD `sameAs` array in `app/layout.tsx`. Re-enable by swapping the `ComingSoonTrigger` back for a real `<a>` once there's content |
+| Facebook | — | **Never actually implemented**, despite earlier versions of this doc listing it as a "live" footer link. No Facebook icon, link, or reference exists anywhere in the codebase. Remove from any future copy/marketing claims unless it gets genuinely built |
+| Cal.com | `bobby-washburn/intro-call` | Direct outbound link — live. **Renamed from `/1on1` to `/intro-call` on 2026-08-06** (all 6 CTAs site-wide: header, hero, footer, connect tile, about page ×2). Confirmed live via WebFetch — resolves to "Introduction Call" |
+| Substack | `roughlyeducated` | **No longer a direct outbound link as of 2026-08-06.** Every newsletter CTA site-wide (header, homepage Connect tile, footer ×2, about page) now opens an on-page signup modal (`components/marketing/newsletter-dialog.tsx`) containing a Substack embed iframe, with a small "Or read past issues on Substack →" link inside the modal that still goes outbound. Subdomain constant: `lib/links.ts` → `SUBSTACK_SUBDOMAIN`. **Needs Bobby's confirmation the subdomain is correct before the embed ships** — reused the pre-existing value since it was already live everywhere else, but an embed is more consequential than an outbound link was |
 
-All outbound links are implemented as direct links, not embedded widgets. This is a deliberate design decision — do not convert to embeds without explicit approval.
+The "direct links only, never embeds" design decision noted in earlier versions of this doc has been explicitly reversed for Substack, per Bobby's own instruction. Cal.com and LinkedIn remain direct outbound links.
 
 ---
 
@@ -307,8 +308,9 @@ Neon is real and provisioned. All code is committed (`ae51b02` and later). Do no
 ## Housekeeping (flagged by Claude Code audit)
 
 - **Vercel local link:** `.vercel/project.json` points at a stale project ID. Re-run `vercel link` and select `prj_2AgBQ4NhUvGsAij6A6N7YLnRovdQ` before using any local Vercel CLI commands.
-- **Hero Lorem Ipsum:** A leftover Lorem Ipsum credibility strip exists in `hero.tsx`. Remove before launch — not yet committed.
-- **Untracked folders at repo root** (not committed, not in `.gitignore` — clarify intent before next push): `E-Books/`, `Instruction Docs/`, `Parent Facing Content/`, `Planning Docs/`, `Quick Guides/`, `Research Bibles/`, `Website Copy/`, `CPRS_Interactive_Site.html`. These should either be gitignored or moved out of the repo root entirely — raw content does not belong in the repo.
+- ~~Hero Lorem Ipsum~~ — resolved. `hero.tsx` was fully rewritten with real copy; the credibility-strip section no longer exists on the homepage at all.
+- **Keystatic doesn't exist** (found 2026-08-06, see Keystatic CMS section) — this doc claimed config files existed for two prior revisions. If Keystatic is genuinely wanted, it needs to be built from scratch, not "reconnected."
+- **Untracked folders at repo root** (not committed, not in `.gitignore` — clarify intent before next push): `E-Books/`, `Instruction Docs/`, `Parent Facing Content/`, `Planning Docs/`, `Quick Guides/`, `Research Bibles/`, `Website Copy/`, `CPRS_Interactive_Site.html`. These should either be gitignored or moved out of the repo root entirely — raw content does not belong in the repo. `CPRS_Interactive_Site.html` specifically has now been fully ported into `lib/pain-points.ts` (see Pain Point Pages) — safe to delete or archive elsewhere whenever Bobby confirms, nothing on the live site depends on the file itself anymore.
 
 ---
 
@@ -357,8 +359,9 @@ The following were discussed and deliberately deferred post-launch:
 - Google Drive sync automation (manual MDX updates for now)
 - Pending reviews / approval pipeline (Phase 2)
 - Word doc / video script cascade (Phase 3)
-- Pain point page template (needs design pass first)
 - ADHD interactive components (integration pending)
+
+Pain point pages are **no longer** on this deferred list — see Pain Point Pages above, live as of 2026-08-06.
 
 ---
 
