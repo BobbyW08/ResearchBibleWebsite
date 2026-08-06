@@ -20,7 +20,7 @@ import { Menu, X } from "lucide-react";
 import Logo from "@/assets/logo/logo";
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { InstagramIcon, LinkedinIcon } from "@/components/marketing/social-icons";
+import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 
 type NavigationSection = {
   title: string;
@@ -28,13 +28,10 @@ type NavigationSection = {
 };
 
 const navigationData: NavigationSection[] = [
-  { title: "Home", href: "/" },
-  { title: "About", href: "#about" },
-  { title: "Guides", href: "#guides" },
-  { title: "Services", href: "#services" },
-  { title: "Testimonials", href: "#testimonials" },
-  { title: "Research Bible", href: "/docs" },
-  { title: "Subscribe", href: "https://roughlyeducated.substack.com/subscribe" },
+  { title: "About", href: "/about" },
+  { title: "Guides", href: "/docs" },
+  { title: "Pain Points", href: "/help" },
+  { title: "FAQ", href: "/#faq" },
 ];
 
 const BookACallButton = ({ className }: { className?: string }) => (
@@ -189,10 +186,18 @@ const Header = () => {
                       >
                         <LinkedinIcon />
                       </a>
+                      <a
+                        href="https://roughlyeducated.substack.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
+                      >
+                        <SubstackIcon />
+                      </a>
                     </div>
 
                     <p className="text-sm text-muted-foreground">
-                      © 2026 Research Bible
+                      © 2026 Bobby Washburn
                     </p>
                   </div>
                 </div>

@@ -1,18 +1,18 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { ArrowRight, Award, BookOpen, HeartHandshake, LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Compass, HeartHandshake, LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
 import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
 
-type Pillar = {
+type Pill = {
   icon: LucideIcon;
   title: string;
   color: string;
 };
 
-const pillars: Pillar[] = [
+const pills: Pill[] = [
   {
     icon: BookOpen,
     title: "Evidence-based",
@@ -20,17 +20,17 @@ const pillars: Pillar[] = [
   },
   {
     icon: HeartHandshake,
-    title: "Neurodivergent-affirming",
+    title: "Peer Support",
     color: "bg-secondary/10 text-secondary",
   },
   {
-    icon: Compass,
-    title: "Practical",
+    icon: Award,
+    title: "CPRS",
     color: "bg-accent/10 text-accent-foreground",
   },
 ];
 
-function About() {
+function MeetBobby() {
   return (
     <section className="lg:py-20 sm:py-16 py-8">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-16">
@@ -42,7 +42,7 @@ function About() {
             transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
             <PlaceholderPhoto
-              alt="Photo of Bobby sitting on the floor playing with a child, both smiling"
+              alt="Photo of Bobby Washburn"
               className="aspect-4/3 w-full rounded-lg"
             />
           </motion.div>
@@ -58,34 +58,46 @@ function About() {
               Meet Bobby
             </Badge>
             <h2 className="font-heading text-3xl sm:text-4xl font-medium text-foreground tracking-tight">
-              Someone who&apos;s been in the trenches with you
+              Someone who&apos;s been on both sides of this.
             </h2>
             <p className="text-base font-normal text-muted-foreground">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+              I grew up as the kid that parents didn&apos;t know what to do
+              with. ADHD, depression, substance use — I was in the thick of
+              it for years. I found my way through, got educated, and became
+              a Certified Peer Recovery Specialist (CPRS) because I knew
+              there were families out there who needed someone who actually
+              understood what they were living with.
             </p>
             <p className="text-base font-normal text-muted-foreground">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-              cupidatat non proident, sunt in culpa qui officia deserunt
-              mollit anim id est laborum.
+              I don&apos;t hand you a pamphlet. I sit with you and figure out
+              what&apos;s actually going on. Whether your kid has a
+              diagnosis, you think they might, or you just know something
+              isn&apos;t right and nobody seems to get it — that&apos;s
+              exactly the kind of situation I work in.
+            </p>
+            <p className="text-base font-normal text-muted-foreground">
+              Years of working directly with families. No clipboard. No
+              timer on the session. Just someone in your corner who&apos;s
+              been there.
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              {pillars.map((item, index) => (
+              {pills.map((item, index) => (
                 <div
                   key={index}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-1.5 rounded-full",
-                    item.color,
-                  )}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full ${item.color}`}
                 >
                   <item.icon className="w-4 h-4" />
                   <span className="text-sm font-medium">{item.title}</span>
                 </div>
               ))}
             </div>
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-1 text-sm font-medium text-secondary transition-all hover:gap-2"
+            >
+              Read more about Bobby
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </motion.div>
         </div>
       </div>
@@ -93,4 +105,4 @@ function About() {
   );
 }
 
-export default About;
+export default MeetBobby;

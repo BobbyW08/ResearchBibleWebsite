@@ -21,9 +21,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Research Bible",
+  metadataBase: new URL("https://bobby-washburn.com"),
+  title: {
+    default: "Bobby Washburn | Parenting Support",
+    template: "%s | Bobby Washburn",
+  },
   description:
-    "A parenting practice's marketing site and research bible — deep-dive pages on psychology, parenting, and neurodivergence.",
+    "Struggling with your kid and don't know why? Bobby Washburn is a CPRS and peer educator who works with parents at their wits' end — whatever the challenge.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Bobby Washburn | Parenting Support",
+    description:
+      "You've tried everything. Something still isn't working. That's exactly where I come in.",
+    type: "website",
+    url: "https://bobby-washburn.com",
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Bobby Washburn",
+  url: "https://bobby-washburn.com",
+  jobTitle: "Certified Peer Recovery Specialist (CPRS)",
+  description:
+    "Peer educator with lived experience in mental health and substance use recovery. Helping parents at their wits' end find a way through.",
+  sameAs: [
+    "https://www.instagram.com/bobby__washburn/",
+    "https://www.linkedin.com/in/bobby-washburn/",
+    "https://roughlyeducated.substack.com/",
+  ],
 };
 
 export default function RootLayout({
@@ -38,6 +67,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <RootProvider theme={{ forcedTheme: "light", defaultTheme: "light" }}>
           <Providers>
             <TooltipProvider>{children}</TooltipProvider>

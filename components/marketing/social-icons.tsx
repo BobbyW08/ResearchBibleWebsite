@@ -11,6 +11,12 @@ export const InstagramIcon = () => (
   </svg>
 );
 
+export const SubstackIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22 6.836H2V4.5h20zM2 9.727v10.918L12 15.09l10 5.555V9.727zM22 2H2v.5h20z" fill="currentColor" />
+  </svg>
+);
+
 export const LinkedinIcon = () => (
   <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#social-linkedin-clip)">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Logo from "@/assets/logo/logo";
 import { Separator } from "@/components/ui/separator";
-import { InstagramIcon, LinkedinIcon } from "@/components/marketing/social-icons";
+import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 
 type FooterSection = {
   title: string;
@@ -12,19 +12,19 @@ const footerSections: FooterSection[] = [
   {
     title: "Sitemap",
     links: [
-      { title: "About", href: "#about" },
-      { title: "Services", href: "#services" },
-      { title: "Testimonials", href: "#testimonials" },
-      { title: "Research bible", href: "/docs" },
-      { title: "Subscribe", href: "https://roughlyeducated.substack.com/subscribe" },
+      { title: "About", href: "/about" },
+      { title: "Pain Points", href: "/help" },
+      { title: "Guides", href: "/docs" },
+      { title: "FAQ", href: "/#faq" },
     ],
   },
   {
-    title: "Other pages",
+    title: "Connect",
     links: [
-      { title: "Book a call", href: "https://cal.com/bobby-washburn/1on1" },
-      { title: "FAQ", href: "#faq" },
-      { title: "Privacy policy", href: "#" },
+      { title: "Book a Call", href: "https://cal.com/bobby-washburn/1on1" },
+      { title: "Newsletter", href: "https://roughlyeducated.substack.com/" },
+      { title: "Instagram", href: "https://www.instagram.com/bobby__washburn/" },
+      { title: "LinkedIn", href: "https://www.linkedin.com/in/bobby-washburn/" },
     ],
   },
 ];
@@ -41,7 +41,7 @@ function Footer() {
                   <Logo />
                 </Link>
                 <p className="text-base font-normal text-muted-foreground">
-                  Practical, research-grounded parenting support.
+                  Parenting support from someone who&apos;s been there.
                 </p>
                 <div className="flex items-center gap-4">
                   <a href="https://www.instagram.com/bobby__washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
@@ -49,6 +49,9 @@ function Footer() {
                   </a>
                   <a href="https://www.linkedin.com/in/bobby-washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                     <LinkedinIcon />
+                  </a>
+                  <a href="https://roughlyeducated.substack.com/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+                    <SubstackIcon />
                   </a>
                 </div>
               </div>
@@ -96,7 +99,8 @@ function Footer() {
           </div>
           <Separator orientation="horizontal" />
           <p className="text-sm font-normal text-muted-foreground text-center">
-            © 2026 Research Bible. All rights reserved.
+            © 2026 Bobby Washburn. Peer support and parenting education —
+            not therapy, diagnosis, or medical advice.
           </p>
         </div>
       </div>
