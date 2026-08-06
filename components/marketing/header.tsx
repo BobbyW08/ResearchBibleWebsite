@@ -21,6 +21,7 @@ import Logo from "@/assets/logo/logo";
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
+import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 
 type NavigationSection = {
   title: string;
@@ -185,14 +186,12 @@ const Header = () => {
                       >
                         <LinkedinIcon />
                       </a>
-                      <a
-                        href="https://roughlyeducated.substack.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
+                      <NewsletterDialog
+                        triggerClassName="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
                       >
+                        <span className="sr-only">Newsletter signup</span>
                         <SubstackIcon />
-                      </a>
+                      </NewsletterDialog>
                     </div>
 
                     <p className="text-sm text-muted-foreground">

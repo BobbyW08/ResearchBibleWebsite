@@ -7,13 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
 import { motion } from "motion/react";
 import { InstagramIcon, SubstackIcon } from "@/components/marketing/social-icons";
+import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 
 type ConnectTile = {
   icon: ComponentType;
   label: string;
   body: string;
   cta: string;
-  href: string;
+  href?: string;
+  newsletter?: boolean;
 };
 
 const tiles: ConnectTile[] = [
@@ -21,8 +23,8 @@ const tiles: ConnectTile[] = [
     icon: SubstackIcon,
     label: "Read the newsletter",
     body: "Parenting insights, real talk, and practical strategies — no jargon, no fluff.",
-    cta: "Follow on Substack",
-    href: "https://roughlyeducated.substack.com/",
+    cta: "Subscribe",
+    newsletter: true,
   },
   {
     icon: InstagramIcon,
@@ -95,14 +97,20 @@ function Connect() {
                       {tile.body}
                     </p>
                   </div>
-                  <Link
-                    href={tile.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-secondary transition-all hover:gap-2"
-                  >
-                    {tile.cta} →
-                  </Link>
+                  {tile.newsletter ? (
+                    <NewsletterDialog triggerClassName="mt-auto inline-flex items-center gap-1 text-sm font-medium text-secondary transition-all hover:gap-2">
+                      {tile.cta} →
+                    </NewsletterDialog>
+                  ) : (
+                    <Link
+                      href={tile.href ?? "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-secondary transition-all hover:gap-2"
+                    >
+                      {tile.cta} →
+                    </Link>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>

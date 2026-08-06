@@ -2,10 +2,12 @@ import Link from "next/link";
 import Logo from "@/assets/logo/logo";
 import { Separator } from "@/components/ui/separator";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
+import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 
+type FooterLink = { title: string; href: string; newsletter?: boolean };
 type FooterSection = {
   title: string;
-  links: { title: string; href: string }[];
+  links: FooterLink[];
 };
 
 const footerSections: FooterSection[] = [
@@ -22,7 +24,7 @@ const footerSections: FooterSection[] = [
     title: "Connect",
     links: [
       { title: "Book a Call", href: "https://cal.com/bobby-washburn/intro-call" },
-      { title: "Newsletter", href: "https://roughlyeducated.substack.com/" },
+      { title: "Newsletter", href: "", newsletter: true },
       { title: "Instagram", href: "https://www.instagram.com/bobby__washburn/" },
       { title: "LinkedIn", href: "https://www.linkedin.com/in/bobby-washburn/" },
     ],
@@ -50,9 +52,10 @@ function Footer() {
                   <a href="https://www.linkedin.com/in/bobby-washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                     <LinkedinIcon />
                   </a>
-                  <a href="https://roughlyeducated.substack.com/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+                  <NewsletterDialog triggerClassName="text-muted-foreground hover:text-foreground">
+                    <span className="sr-only">Newsletter signup</span>
                     <SubstackIcon />
-                  </a>
+                  </NewsletterDialog>
                 </div>
               </div>
             </div>
@@ -64,14 +67,20 @@ function Footer() {
                 <div className="flex flex-col gap-4">
                   <p className="text-base font-medium text-foreground">{title}</p>
                   <ul className="flex flex-col gap-3">
-                    {links.map(({ title, href }) => (
+                    {links.map(({ title, href, newsletter }) => (
                       <li key={title}>
-                        <Link
-                          href={href}
-                          className="text-base font-normal text-muted-foreground hover:text-foreground"
-                        >
-                          {title}
-                        </Link>
+                        {newsletter ? (
+                          <NewsletterDialog triggerClassName="text-base font-normal text-muted-foreground hover:text-foreground">
+                            {title}
+                          </NewsletterDialog>
+                        ) : (
+                          <Link
+                            href={href}
+                            className="text-base font-normal text-muted-foreground hover:text-foreground"
+                          >
+                            {title}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>
