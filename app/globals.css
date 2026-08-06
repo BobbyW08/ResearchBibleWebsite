@@ -171,3 +171,28 @@
     @apply font-sans;
   }
 }
+
+/* Testimonials marquee (components/marketing/testimonials.tsx) */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 50s linear infinite;
+}
+
+.marquee-group:hover .marquee-track,
+.marquee-group:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
