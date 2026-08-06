@@ -3,8 +3,9 @@ import Logo from "@/assets/logo/logo";
 import { Separator } from "@/components/ui/separator";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
+import ComingSoonTrigger from "@/components/marketing/coming-soon-trigger";
 
-type FooterLink = { title: string; href: string; newsletter?: boolean };
+type FooterLink = { title: string; href: string; newsletter?: boolean; comingSoon?: boolean };
 type FooterSection = {
   title: string;
   links: FooterLink[];
@@ -25,8 +26,8 @@ const footerSections: FooterSection[] = [
     links: [
       { title: "Book a Call", href: "https://cal.com/bobby-washburn/intro-call" },
       { title: "Newsletter", href: "", newsletter: true },
-      { title: "Instagram", href: "https://www.instagram.com/bobby__washburn/" },
       { title: "LinkedIn", href: "https://www.linkedin.com/in/bobby-washburn/" },
+      { title: "Instagram", href: "", comingSoon: true },
     ],
   },
 ];
@@ -46,16 +47,16 @@ function Footer() {
                   Parenting support from someone who&apos;s been there.
                 </p>
                 <div className="flex items-center gap-4">
-                  <a href="https://www.instagram.com/bobby__washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                    <InstagramIcon />
-                  </a>
-                  <a href="https://www.linkedin.com/in/bobby-washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                    <LinkedinIcon />
-                  </a>
                   <NewsletterDialog triggerClassName="text-muted-foreground hover:text-foreground">
                     <span className="sr-only">Newsletter signup</span>
                     <SubstackIcon />
                   </NewsletterDialog>
+                  <a href="https://www.linkedin.com/in/bobby-washburn/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+                    <LinkedinIcon />
+                  </a>
+                  <ComingSoonTrigger label="Instagram" className="text-muted-foreground">
+                    <InstagramIcon />
+                  </ComingSoonTrigger>
                 </div>
               </div>
             </div>
@@ -67,12 +68,19 @@ function Footer() {
                 <div className="flex flex-col gap-4">
                   <p className="text-base font-medium text-foreground">{title}</p>
                   <ul className="flex flex-col gap-3">
-                    {links.map(({ title, href, newsletter }) => (
+                    {links.map(({ title, href, newsletter, comingSoon }) => (
                       <li key={title}>
                         {newsletter ? (
                           <NewsletterDialog triggerClassName="text-base font-normal text-muted-foreground hover:text-foreground">
                             {title}
                           </NewsletterDialog>
+                        ) : comingSoon ? (
+                          <ComingSoonTrigger
+                            label={title}
+                            className="text-base font-normal text-muted-foreground"
+                          >
+                            {title}
+                          </ComingSoonTrigger>
                         ) : (
                           <Link
                             href={href}

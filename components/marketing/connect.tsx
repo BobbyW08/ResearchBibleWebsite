@@ -2,12 +2,14 @@
 
 import type { ComponentType } from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
 import { motion } from "motion/react";
 import { InstagramIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
+import ComingSoonTrigger from "@/components/marketing/coming-soon-trigger";
 
 type ConnectTile = {
   icon: ComponentType;
@@ -16,6 +18,7 @@ type ConnectTile = {
   cta: string;
   href?: string;
   newsletter?: boolean;
+  comingSoon?: boolean;
 };
 
 const tiles: ConnectTile[] = [
@@ -29,9 +32,9 @@ const tiles: ConnectTile[] = [
   {
     icon: InstagramIcon,
     label: "Follow on Instagram",
-    body: "Short, honest content for parents navigating the hard stuff. Show up when you need a reminder you're not alone.",
+    body: "New content is on the way. For now, the newsletter and a call are the best ways to stay connected.",
     cta: "Follow on Instagram",
-    href: "https://www.instagram.com/bobby__washburn/",
+    comingSoon: true,
   },
   {
     icon: Calendar,
@@ -86,7 +89,12 @@ function Connect() {
             >
               <Card className="h-full py-10">
                 <CardContent className="flex flex-col gap-4 px-8">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-secondary">
+                  <span
+                    className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-full bg-accent text-secondary",
+                      tile.comingSoon && "opacity-50",
+                    )}
+                  >
                     <tile.icon />
                   </span>
                   <div className="flex flex-col gap-2">
@@ -101,6 +109,13 @@ function Connect() {
                     <NewsletterDialog triggerClassName="mt-auto inline-flex items-center gap-1 text-sm font-medium text-secondary transition-all hover:gap-2">
                       {tile.cta} →
                     </NewsletterDialog>
+                  ) : tile.comingSoon ? (
+                    <ComingSoonTrigger
+                      label={tile.label}
+                      className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-muted-foreground"
+                    >
+                      {tile.cta}
+                    </ComingSoonTrigger>
                   ) : (
                     <Link
                       href={tile.href ?? "#"}

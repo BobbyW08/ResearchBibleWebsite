@@ -49,7 +49,6 @@ const personJsonLd = {
   description:
     "Peer educator with lived experience in mental health and substance use recovery. Helping parents at their wits' end find a way through.",
   sameAs: [
-    "https://www.instagram.com/bobby__washburn/",
     "https://www.linkedin.com/in/bobby-washburn/",
     "https://roughlyeducated.substack.com/",
   ],

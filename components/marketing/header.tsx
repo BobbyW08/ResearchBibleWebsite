@@ -22,6 +22,7 @@ import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
+import ComingSoonTrigger from "@/components/marketing/coming-soon-trigger";
 
 type NavigationSection = {
   title: string;
@@ -171,14 +172,6 @@ const Header = () => {
                   <div className="mt-auto flex flex-col gap-4">
                     <div className="flex gap-3">
                       <a
-                        href="https://www.instagram.com/bobby__washburn/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
-                      >
-                        <InstagramIcon />
-                      </a>
-                      <a
                         href="https://www.linkedin.com/in/bobby-washburn/"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -192,6 +185,12 @@ const Header = () => {
                         <span className="sr-only">Newsletter signup</span>
                         <SubstackIcon />
                       </NewsletterDialog>
+                      <ComingSoonTrigger
+                        label="Instagram"
+                        className="rounded-full border border-border p-3 shadow-xs"
+                      >
+                        <InstagramIcon />
+                      </ComingSoonTrigger>
                     </div>
 
                     <p className="text-sm text-muted-foreground">
