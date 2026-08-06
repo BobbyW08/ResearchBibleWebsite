@@ -13,9 +13,9 @@ type FaqItem = {
 
 const faqItems: FaqItem[] = [
   {
-    question: "Is this therapy?",
+    question: "So this isn't therapy?",
     answer:
-      "No. This is peer support and parenting education — not therapy, diagnosis, or clinical care. I'm a CPRS (Certified Peer Recovery Specialist), which means I'm trained to support families from a peer perspective, not a clinical one. If your family needs clinical support, I'll say so directly and help point you in the right direction.",
+      "Correct — and that's the point. I'm a Certified Peer Recovery Specialist, not a therapist. I don't diagnose, I don't treat, and I don't sit across from you taking notes about your childhood.\n\nWhat I do is different: I've been in the systems you're navigating, and I work with you as a peer who has the training to explain what's actually happening — what the research says about your kid's brain, why the thing you've been told to try isn't working, and what to do on a Tuesday night when it all falls apart.\n\nThink of it as the difference between clinical treatment and someone in your corner who knows the terrain. Plenty of families use both. If what you need is therapy, I'll tell you that directly, and I'll help you find it.",
   },
   {
     question: "Do I need a diagnosis to work with you?",
@@ -75,7 +75,7 @@ function FaqAccordionItem({ item, index }: { item: FaqItem; index: number }) {
         )}
       >
         <div className="overflow-hidden">
-          <p className="text-base font-normal text-muted-foreground">
+          <p className="whitespace-pre-line text-base font-normal text-muted-foreground">
             {item.answer}
           </p>
         </div>
