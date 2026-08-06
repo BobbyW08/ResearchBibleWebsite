@@ -91,7 +91,7 @@ const Header = () => {
         )}
       >
         <div>
-          <Link href="/">
+          <Link href="/" aria-label="Bobby Washburn Parenting Support">
             <Logo />
           </Link>
         </div>
@@ -131,7 +131,7 @@ const Header = () => {
                 className="w-full sm:w-96 p-0 border-l-0"
               >
                 <div className="flex items-center justify-between p-6">
-                  <Link href="/">
+                  <Link href="/" aria-label="Bobby Washburn Parenting Support">
                     <Logo />
                   </Link>
                   <SheetClose id="mobile-menu-close">
