@@ -35,7 +35,7 @@ const navigationData: NavigationSection[] = [
 
 const BookACallButton = ({ className }: { className?: string }) => (
   <Link
-    href="https://cal.com/bobby-washburn/1on1"
+    href="https://cal.com/bobby-washburn/intro-call"
     target="_blank"
     rel="noopener noreferrer"
     className={cn(

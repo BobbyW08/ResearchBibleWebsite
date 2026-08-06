@@ -36,7 +36,7 @@ const tiles: ConnectTile[] = [
     label: "Reach out to Bobby",
     body: "Not sure where to start? Book a free 30-minute call. No pressure, no pitch — just a conversation.",
     cta: "Book a Call",
-    href: "https://cal.com/bobby-washburn/1on1",
+    href: "https://cal.com/bobby-washburn/intro-call",
   },
 ];
 

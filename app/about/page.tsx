@@ -127,7 +127,7 @@ export default function AboutPage() {
                   Read the Free ADHD Guide →
                 </Link>
                 <Link
-                  href="https://cal.com/bobby-washburn/1on1"
+                  href="https://cal.com/bobby-washburn/intro-call"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={buttonVariants({ size: "lg", variant: "outline" })}

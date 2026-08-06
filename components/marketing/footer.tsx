@@ -21,7 +21,7 @@ const footerSections: FooterSection[] = [
   {
     title: "Connect",
     links: [
-      { title: "Book a Call", href: "https://cal.com/bobby-washburn/1on1" },
+      { title: "Book a Call", href: "https://cal.com/bobby-washburn/intro-call" },
       { title: "Newsletter", href: "https://roughlyeducated.substack.com/" },
       { title: "Instagram", href: "https://www.instagram.com/bobby__washburn/" },
       { title: "LinkedIn", href: "https://www.linkedin.com/in/bobby-washburn/" },
