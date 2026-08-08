@@ -1,0 +1,48 @@
+tagline: Parenting support from someone who's been there.
+contactEmail: bobbywashburn0@gmail.com
+copyrightText: >-
+  © 2026 Bobby Washburn. Peer support and parenting education — not therapy,
+  diagnosis, or medical advice.
+sections:
+  - title: Sitemap
+    links:
+      - title: About
+        linkType:
+          discriminant: url
+          value:
+            href: /about
+      - title: Pain Points
+        linkType:
+          discriminant: url
+          value:
+            href: /help
+      - title: Guides
+        linkType:
+          discriminant: url
+          value:
+            href: /docs
+      - title: FAQ
+        linkType:
+          discriminant: url
+          value:
+            href: /#faq
+  - title: Connect
+    links:
+      - title: Book a Call
+        linkType:
+          discriminant: url
+          value:
+            href: https://cal.com/bobby-washburn/intro-call
+      - title: Newsletter
+        linkType:
+          discriminant: newsletter
+          value: null
+      - title: LinkedIn
+        linkType:
+          discriminant: url
+          value:
+            href: https://www.linkedin.com/in/bobby-washburn/
+      - title: Instagram
+        linkType:
+          discriminant: comingSoon
+          value: null

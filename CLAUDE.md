@@ -46,7 +46,7 @@ Source: Fontpair "Agent" starter kit. Apply automatically to all parenting pract
 - **Animation:** Motion
 - **Booking:** Cal.com — direct outbound links to the `intro-call` event (not embedded)
 - **Newsletter:** Substack embed — inside an on-page `Dialog` (shadcn/base-ui) triggered from header, homepage Connect tile, footer, and `/about`. Not a full-page embed and not an outbound link anymore. Component: `components/marketing/newsletter-dialog.tsx`; subdomain constant in `lib/links.ts`.
-- **CMS:** Keystatic — **listed in this doc historically but no config actually exists in the repo** (`keystatic.config.ts` and friends were never found on disk as of 2026-08-06). Treat all "Keystatic manages X" claims below as aspirational until config files actually exist. Content is hardcoded in components for now.
+- **CMS:** Keystatic — **built 2026-08-08, GitHub storage mode.** `keystatic.config.ts` at repo root manages `testimonials` (collection), plus `faq`/`footer`/`siteSettings` (singletons). `/about` and `lib/pain-points.ts` are still hardcoded — deliberately out of scope for the first build (see Keystatic CMS section for why).
 - **Database:** Neon (Postgres) — real and provisioned, all tables exist, `neon_auth` schema live
 - **Auth:** Better Auth via Neon Managed — enabled and committed; reachable but unproven past sign-up (1 real user signed up, never completed onboarding)
 - **Hosting:** Vercel
@@ -76,8 +76,8 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 
 | Route | Purpose | Status |
 |---|---|---|
-| `/keystatic` | Keystatic CMS admin UI | **Not built.** No config files exist in the repo despite this doc previously claiming "Config complete" — corrected 2026-08-06 |
-| `/api/keystatic` | Keystatic API handler | **Not built.** Same correction as above |
+| `/keystatic` | Keystatic CMS admin UI | Built 2026-08-08. Reachable but **not yet functional** — needs Bobby to create a GitHub App (walks you through it on first visit) and set 4 env vars (see Keystatic CMS section) before writes work |
+| `/api/keystatic` | Keystatic API handler | Built 2026-08-08. Same GitHub App dependency as above |
 
 ### Dormant Routes (committed, reachable, not actively used)
 
@@ -257,9 +257,34 @@ Data source: `content/data/[topic].json`.
 
 ## Keystatic CMS
 
-**Correction (2026-08-06):** this section previously claimed "four config files created" and "config complete" for `/keystatic` and `/api/keystatic`. Neither is true — a repo-wide search found no `keystatic.config.ts` or any other Keystatic config file, and both routes are unbuilt. All content this section describes (testimonials, homepage copy, FAQ, footer, About Bobby page) is currently hardcoded directly in components (`lib/testimonials.ts`, `components/marketing/*.tsx`, `app/about/page.tsx`), not CMS-managed.
+**Built 2026-08-08** on the `feat/keystatic-cms` branch — GitHub storage mode (edits commit directly to `BobbyW08/ResearchBibleWebsite` via a GitHub App; Vercel's serverless filesystem is read-only in production, so local-storage mode wasn't viable).
 
-If Keystatic gets built for real later, the original intent still stands: manage blog posts, testimonials, homepage copy, FAQ, footer, and About Bobby page as a metadata layer, while topic page body content stays Google Drive–sourced.
+**What's CMS-managed now:**
+- `testimonials` — collection, one YAML file per entry at `content/testimonials/*.yaml` (`quote`, `attribution`)
+- `faq` — singleton at `content/faq/data.yaml` (ordered array of `question`/`answer`; a singleton rather than a collection specifically so the admin UI gives native drag-to-reorder — order is narratively load-bearing, it opens with "So this isn't therapy?")
+- `footer` — singleton at `content/footer/data.yaml` (`tagline`, `contactEmail`, `copyrightText`, and `sections` → `links`, where each link's `linkType` is a conditional field — `url` / `newsletter` / `comingSoon` — that maps onto the existing `NewsletterDialog`/`ComingSoonTrigger`/plain-`<Link>` special-casing in `footer.tsx`)
+- `siteSettings` — singleton at `content/site-settings/data.yaml` (`substackSubdomain`, `calComUrl`) — **the singleton exists and holds real values, but nothing reads from it yet.** `lib/links.ts` and the 5 hardcoded Cal.com URLs (header, hero, connect, footer, about) were deliberately left unwired — rewiring them means converting several client components to fetch-and-pass-props, which was judged too large to bundle into "infra + easy wins." Next step if this matters: wire those 5 call sites + `lib/links.ts` to `reader.singletons.siteSettings.read()`.
+
+All existing live content (9 testimonials, 6 FAQ items, both footer sections) has been carried over verbatim into the seed YAML files, so nothing regressed to empty.
+
+**Reader wiring:** `lib/keystatic-reader.ts` exports a shared `reader = createReader(process.cwd(), keystaticConfig)`. `testimonials.tsx` and `faq.tsx` are now async Server Components that read content and pass it to new client children (`testimonials-marquee.tsx`, `faq-accordion.tsx`) that keep only the interactive bits. `footer.tsx` was already a Server Component, so it just swapped its hardcoded array for the reader call. A small `fade-in-view.tsx` client wrapper was added to preserve the FAQ header's scroll-fade-in animation, which can't run inside an async Server Component.
+
+**GitHub App set up and OAuth login confirmed working, 2026-08-08.** App name `research-bible-website`, installed scoped to this one repo. Credentials are in `.env.local` (not committed). Note: this app was **not** created fresh through Keystatic's own setup wizard — it's the same GitHub App Vercel auto-created for its own "Connect to GitHub" project-linking flow (visible from its Homepage URL and two `connect.vercel.com` callback URLs, both harmless to leave in place). Repurposing it worked because its `Contents` repository permission already happened to be `Read and write` — the one permission Keystatic actually needs. If that permission is ever missing (e.g. Vercel resets it, or this needs replicating for another project), create a dedicated GitHub App instead of relying on that coincidence.
+
+**Still to do:**
+1. Add the same 4 env vars (`KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`) to the Vercel project dashboard (Production) — **without them, `npm run build` fails outright**, since the route handler validates them at build time, not just runtime
+2. Add a production callback URL on the GitHub App once the domain is ready: `https://bobby-washburn.com/api/keystatic/github/oauth/callback` — Vercel preview URLs are skipped, they're unstable per-deployment
+3. Re-seed content once for real through the admin UI (or trust the hand-authored YAML files already committed) to prove the GitHub OAuth → commit write path end-to-end
+
+**Known gotcha #1, fixed 2026-08-08 — `/keystatic` renders blank in a real browser (dev only):** GitHub-storage-mode Keystatic wraps its admin UI in a `RedirectToLoopback` component that, per RFC 8252, hard-navigates `localhost` → `127.0.0.1` on first mount (required for the OAuth loopback flow) and renders nothing until that navigation completes. Next.js 16 added dev-server origin protection (`allowedDevOrigins`) that does not include `127.0.0.1` by default, so the redirected page's own dev assets (HMR socket, RSC chunks) got silently blocked — no console error, no server error, just a permanently blank page. This is a known, open upstream issue (Thinkmill/keystatic #1549). **Fixed** by adding `allowedDevOrigins: ["127.0.0.1"]` to `next.config.ts` — dev-only config, doesn't affect `next build`/production. If `/keystatic` ever goes blank again after an upgrade, check this first before assuming the integration code is wrong — it very likely isn't (confirmed against Keystatic's own compiled source and their current docs, both match this repo's implementation).
+
+**Known gotcha #2, fixed 2026-08-08 — GitHub OAuth fails with "The redirect_uri is not associated with this application":** happens on first login attempt even with a correctly-created GitHub App, because gotcha #1's loopback redirect means the OAuth request is built from the `127.0.0.1` origin, not `localhost`. Keystatic's own server code (`@keystatic/core/dist/keystatic-core-api-generic.node.js`) hints at adding a portless `http://127.0.0.1/api/keystatic/github/oauth/callback` callback URL, but that alone was **not sufficient here** — GitHub Apps did not honor the RFC 8252 "any port for loopback" leniency in practice. **Fixed** by also adding the exact-port callback URL: `http://127.0.0.1:3000/api/keystatic/github/oauth/callback`. Register both — costs nothing, and the exact-port one is what actually resolved it. Also double-check the GitHub App settings were actually **saved** — that tripped this up once too.
+
+**Deliberately not gated by `proxy.ts`:** `/keystatic` and `/api/keystatic` are reachable without a session cookie. `proxy.ts`'s Better Auth check protects a different identity system (end-user `profiles` accounts) — GitHub-mode Keystatic's actual write authorization is GitHub's own permission model (a write attempt from a non-collaborator 403s at the GitHub API regardless of reaching the page). Reachability without write access is Keystatic's documented design intent for GitHub mode.
+
+**Out of scope for this build, next in line:** `/about` (mostly free-form prose, 2 unresolved author TODOs) and `lib/pain-points.ts` (discriminated union, per-age-band content, `LucideIcon` references, rich HTML blocks — the hardest migration by far). `content/docs/*.mdx` and `content/data/*.json` stay Google-Drive/hand-authored, matching the original intent below.
+
+If Keystatic gets extended further, the original intent still stands: manage blog posts, homepage copy, and the About Bobby page as a metadata layer, while topic page body content stays Google Drive–sourced.
 
 ---
 
@@ -309,7 +334,7 @@ Neon is real and provisioned. All code is committed (`ae51b02` and later). Do no
 
 - **Vercel local link:** `.vercel/project.json` points at a stale project ID. Re-run `vercel link` and select `prj_2AgBQ4NhUvGsAij6A6N7YLnRovdQ` before using any local Vercel CLI commands.
 - ~~Hero Lorem Ipsum~~ — resolved. `hero.tsx` was fully rewritten with real copy; the credibility-strip section no longer exists on the homepage at all.
-- **Keystatic doesn't exist** (found 2026-08-06, see Keystatic CMS section) — this doc claimed config files existed for two prior revisions. If Keystatic is genuinely wanted, it needs to be built from scratch, not "reconnected."
+- ~~Keystatic doesn't exist~~ — resolved 2026-08-08. Built on `feat/keystatic-cms` (see Keystatic CMS section). Still needs Bobby to create the GitHub App and set 4 env vars before `/keystatic` actually works, and `npm run build` will fail in any environment missing those vars.
 - **Untracked folders at repo root** (not committed, not in `.gitignore` — clarify intent before next push): `E-Books/`, `Instruction Docs/`, `Parent Facing Content/`, `Planning Docs/`, `Quick Guides/`, `Research Bibles/`, `Website Copy/`, `CPRS_Interactive_Site.html`. These should either be gitignored or moved out of the repo root entirely — raw content does not belong in the repo. `CPRS_Interactive_Site.html` specifically has now been fully ported into `lib/pain-points.ts` (see Pain Point Pages) — safe to delete or archive elsewhere whenever Bobby confirms, nothing on the live site depends on the file itself anymore.
 
 ---
