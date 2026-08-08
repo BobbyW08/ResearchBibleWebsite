@@ -1,0 +1,71 @@
+slugName: burnout
+icon: HeartCrack
+featured: false
+tag: >-
+  Parent burnout
+title: >-
+  I'm burnt out
+cardTeaser: >-
+  The biology of parental burnout and what restoration actually looks like.
+headline: >-
+  I'm burnt out — and I don't know how to keep going
+intro: >-
+  You're snapping at your kids more than you'd like. You're going through the motions but not really there. The moments that used to feel meaningful aren't landing the way they used to. You feel like a worse version of yourself, and you're starting to wonder if this is just who you are now. It isn't.
+defaultAge: "6-9"
+ageScenario25: >-
+  You have a toddler and you're running on no sleep, constant demands, and the exhaustion of being needed every moment of every day. Parent burnout at this stage is extremely common and extremely invisible.
+ageScenario69: >-
+  Your kids are old enough to be in school, but somehow you're still depleted. The morning routine, the homework battles, the emotional labor — you expected it to get easier. It got different.
+ageScenario1012: >-
+  You're parenting a kid whose emotions are bigger but who doesn't want your help the way they used to. The middle years are emotionally demanding in ways nobody prepares you for.
+ageScenario13plus: >-
+  You're parenting a teenager who seems to need you less but actually needs you more, in harder ways. The chronic stress of teen parenting — plus everything else — adds up.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Parental burnout develops when demands consistently exceed your capacity to recover — not in one bad week, but over months or years of chronic stress without enough restoration. It's a predictable biological response, not a character flaw.
+  - discriminant: p
+    value: >-
+      Here's the neurological piece: chronic stress literally shrinks the <strong>prefrontal cortex</strong> — the part of your brain that handles patience, impulse control, and thoughtful decision-making. Under prolonged stress, that part becomes less available, and the reactive brain takes over more often. This is why you're losing your temper over things that didn't used to bother you. It's why you know the better response in the moment but can't access it. Your brain isn't broken — it's depleted.
+  - discriminant: p
+    value: >-
+      There's also a <strong>co-regulation</strong> piece your kids need you to understand. Your nervous system is your child's teacher. When you're regulated — calm, present, steady — your child's nervous system settles in response. When you're chronically activated — running hot, numb, or reactive — your child picks up on that, and their behavior often escalates. Taking care of yourself is not separate from good parenting. It is the foundation of it.
+backfires:
+  - title: >-
+      Pushing through.
+    body: >-
+      Burnout doesn't resolve by trying harder. The effort of trying to parent well from a depleted state burns the remaining reserves faster. Rest and restoration aren't rewards for surviving — they're the inputs that make survival possible.
+  - title: >-
+      Self-criticism.
+    body: >-
+      "I should be able to handle this" keeps your threat system activated, which deepens the stress load. Research shows self-criticism actually increases the difficulty of behavior change, not decreases it. Self-compassion — speaking to yourself the way you'd speak to a friend in the same situation — is not lowering your standards. It's what actually allows growth and adjustment.
+  - title: >-
+      Isolation and shame.
+    body: >-
+      Burnout gets worse when you keep it to yourself. The shame that makes you want to hide it is often the biggest barrier to recovery. Every parent who looks like they're handling it is working with something you can't see — a partner who takes nights, a nearby parent, therapy, their own private struggles. You're not uniquely failing.
+tries:
+  - title: >-
+      Identify your earliest warning sign and act on it.
+    body: >-
+      Before you reach the point where you're snapping at everything, there's an earlier signal — maybe your shoulders tense, maybe you start dreading your child's bedtime routine, maybe you notice yourself reaching for your phone to escape. Find that earliest signal and treat it as an alarm: I need to do something now, before I'm in crisis. Small early interventions prevent large later ones.
+  - title: >-
+      Start with three things: sleep, movement, connection.
+    body: >-
+      Not a wellness overhaul. Just these three: one night of continuous sleep per week if you can arrange it, 15 minutes of walking or movement three to four times per week, and one honest conversation with an adult who will just listen. These three address the biological and social roots of burnout directly. They're the minimum viable restoration plan.
+  - title: >-
+      Let yourself be imperfect without adding shame on top.
+    body: >-
+      You'll have days where none of this happens. The goal is not perfect execution — it's a trend line that's moving toward restoration. A bad day followed by self-criticism is two bad days. A bad day followed by "that was hard, what do I need right now?" is one.
+support: >-
+  Seek professional support if you're experiencing persistent low mood or hopelessness, if you're having thoughts of harming yourself or your child (even briefly), if you're relying on alcohol or substances to get through the day, or if you feel completely isolated with no one to reach out to. Parental burnout frequently co-occurs with depression and anxiety, both of which have effective treatments. Reaching out isn't dramatic — it's practical. You don't have to be at a crisis point to deserve support.
+crisis: true
+deepDiveLabel: >-
+  Parental Self-Care
+deepDiveHref: /docs/parental-self-care
+related:
+  - label: >-
+      Why modern parenting is so hard
+    href: /help/modern
+  - label: >-
+      My kid melts down over everything
+    href: /help/meltdowns

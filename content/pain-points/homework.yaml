@@ -1,0 +1,71 @@
+slugName: homework
+icon: Pencil
+featured: false
+tag: >-
+  Homework & school
+title: >-
+  The homework war
+cardTeaser: >-
+  Why it turns into a battle every night — and one change that helps.
+headline: >-
+  The homework war — why it turns into a battle every night
+intro: >-
+  You've asked them to start. You've reminded them three times. Now it's a standoff — they're arguing that homework is stupid, you're arguing that it matters, and somehow an hour has passed and nothing is written down. Every evening ends with everyone frustrated, and you're starting to dread 3 PM.
+defaultAge: "6-9"
+ageScenario25: >-
+  At this age, formal homework is rare — but if your young child refuses reading practice or simple activities, the same principles apply: decompression first, then low-demand asks.
+ageScenario69: >-
+  Your 7-year-old was fine at school all day, but the moment you mention homework, the shutdown starts. They've used up their regulation capacity. There's nothing left for hard things.
+ageScenario1012: >-
+  Your 10-year-old sits at the desk for an hour and barely writes a sentence. They're not being lazy — they're stuck. Starting tasks is a genuine challenge, especially for kids with ADHD.
+ageScenario13plus: >-
+  Your 14-year-old swears they did the homework at school but you get emails from teachers saying it wasn't turned in. The avoidance has moved into deception because the pressure feels too high.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Homework refusal almost always has one of two drivers. The first is escape: the task feels genuinely hard, overwhelming, or aversive, and resistance has worked before to delay or avoid it. The second — less obvious but extremely common — is that the work itself is actually too hard. Not in a "they need to try harder" way, but in a "this assignment is beyond where their skills currently are" way.
+  - discriminant: p
+    value: >-
+      When a child consistently refuses homework, it's worth asking what they're trying to escape from. A child with an unidentified reading difficulty isn't being lazy when they won't do reading assignments — they're avoiding something that feels humiliating and hard. A child with ADHD isn't being defiant when they can't start — their brain genuinely struggles to initiate tasks that don't offer immediate reward. <strong>Executive function</strong> challenges are real, not excuses.
+  - discriminant: p
+    value: >-
+      The afternoon timing compounds everything. By 3 or 4 PM, many children's stress systems have been activated all day. Their emotional regulation is at its thinnest. Whatever capacity they had for effortful tasks has mostly been used up at school. When homework starts in that window, you're asking a depleted system to do some of its hardest work.
+backfires:
+  - title: >-
+      Sitting next to them and managing every step.
+    body: >-
+      When a parent becomes the engine behind homework — prompting, redirecting, re-explaining every problem — the child's role shrinks to compliant (or resistant) passenger. They stop building independent skills, and homework becomes something that happens to them rather than something they do. Dependence deepens, not reduces.
+  - title: >-
+      Making homework the biggest event of the evening.
+    body: >-
+      When homework carries enormous emotional weight — when it's the source of the most conflict, the most parental attention, and the most charged conversation — it becomes aversive in its own right, independent of the content. Children avoid things that feel bad.
+  - title: >-
+      Starting immediately after school.
+    body: >-
+      After-school meltdowns aren't random. They often reflect a nervous system that has been working hard all day and has run out of capacity. Starting homework immediately after school — without any decompression — starts the session from a deficit.
+tries:
+  - title: >-
+      Build in a movement break first.
+    body: >-
+      Give your child 30 minutes of physical activity and low-demand time after school before homework begins. Outdoor play, a bike ride, anything that clears the accumulated stress from the day. Parents who implement this consistently report significant drops in after-school resistance — because they're starting homework from a regulated state instead of a depleted one.
+  - title: >-
+      Set a time limit, not a completion requirement.
+    body: >-
+      "We're going to do 20 minutes of homework, and when the timer goes off, we're done" changes the math for your child's brain. Twenty minutes is survivable. "Stay here until it's all finished" is an open-ended aversive that their brain will work hard to avoid. If the work isn't done in the time limit, a note to the teacher is more appropriate than a battle.
+  - title: >-
+      Look for what's actually hard.
+    body: >-
+      If your child resists one subject consistently, or can't get started despite seeming willing, ask whether the material itself is the problem. Resistance that looks like defiance is often shame-based avoidance of something that feels genuinely too hard. A conversation with the teacher, or a screening for learning differences, might reveal something that explains the pattern.
+support: >-
+  Consistent homework refusal — especially in one subject, especially paired with avoidance of similar tasks at school — is worth discussing with your child's teacher and, if needed, pursuing a learning evaluation. Dyslexia, dyscalculia, and ADHD all commonly first surface as homework resistance, because children can often mask difficulty at school but not at home. If the battle has been going on for months with no improvement despite changes at home, an evaluation through the school or a private specialist is the right next step.
+crisis: false
+deepDiveLabel: >-
+  School Assistance and Learning Differences
+deepDiveHref: /docs/school-assistance-parent-guide
+related:
+  - label: >-
+      My kid won't listen
+    href: /help/wontlisten
+  - label: >-
+      My kid is anxious or worried
+    href: /help/anxiety

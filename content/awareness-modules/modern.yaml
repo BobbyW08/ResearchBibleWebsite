@@ -1,0 +1,69 @@
+slugName: modern
+icon: Globe
+tag: >-
+  Awareness
+title: >-
+  Why modern parenting is so hard
+cardTeaser: >-
+  The structural reasons the role feels harder than a generation ago.
+headline: >-
+  Why modern parenting is so hard (and why it's not because of you)
+intro: >-
+  If you feel like you're doing everything right and still drowning — you're not imagining it. Parenting in 2026 is genuinely more demanding than it was a generation ago. The expectations are higher, the costs are steeper, the support systems are thinner, and an entirely new domain of parenting appeared out of nowhere with no cultural playbook to inherit.
+sections:
+  - heading: >-
+      The numbers don't lie
+    body:
+      - discriminant: p
+        value: >-
+          In 1965, mothers spent an average of 54 minutes per day on direct childcare. By the early 2000s, that number had more than doubled — to over 100 minutes — even as maternal employment also increased. Fathers went from 16 minutes per day to nearly an hour. This didn't happen because families suddenly had more free time. It happened on top of everything else.
+      - discriminant: stat
+        value: >-
+          The U.S. Surgeon General issued a formal advisory in 2024 on the mental health of parents. Nearly half of parents report overwhelming stress most days — compared to about one in four adults without children.
+      - discriminant: p
+        value: >-
+          That gap isn't explained by personality. It's explained by what the role currently demands.
+  - heading: >-
+      What actually changed
+    body:
+      - discriminant: p
+        value: >-
+          <strong>The economics of childhood got more competitive.</strong> Research across 11 countries found that in societies with higher income inequality, parents invest more intensively in their children — more time, more supervision, more pressure. Not because they love their kids more, but because the stakes feel higher. When parents are anxious about their child being left behind, they pour in more — and that's actually a rational calculation, not neurosis.
+      - discriminant: p
+        value: >-
+          <strong>The village disappeared.</strong> Extended family nearby, neighbors who knew your kids, informal community networks that once shared the load of childcare and supervision — most of that has dissolved. The labor market required mobility. Neighborhoods became more transient. The organic web of support that prior generations could count on frayed without replacement. Many parents today are carrying a load that used to be distributed across multiple people — largely alone.
+      - discriminant: p
+        value: >-
+          <strong>Childhood went digital in five years.</strong> Before 2012, childhood was largely analog and play-based. By 2015, roughly 80% of adolescents had smartphones. Social media became the primary space where peer relationships lived. That transformation took about five years. Parenting norms, which typically evolve over generations, had no time to catch up. Today, parents are expected to navigate an entirely new domain — monitoring online content, managing digital peer dynamics, making judgment calls about device use — that no prior generation did. There's no established wisdom to inherit because no one else has been here before.
+      - discriminant: p
+        value: >-
+          <strong>The standard for "good parenting" expanded dramatically.</strong> Access to child development research has produced genuinely better outcomes for children on average. It has also produced a new layer of pressure: parents who know they're supposed to co-regulate their child's emotions while managing their own, validate feelings while holding firm limits, stay attuned to developmental needs while also working full time, managing the household, and keeping everyone fed. When the research-based standard becomes a performance standard, it produces burnout, not resilience.
+  - heading: >-
+      Who carries the heaviest load
+    body:
+      - discriminant: p
+        value: >-
+          These pressures don't distribute equally. Single parents carry both the financial and childcare burden alone. Parents of children with higher needs — ADHD, autism, anxiety, trauma histories — face a baseline demand burden that's genuinely higher than the average parenting experience. Mothers, even in two-parent households, still carry an average of nearly 15 more hours per week of unpaid domestic labor than fathers when both work full-time. Parents doing cycle-breaking work — consciously parenting differently than they were raised — do metacognitive labor in every triggered moment that other parents don't.
+      - discriminant: p
+        value: >-
+          Understanding which of these situations is yours isn't about comparison. It's about finding strategies that actually fit your life, rather than generic advice built around a family that doesn't look like yours.
+  - heading: >-
+      What this means
+    body:
+      - discriminant: p
+        value: >-
+          Understanding that modern parenting stress is structural — not a personal failure — is genuinely useful, not just philosophically but practically. Research on cognitive reframing shows that shifting from "I can't handle this" to "I'm responding reasonably to real constraints" reduces shame and increases sense of agency. Shame immobilizes. Clarity makes next steps possible.
+      - discriminant: p
+        value: >-
+          If you're struggling, you're in good company — and the struggle reflects the real demands of the role, not a deficiency in you. That's the starting point. From here, there are things that actually help.
+crisis: false
+related:
+  - label: >-
+      I'm burnt out — and I don't know how to keep going
+    href: /help/burnout
+  - label: >-
+      The state of children's mental health in the United States
+    href: /help/mentalhealth
+  - label: >-
+      Where can you use support today?
+    href: /help

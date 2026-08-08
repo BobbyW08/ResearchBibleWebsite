@@ -1,0 +1,71 @@
+slugName: teen
+icon: Angry
+featured: false
+tag: >-
+  Teen brain & rebellion
+title: >-
+  My teenager hates me
+cardTeaser: >-
+  What's actually happening in the teen brain — and why it's not a failure.
+headline: >-
+  My teenager hates me (or at least acts like it)
+intro: >-
+  They roll their eyes at everything you say. They used to tell you things; now you get one-word answers. They're questioning your values, pushing back on your rules, and acting like they've never needed you. You're watching a child you know deeply become a stranger — and wondering if you did something wrong, or if you're losing them.
+defaultAge: "13+"
+ageScenario25: >-
+  This page is for parents of teenagers. If your younger child is showing strong-willed behavior, see "My kid won't listen."
+ageScenario69: >-
+  This page is for parents of teenagers. If your elementary-age child is showing defiance, see "My kid won't listen."
+ageScenario1012: >-
+  Your 12-year-old is in the early stages — the eye-rolls have started, they're embarrassed by you in public, they want more say in everything. This is the very beginning of the process.
+ageScenario13plus: >-
+  Your 15-year-old seems to have decided you don't know anything useful. They question every rule, minimize every conversation, and act like existing in your house is a minor inconvenience.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Adolescence has one central developmental task: your teenager has to become a self-governing person. To do that, they have to differentiate from you — build a sense of who they are that isn't defined by your approval or your evaluation. Some conflict, some pulling away, some questioning of your values: this isn't a sign the relationship is failing. It's the process of <strong>individuation</strong>, and it's exactly what's supposed to happen.
+  - discriminant: p
+    value: >-
+      Your teenager's brain is also under active construction. The reward-seeking, sensation-seeking part develops around puberty. The impulse-control, future-planning part — the <strong>prefrontal cortex</strong> — doesn't fully come online until the mid-20s. This mismatch is why your teenager wants adult-level independence while still demonstrating very un-adult-level judgment. It's not stubbornness. It's neurology.
+  - discriminant: p
+    value: >-
+      The harder your teenager pushes for autonomy, the more effective approaches shift. Control that worked in childhood starts backfiring. What actually works now is the combination of two things: maintaining clear behavioral limits (curfews, expectations, monitoring) while releasing psychological control — giving up the drive to control who they are, how they feel, what they think. Those are very different things.
+backfires:
+  - title: >-
+      Tightening control when they pull away.
+    body: >-
+      When your teenager becomes secretive or resistant, the instinct is to monitor more, restrict more, push harder for answers. But tighter control typically produces more secrecy, not less. Psychological control — guilt, shame, withdrawing love — is consistently associated with higher rates of depression and anxiety in adolescents, not better compliance.
+  - title: >-
+      Treating differentiation as rejection.
+    body: >-
+      When your teenager criticizes you, challenges your values, or seems to not need you, it reads as rejection. Many parents respond by pulling back themselves, or by pushing harder for the connection they had before. But your teenager isn't rejecting you — they're practicing being separate from you. Those are completely different things.
+  - title: >-
+      Interrogating instead of being alongside.
+    body: >-
+      A string of direct questions ("How was school? What did you do? Who were you with?") can feel invasive to a teenager who is actively building a private inner life. What keeps teenagers talking to their parents is usually low-pressure, parallel time — driving together, cooking together, doing something side-by-side with no agenda.
+tries:
+  - title: >-
+      Separate behavioral limits from psychological control.
+    body: >-
+      You set the curfew. You maintain oversight of where they are. You hold the expectation that they're in school. These are behavioral limits and they're entirely appropriate. But "what you think is wrong" and "how you feel is too sensitive" and "who you're becoming concerns me" — these are psychological control, and they push your teenager further away, not closer.
+  - title: >-
+      Use collaborative problem-solving when there's conflict.
+    body: >-
+      Instead of "here's the rule," try "here's my concern — what are you thinking?" Your teenager's reasons matter to them, and taking them seriously keeps the conversation going. You don't have to agree to listen. A solution they had input on is far more likely to be honored than one handed down from above.
+  - title: >-
+      Find the low-pressure on-ramp.
+    body: >-
+      Teenagers don't usually open up in sit-down conversations. They open up in the car, during a walk, while you're doing something parallel with your hands. Build in one regular side-by-side activity — nothing formal, nothing agenda-driven. Just being together in a way that feels optional. That's often when the real conversations happen.
+support: >-
+  Teenage pushing-away is normal. But some signs warrant professional attention: significant withdrawal from all relationships (not just you), declining grades that represent a real change, loss of interest in everything they used to enjoy, expressions of hopelessness, or any mention of not wanting to be alive. Teen depression often looks like irritability and flatness, not sadness. If you're uncertain whether what you're seeing is development or distress, a conversation with your pediatrician or a therapist is the right call.
+crisis: false
+deepDiveLabel: >-
+  Supporting Your Teen's Autonomy and Identity
+deepDiveHref: /docs/teen-autonomy-identity-support
+related:
+  - label: >-
+      My kid is anxious or worried
+    href: /help/anxiety
+  - label: >-
+      What do I do about screens?
+    href: /help/screens

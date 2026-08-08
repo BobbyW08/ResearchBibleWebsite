@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import PainPointCard from "@/components/marketing/pain-point-card";
-import { awarenessModules, painPoints } from "@/lib/pain-points";
+import { getAllAwarenessModules, getAllPainPoints } from "@/lib/pain-points-reader";
 
 export const metadata: Metadata = {
   title: "Pain Points",
@@ -10,7 +10,12 @@ export const metadata: Metadata = {
     "Find the situation that feels closest to what's happening at home, and start there.",
 };
 
-export default function HelpIndexPage() {
+export default async function HelpIndexPage() {
+  const [painPoints, awarenessModules] = await Promise.all([
+    getAllPainPoints(),
+    getAllAwarenessModules(),
+  ]);
+
   return (
     <div className="flex flex-1 flex-col">
       <Header />

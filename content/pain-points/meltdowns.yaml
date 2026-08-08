@@ -1,0 +1,71 @@
+slugName: meltdowns
+icon: Flame
+featured: true
+tag: >-
+  Meltdowns & tantrums
+title: >-
+  My kid melts down over everything
+cardTeaser: >-
+  Why tiny triggers cause huge reactions — and what to do in the moment.
+headline: >-
+  Why your kid loses it over small things (and what to do when it happens)
+intro: >-
+  The sock has a wrinkle. The juice is in the wrong cup. You said "no" to five more minutes. And now your child is on the floor, screaming, completely unreachable. You're standing there wondering how this happened — and what on earth you're supposed to do.
+defaultAge: "6-9"
+ageScenario25: >-
+  Your 3-year-old collapses into a full meltdown because you gave them the wrong cup. It looks absurd, but their prefrontal cortex is still basically a toddler too — they have almost no capacity to manage this kind of frustration yet.
+ageScenario69: >-
+  Your 7-year-old is completely fine one moment, then screaming because you turned the TV off. They're on the floor, not hearing you, not reachable by reason. They would stop if they could.
+ageScenario1012: >-
+  Your 10-year-old loses it over a homework comment you made. The words coming back at you don't match the size of the situation. Their brain is developing fast but the regulatory systems haven't caught up.
+ageScenario13plus: >-
+  Your 14-year-old goes from zero to full shutdown over something in a text thread. Teenagers' brains are actually more emotionally reactive than kids' — the emotional system is fully online while the brakes aren't.
+whatHappening:
+  - discriminant: p
+    value: >-
+      When a child melts down, their brain's threat-detection system has taken over. The part of the brain responsible for logic, language, and learning — the <strong>prefrontal cortex</strong> — essentially goes offline when the body shifts into survival mode. Stress hormones flood their system. Their heart rate spikes. The world narrows to the threat in front of them.
+  - discriminant: p
+    value: >-
+      Here's the critical piece: your child genuinely cannot hear your reasoning right now. They can't calm down on command. They can't process consequences. The meltdown isn't a choice or a manipulation — it's a nervous system that has been overwhelmed and is doing exactly what it was designed to do. The trigger might look small to you. Inside their brain, something registered as an emergency.
+  - discriminant: p
+    value: >-
+      Children's brains are still developing the capacity to regulate strong emotions, which is why their threshold for <strong>dysregulation</strong> is lower than yours — and why the same child who was fine five minutes ago can be completely undone by a wrinkle in a sock.
+backfires:
+  - title: >-
+      Explaining, reasoning, or bargaining in the moment.
+    body: >-
+      Logic requires the thinking brain — and the thinking brain is currently offline. No matter how clear your explanation is, it isn't reaching the part that processes it. The more you talk, the more your child feels misunderstood, which often escalates things further.
+  - title: >-
+      Matching their intensity.
+    body: >-
+      When you raise your voice, your child's nervous system reads "more danger." A loud, firm parent during a meltdown doesn't send the message "get it together" — it sends the message "this environment is unsafe." Your stress is contagious. So is your calm.
+  - title: >-
+      Jumping to consequences in the moment.
+    body: >-
+      Consequences delivered during a meltdown don't reach the part of the brain that learns from them. Your child cannot connect "I'm losing my mind right now" with "this will affect my screen time tomorrow." It just adds more stimulation to an already overwhelmed system.
+tries:
+  - title: >-
+      Regulate yourself before you enter the room.
+    body: >-
+      Before you walk toward the meltdown, pause. Take three slow breaths. Drop your shoulders. Relax your jaw. Lower your voice before you say a single word. This is not a soft move — it's the most powerful thing you can do. Your regulated nervous system sends genuine safety signals to your child's threat system. Their brain starts to settle because yours already has.
+  - title: >-
+      Use fewer words, not more.
+    body: >-
+      At the peak of a meltdown, "I'm here. You're safe." is enough. Stay nearby, stay quiet, stay calm. Don't ask what's wrong. Don't explain why they're wrong. Don't comfort with a lot of words. Your steady presence is doing the work.
+  - title: >-
+      Wait until full baseline before problem-solving.
+    body: >-
+      Once your child has calmed down — sometimes 30 minutes, sometimes longer — that's when learning becomes possible again. Sit together. "What was hard about that? What would help next time?" This conversation, done from a place of genuine curiosity (not a lecture in disguise), is where real change happens.
+support: >-
+  Look for help if meltdowns are happening multiple times per day, lasting more than 30–45 minutes, and showing no signs of decreasing over time. Also seek support if your child's behavior during meltdowns is dangerous — aggression that can't be kept safe, or self-harm — or if your child isn't returning to their normal self between episodes. A therapist or behavioral specialist can help identify whether ADHD, anxiety, sensory sensitivities, or other factors are driving the pattern.
+crisis: false
+deepDiveLabel: >-
+  De-Escalation and Crisis Planning
+deepDiveHref: /docs/de-escalation-crisis-planning
+related:
+  - label: >-
+      My kid hits, bites, or throws things
+    href: /help/aggression
+  - label: >-
+      Morning chaos — routines
+    href: /help/routines

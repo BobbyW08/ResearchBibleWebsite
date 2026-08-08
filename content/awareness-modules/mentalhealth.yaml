@@ -1,0 +1,87 @@
+slugName: mentalhealth
+icon: TrendingUp
+tag: >-
+  Context
+title: >-
+  Children's mental health in the U.S.
+cardTeaser: >-
+  What the data says — and what it means for your family right now.
+headline: >-
+  The state of children's mental health in the United States
+intro: >-
+  Something shifted in children's mental health around 2012, and it has continued to worsen since. If your child is struggling with anxiety, depression, school refusal, or emotional dysregulation — you're not dealing with a parenting failure or a uniquely troubled kid. You're watching your child navigate one of the most challenging environments for mental health that children in this country have ever faced.
+sections:
+  - heading: >-
+      What the data shows
+    body:
+      - discriminant: stat
+        value: >-
+          Between 2007 and 2021, rates of depression among adolescents in the U.S. roughly doubled. Emergency department visits for self-harm among girls ages 10–14 nearly tripled over the same period.
+      - discriminant: p
+        value: >-
+          That inflection point around 2012 coincides almost exactly with when smartphones became ubiquitous and social media became the primary space for adolescent peer interaction.
+      - discriminant: p
+        value: >-
+          <strong>The adolescent mental health crisis has been declared a national emergency</strong> by multiple major medical organizations. In 2021, the American Academy of Pediatrics, the American Academy of Child and Adolescent Psychiatry, and the Children's Hospital Association issued a joint declaration. In 2023, the U.S. Surgeon General issued a second advisory specifically about adolescent social media use.
+      - discriminant: stat
+        value: >-
+          Approximately 1 in 7 children in the United States has a diagnosed mental health condition. Anxiety disorders alone affect roughly 9% of children ages 3–17.
+      - discriminant: p
+        value: >-
+          <strong>The mental health workforce cannot meet the demand.</strong> Wait times for child therapists in many parts of the country are measured in months. Pediatricians are increasingly serving as the de facto mental health providers for children, without the training to do so.
+  - heading: >-
+      What's driving it
+    body:
+      - discriminant: p
+        value: >-
+          The causes are multiple and interacting. Social media changed the fabric of adolescent social life — creating 24/7 access to social comparison, peer evaluation, and the possibility of public humiliation. Sleep deprivation increased as devices moved into bedrooms. Physical activity declined. In-person unstructured play — which is how children have historically developed emotional regulation and social skills — dropped significantly.
+      - discriminant: p
+        value: >-
+          At the same time, children are growing up in a world that feels more uncertain to them than it did to prior generations. Climate anxiety is measurably elevated in adolescents. Political instability, school safety concerns, and economic precarity in their families all register. Children are more permeable to the ambient stress of the adult world than most adults realize.
+      - discriminant: p
+        value: >-
+          Pandemic effects compounded all of this. Two or more years of disrupted schooling, social isolation, and family stress during developmentally critical periods produced measurable effects on children's social development, anxiety levels, and academic trajectories — effects that are still playing out.
+  - heading: >-
+      What this doesn't mean
+    body:
+      - discriminant: p
+        value: >-
+          It doesn't mean your child is broken, or that you missed something critical. Children with mental health struggles are not suffering from weak character or soft parenting. Their brains are responding to real environmental inputs in predictable ways.
+      - discriminant: p
+        value: >-
+          It doesn't mean medication or intensive treatment is necessarily what your child needs. Most children benefit from a combination of informed parenting adjustments, environmental changes, and when indicated, professional support. Not every child who is anxious needs a therapist. Some do.
+      - discriminant: p
+        value: >-
+          It also doesn't mean nothing helps. Research consistently shows that effective interventions exist, that parental behavior matters significantly, and that children's mental health can improve with the right support. This isn't a crisis without exits.
+  - heading: >-
+      Signs that warrant professional attention
+    body:
+      - discriminant: p
+        value: >-
+          Seek professional support if your child:
+      - discriminant: list
+        value:
+          - >-
+            Has persistent anxiety or low mood lasting more than two weeks that significantly affects their daily life
+          - >-
+            Is missing school regularly due to emotional distress
+          - >-
+            Has withdrawn from friends, activities, and family — more than typical moodiness
+          - >-
+            Is having trouble sleeping, eating, or concentrating in ways that represent a real change
+          - >-
+            Has expressed hopelessness, talked about death, or engaged in any self-harm
+      - discriminant: p
+        value: >-
+          Your first call is usually your pediatrician, who can screen, refer, and discuss options. School counselors are another access point. If your child refuses therapy, parent-only programs (like SPACE for anxiety) can be effective without requiring the child to participate.
+crisis: true
+related:
+  - label: >-
+      My kid is anxious or worried — and won't go to school
+    href: /help/anxiety
+  - label: >-
+      I'm burnt out — and I don't know how to keep going
+    href: /help/burnout
+  - label: >-
+      Why modern parenting is so hard
+    href: /help/modern

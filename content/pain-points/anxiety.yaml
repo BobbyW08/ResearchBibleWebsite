@@ -1,0 +1,71 @@
+slugName: anxiety
+icon: CloudLightning
+featured: false
+tag: >-
+  Anxiety & school refusal
+title: >-
+  My kid is anxious and won't go to school
+cardTeaser: >-
+  The avoidance cycle and how to break it without a battle.
+headline: >-
+  My kid is always anxious or worried — and won't go to school
+intro: >-
+  Sunday nights are dread. Monday mornings are tears, stomachaches, or shutdowns. You've tried everything — calm reassurance, firm insistence, bribing, letting them stay home. Nothing works, or it works once and then stops. You're exhausted, worried, and starting to wonder if there's something seriously wrong.
+defaultAge: "6-9"
+ageScenario25: >-
+  Your 4-year-old cries every morning at school drop-off. It's been weeks. The teacher says they're fine within minutes, but that doesn't make separation easier for either of you.
+ageScenario69: >-
+  Your 7-year-old has stomachaches every Sunday night. They're not sick — their body is manifesting the dread of Monday. School feels like a threat their body is already preparing for.
+ageScenario1012: >-
+  Your 11-year-old has started refusing to go to school. It began with occasional avoidance. Now it's most days. They're not being defiant — they're genuinely scared of something there.
+ageScenario13plus: >-
+  Your 15-year-old has quietly stopped doing things. No longer hanging out with friends, skipping activities they used to love, spending most of their time alone. The worry has expanded into everything.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Anxiety works through a cycle of avoidance — and every act of avoidance makes anxiety stronger. Here's the mechanism: your child feels distress about school. They avoid it. The distress immediately goes down. Relief arrives. That relief is powerful, and their brain files it away: avoiding this made me feel better. Next time, avoidance comes faster, feels more necessary, and the fear grows — because their brain now has more evidence that the thing is genuinely dangerous.
+  - discriminant: p
+    value: >-
+      This is not a willpower problem. The <strong>avoidance cycle</strong> runs below the level of conscious choice, especially in children whose <strong>prefrontal cortex</strong> — the brain's reasoning center — is still developing. When your child says "I can't go," they're not being dramatic. They're reporting the experience of a nervous system that has genuinely learned that school equals threat.
+  - discriminant: p
+    value: >-
+      School refusal is almost always driven by one of four things: anxiety about something at school (separation, social evaluation, academic failure), access to something comfortable at home, attention from you during the struggle, or relief from escaping an overwhelming situation. Understanding which one is driving your child changes what you do next.
+backfires:
+  - title: >-
+      Repeated reassurance.
+    body: >-
+      "You'll be fine. I promise nothing bad will happen." Feels helpful, but each time you reassure, you're reinforcing the message that the uncertainty was worth worrying about. Research shows reassurance relieves anxiety for about 90 seconds and then makes the underlying intolerance of uncertainty worse. The more you reassure, the more they need it.
+  - title: >-
+      Letting them stay home.
+    body: >-
+      When your child is visibly distressed and you allow them to stay home, you both get immediate relief. But their brain has just received confirmation that school was dangerous enough to escape. The next morning will be harder.
+  - title: >-
+      Making the worry the center of the conversation.
+    body: >-
+      Asking what they're afraid of, discussing all the reasons it might not happen, spending extended time on the topic — this teaches the anxious brain that the worry is worth paying attention to. You're unintentionally keeping the spotlight on the threat.
+tries:
+  - title: >-
+      Validate the feeling without accommodating the avoidance.
+    body: >-
+      There's a meaningful difference between "I can see you're scared, and I'm here" (validating) and "Okay, you can stay home today" (accommodating). Your child's fear is real and deserves acknowledgment. The behavior the fear is driving doesn't have to be accommodated. Both things are true at the same time.
+  - title: >-
+      Make school attendance non-negotiable, but adjust the exposure.
+    body: >-
+      A graduated approach works better than all-or-nothing. Can your child make it to the door? To the first class? To lunch? Set a bar that's hard but doable, hold it calmly, and expand it over time. Progress at school, even imperfect progress, directly breaks the avoidance cycle.
+  - title: >-
+      Reduce your response to reassurance-seeking.
+    body: >-
+      When your child asks "But what if something bad happens?" shift from answering the question to acknowledging the feeling: "I can see you're worried. I know you can handle it." Brief, warm, and then redirect. Don't engage with the what-ifs. That's a different conversation than the one they need right now.
+support: >-
+  Get professional support if your child has missed more than a handful of school days due to anxiety, if symptoms have been present for more than two weeks, if physical complaints (stomachaches, headaches) are persistent, or if their daily life is significantly limited by worry. Cognitive Behavioral Therapy (CBT) is the gold standard for childhood anxiety and has strong research support. If your child refuses therapy, parent-only programs like SPACE can be just as effective — you work with a therapist to change your responses, and your child's anxiety improves.
+crisis: false
+deepDiveLabel: >-
+  Understanding Anxiety and Depression in Children
+deepDiveHref: /docs/anxiety-depression-children
+related:
+  - label: >-
+      My kid won't listen
+    href: /help/wontlisten
+  - label: >-
+      Children's mental health in the U.S.
+    href: /help/mentalhealth

@@ -1,26 +1,18 @@
-"use client";
-
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "motion/react";
 import PainPointCard from "@/components/marketing/pain-point-card";
 import SwipeCarousel from "@/components/marketing/swipe-carousel";
-import { getFeaturedPainPoints } from "@/lib/pain-points";
+import FadeInView from "@/components/marketing/fade-in-view";
+import { getFeaturedPainPoints } from "@/lib/pain-points-reader";
 
-function PainPoints() {
-  const featured = getFeaturedPainPoints();
+async function PainPoints() {
+  const featured = await getFeaturedPainPoints();
 
   return (
     <section>
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
-        <motion.div
-          initial={{ y: -10, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
-          className="mx-auto flex max-w-lg flex-col items-center justify-center gap-4 text-center"
-        >
+        <FadeInView className="mx-auto flex max-w-lg flex-col items-center justify-center gap-4 text-center">
           <Badge variant="outline" className="h-auto px-3 py-1 text-sm">
             Pain Points
           </Badge>
@@ -32,7 +24,7 @@ function PainPoints() {
             situation that feels closest to what&apos;s happening at home —
             and start there.
           </p>
-        </motion.div>
+        </FadeInView>
 
         {/* Grid on md+ screens */}
         <div className="mt-12 hidden gap-6 md:grid md:grid-cols-3">

@@ -5,6 +5,7 @@ import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
+import { reader } from "@/lib/keystatic-reader";
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -55,26 +56,19 @@ export const metadata: Metadata = {
   },
 };
 
-const phases = [
-  {
-    name: "Stabilize",
-    line: "Nobody learns anything while their nervous system is in threat mode. Yours included. This comes first.",
-  },
-  {
-    name: "Connect",
-    line: "You can't discipline your way into a relationship. Connection is what makes everything after it work.",
-  },
-  {
-    name: "Structure",
-    line: "Once there's trust, structure holds. Routines, expectations, follow-through — the boring stuff that changes everything.",
-  },
-  {
-    name: "Adapt",
-    line: "Now you can handle the specific thing: the diagnosis, the school fight, the co-parenting, the teenager.",
-  },
-];
+export default async function AboutPage() {
+  const about = await reader.singletons.about.read();
 
-export default function AboutPage() {
+  if (!about) {
+    return (
+      <div className="flex flex-1 flex-col">
+        <Header />
+        <main className="flex-1" />
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-1 flex-col">
       <script
@@ -94,139 +88,79 @@ export default function AboutPage() {
             <p className="text-sm font-medium tracking-wide text-muted-foreground">
               About
             </p>
-            {/* Alternate H1, if the line below reads too blunt on a first visit:
-                "I've sat where you're sitting. That's the whole credential." */}
             <h1 className="font-heading text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
-              I&apos;m not here to fix you.
+              {about.heroLine1}
               <br />
-              <span className="italic text-secondary">
-                I&apos;m here because I&apos;ve been where you are.
-              </span>
+              <span className="italic text-secondary">{about.heroLine2Italic}</span>
             </h1>
             <p className="max-w-xl text-base font-normal text-muted-foreground">
-              My name is Bobby Washburn. I&apos;m a Certified Peer Recovery
-              Specialist, which is a formal way of saying: I do this work as a
-              peer, not a clinician. I sit with parents in the middle of the
-              hardest stretch of their family&apos;s life — usually after
-              they&apos;ve already tried everything the internet told them to
-              try.
+              {about.heroIntro}
             </p>
           </div>
 
           <div className="mt-12 flex flex-col gap-12">
             <section className="flex flex-col gap-4">
               <h2 className="font-heading text-2xl font-medium tracking-tight">
-                Almost every parent I meet thinks they&apos;re the only one.
+                {about.section1Heading}
               </h2>
-              <p className="text-base font-normal text-muted-foreground">
-                They&apos;re not. That&apos;s usually the first thing I get to
-                tell them, and it&apos;s usually the first time anyone has
-                said it out loud.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                By the time I show up, most parents have been through a lot
-                of professionals. Therapists, caseworkers, school meetings,
-                evaluations. And in almost every one of those rooms, the
-                conversation is about their kid. Nobody has asked the parent
-                how they&apos;re doing. Nobody has asked what they actually
-                want their family to look like.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                Here&apos;s what I&apos;ve found: if a parent can pick up a
-                win or two — one real, concrete win — you can build on it.
-                And once they find their own reason for doing the hard thing,
-                the ceiling comes off. These are not broken people.
-                They&apos;re people who lost the thread.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                My job was never to fix anybody. It&apos;s to help parents
-                see that change is actually possible — for them, for their
-                kids, and for the pattern the whole family has been stuck in.
-              </p>
+              {about.section1Paragraphs.map((paragraph, index) => (
+                <p key={index} className="text-base font-normal text-muted-foreground">
+                  {paragraph}
+                </p>
+              ))}
               <blockquote className="rounded-lg border border-border bg-card px-6 py-6 text-center">
                 <p className="font-heading text-lg font-medium italic tracking-tight sm:text-xl">
-                  &ldquo;You&apos;re not failing. There&apos;s a reason this
-                  feels impossible. And there&apos;s something you can do
-                  about it.&rdquo;
+                  &ldquo;{about.section1Quote}&rdquo;
                 </p>
               </blockquote>
             </section>
 
             <section className="flex flex-col gap-4">
               <h2 className="font-heading text-2xl font-medium tracking-tight">
-                The short version
+                {about.section2Heading}
               </h2>
-              <p className="text-base font-normal text-muted-foreground">
-                I spent five years in the Army as a signals intelligence
-                analyst. I deployed to Afghanistan and led a team of
-                soldiers. That work taught me how to stay calm when
-                everything is on fire, how to read a situation fast, and how
-                to train other people to do the same.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                After the service I spent almost a decade in business —
-                running operations for a marketing agency, managing the build
-                of more than four hundred online courses in healthcare, and
-                designing international travel programs. That stretch taught
-                me how adults actually learn, and how to take something
-                complicated and make it usable.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                Then I moved into behavioral health, and it stopped being a
-                career and started being the work.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                I started as a behavioral health technician. I spent nearly
-                two years as a youth care counselor at a residential program
-                for teenage boys with serious trauma histories — managing
-                crises, learning de-escalation the hard way, and figuring out
-                that most &ldquo;defiance&rdquo; is a skill a kid doesn&apos;t
-                have yet. Then I worked as a youth advocate, going into homes
-                and communities instead of institutions.
-              </p>
-              {/* Tides mention: naming a current employer on a private-practice
-                  site — confirm it's fine with them before launch. */}
-              <p className="text-base font-normal text-muted-foreground">
-                Since January 2025 I&apos;ve been a Peer Parent Consultant
-                with Tides Family Services, embedded in an intensive
-                wraparound team, working every week with families in the
-                middle of the child welfare and behavioral health system.
-              </p>
+              {about.section2Paragraphs.map((paragraph, index) => (
+                <p key={index} className="text-base font-normal text-muted-foreground">
+                  {paragraph}
+                </p>
+              ))}
 
-              <div className="rounded-lg border-2 border-dashed border-amber-300/60 bg-amber-50 px-6 py-5 dark:border-amber-800/60 dark:bg-amber-950/30">
-                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-amber-700 dark:text-amber-500">
-                  Bobby — write this. Blocking: the page doesn&apos;t work
-                  without it.
+              {about.personalDisclosure ? (
+                <p className="text-base font-normal text-muted-foreground">
+                  {about.personalDisclosure}
                 </p>
-                <p className="text-sm leading-relaxed text-foreground">
-                  Two to five sentences, matter-of-fact, on what happened
-                  that put you on this side of the table — not a confession,
-                  not a trauma dump. What happened → what it cost → what
-                  changed → why that makes you useful to the parent reading
-                  this. Whatever you disclose here is permanent and public:
-                  say only what you&apos;d be fine with a parent, a
-                  supervisor, a licensing board, and your kids all reading.
-                  Under-share and add more later if you want to.
-                </p>
-              </div>
+              ) : (
+                <div className="rounded-lg border-2 border-dashed border-amber-300/60 bg-amber-50 px-6 py-5 dark:border-amber-800/60 dark:bg-amber-950/30">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-wide text-amber-700 dark:text-amber-500">
+                    Bobby — write this. Blocking: the page doesn&apos;t work
+                    without it.
+                  </p>
+                  <p className="text-sm leading-relaxed text-foreground">
+                    Two to five sentences, matter-of-fact, on what happened
+                    that put you on this side of the table — not a confession,
+                    not a trauma dump. What happened → what it cost → what
+                    changed → why that makes you useful to the parent reading
+                    this. Whatever you disclose here is permanent and public:
+                    say only what you&apos;d be fine with a parent, a
+                    supervisor, a licensing board, and your kids all reading.
+                    Under-share and add more later if you want to. Edit this
+                    in Keystatic under &ldquo;About Page&rdquo; → &ldquo;Personal
+                    disclosure&rdquo;.
+                  </p>
+                </div>
+              )}
             </section>
 
             <section className="flex flex-col gap-4">
               <h2 className="font-heading text-2xl font-medium tracking-tight">
-                There&apos;s an order to this.
+                {about.section3Heading}
               </h2>
               <p className="text-base font-normal text-muted-foreground">
-                Over 2025 I built a full parenting curriculum — not in a
-                classroom, but at kitchen tables. Every tool in it started as
-                something I taught a real family, watched flop, reworked,
-                and taught again until a parent could use it in the middle of
-                a meltdown with no notes in front of them. It&apos;s
-                twenty-nine modules now, and it&apos;s built on four phases
-                that have to happen in order:
+                {about.section3Intro}
               </p>
 
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                {phases.map((phase) => (
+                {about.phases.map((phase) => (
                   <div
                     key={phase.name}
                     className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4"
@@ -241,21 +175,11 @@ export default function AboutPage() {
                 ))}
               </div>
 
-              <p className="text-base font-normal text-muted-foreground">
-                That sequence isn&apos;t a preference. It&apos;s the order
-                your brain — and your child&apos;s — actually becomes capable
-                of learning at each level. It&apos;s why so much parenting
-                advice fails: it hands you a Structure tool when your family
-                is still stuck at Stabilize.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                Everything on this site is built from the same evidence base
-                I use in the field — motivational interviewing,
-                trauma-informed practice, the neuroscience of co-regulation,
-                and DBT skills adapted for parents. Then translated into
-                something you can read at 10pm on a Tuesday and use on
-                Wednesday morning.
-              </p>
+              {about.section3Outro.map((paragraph, index) => (
+                <p key={index} className="text-base font-normal text-muted-foreground">
+                  {paragraph}
+                </p>
+              ))}
             </section>
 
             <section className="flex flex-col gap-4">
@@ -267,67 +191,39 @@ export default function AboutPage() {
                   <p className="font-medium text-foreground">
                     Certified Peer Recovery Specialist (CPRS)
                   </p>
-                  <p>Rhode Island Certification Board · ID 202153</p>
+                  <p>{about.cprsId}</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Current role</p>
-                  <p>
-                    Peer Parent Consultant, Tides Family Services / Community
-                    Care Alliance
-                  </p>
+                  <p>{about.currentRole}</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Training</p>
                   <ul className="list-disc space-y-1 pl-5">
-                    <li>Motivational Interviewing</li>
-                    <li>
-                      Youth Mental Health First Aid (national certification)
-                    </li>
-                    <li>Trauma-informed care</li>
-                    <li>
-                      Ethical Decision-Making for Peers (RICARES, 6.0 CEU)
-                    </li>
-                    <li>Educational advocacy — IEPs, 504 plans, IDEA</li>
-                    <li>
-                      Working with gender diverse and LGBTQ+ youth and
-                      families
-                    </li>
-                    <li>Mandated reporter · CPR/First Aid</li>
+                    {about.training.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
                   </ul>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Prior</p>
-                  <p>
-                    U.S. Army, Signals Intelligence Analyst (35N), Sergeant ·
-                    Afghanistan. Honorable discharge, 2012.
-                  </p>
+                  <p>{about.prior}</p>
                 </div>
-                <div>
-                  <p className="font-medium text-foreground">Also</p>
-                  <p>
-                    Author, &ldquo;Consolidating Rhode Island&apos;s Child
-                    Welfare Service Array&rdquo; — an independent policy
-                    proposal submitted to Rhode Island state stakeholders,
-                    March 2026.
-                  </p>
-                </div>
-                {/* Bobby — confirm: list the URI psychology degree (in progress via
-                    prior learning assessment) here? Left off for now — "in progress"
-                    can read as a gap to a skeptical parent, and the CPRS + field
-                    record is the stronger credential for this audience. Easy to add
-                    if you disagree. */}
+                {about.also && (
+                  <div>
+                    <p className="font-medium text-foreground">Also</p>
+                    <p>{about.also}</p>
+                  </div>
+                )}
               </div>
             </section>
 
             <section className="flex flex-col items-center gap-4 rounded-lg border border-border bg-card px-6 py-10 text-center">
               <h2 className="font-heading text-2xl font-medium tracking-tight">
-                If any of this sounds like your house, start here.
+                {about.ctaHeading}
               </h2>
               <p className="max-w-xl text-base font-normal text-muted-foreground">
-                An intro call is thirty minutes. You tell me what&apos;s
-                going on. I tell you honestly whether I&apos;m the right kind
-                of help — and if I&apos;m not, I&apos;ll point you toward
-                what is. No pitch.
+                {about.ctaBody}
               </p>
               <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row">
                 <Link
@@ -343,9 +239,7 @@ export default function AboutPage() {
                 </NewsletterDialog>
               </div>
               <p className="max-w-xl text-sm font-normal text-muted-foreground">
-                Peer support and parenting education — not therapy,
-                diagnosis, or medical advice. If your family needs clinical
-                care, I&apos;ll tell you that directly.
+                {about.ctaFooterNote}
               </p>
             </section>
           </div>

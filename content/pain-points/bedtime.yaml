@@ -1,0 +1,71 @@
+slugName: bedtime
+icon: Moon
+featured: false
+tag: >-
+  Sleep & bedtime
+title: >-
+  Bedtime battles
+cardTeaser: >-
+  What's really happening at night and how routines actually fix it.
+headline: >-
+  Bedtime battles — why your kid won't sleep (and what actually helps)
+intro: >-
+  Bedtime is supposed to be peaceful. In your house, it's a negotiation marathon: five more minutes, one more hug, a glass of water, a question that could definitely wait until morning. An hour later, you're somehow still in the room, your evening is gone, and they're still awake.
+defaultAge: "6-9"
+ageScenario25: >-
+  It takes 90 minutes to get your 3-year-old down. You've done the routine. You've done the second routine. They need water, another hug, something very important to tell you about a bug they saw.
+ageScenario69: >-
+  Your 8-year-old is in bed at 8:30 but awake until 10. They're not playing — they genuinely can't fall asleep. Their brain isn't receiving a clear signal that it's time to wind down.
+ageScenario1012: >-
+  Your 11-year-old has a 9 PM bedtime but is on their phone until 11. By morning they're impossible to wake. The device in the room is working directly against the sleep signal.
+ageScenario13plus: >-
+  Your 16-year-old can't fall asleep before midnight no matter what. This isn't defiance — it's delayed sleep phase, which is biologically more common in adolescents.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Your child's brain produces <strong>melatonin</strong> — the hormone that signals "time to sleep" — in response to consistent cues: the same sequence of events, at the same time, in the same environment, night after night. When those cues are inconsistent or absent, the brain doesn't get a clear signal, and sleep onset gets delayed.
+  - discriminant: p
+    value: >-
+      Think of a bedtime routine as a biological alarm for your child's nervous system. The warm bath, the story, the darkness — these aren't just nice rituals. They're telling the brain "wind down is happening, sleep is coming." After a few weeks of consistency, the brain starts producing melatonin in anticipation of the routine, before the routine even finishes. Your child actually gets sleepier earlier because their body has learned what's coming.
+  - discriminant: p
+    value: >-
+      Without that signal — when bedtime floats around, when screens run up to lights-out, when one night looks nothing like the last — the brain stays alert. It's still waiting to know what's happening. That alert state is exactly the opposite of sleep-ready.
+backfires:
+  - title: >-
+      Screens right before bed.
+    body: >-
+      The blue light from devices suppresses melatonin production and activates the alert system. The content itself — fast-paced, social, stimulating — is the opposite of wind-down. Many parents report dramatic sleep improvements from a single change: screens off 30–45 minutes before bed.
+  - title: >-
+      Letting bedtime float on weekends.
+    body: >-
+      A 90-minute later bedtime on Saturday shifts your child's internal clock — and Monday morning feels like jet lag. The body's circadian rhythm learns from your average timing, not your stated bedtime. Consistency across the whole week matters more than perfect execution on any single night.
+  - title: >-
+      Negotiating in the moment.
+    body: >-
+      "Five more minutes" feels like a reasonable compromise, but it teaches your child that the bedtime routine is negotiable — and if it was negotiable tonight, it's worth trying again tomorrow. Over time, the routine loses its predictive value because it keeps moving.
+tries:
+  - title: >-
+      Start the wind-down 30 minutes earlier than you think you need to.
+    body: >-
+      Most parents underestimate how long it takes for a child's nervous system to shift from "active and engaged" to "ready for sleep." Screen-free, low-stimulation time — bath, books, quiet conversation — does the neurological work of preparing the brain for sleep. You're not wasting time. You're building the biological signal.
+  - title: >-
+      Lock in a consistent sequence and protect it.
+    body: >-
+      Three to five steps in the same order, at the same time, every night. Bath, pajamas, two books, lights out. Or whatever works for your family — the specifics matter less than the consistency. Write it down if it helps. The routine becomes the cue.
+  - title: >-
+      Offer choices within the structure.
+    body: >-
+      "Which two books tonight?" or "Do you want the nightlight on or off?" keeps the routine in place while giving your child genuine agency. Kids who feel some control within the routine cooperate more, because the routine stops feeling like something done to them.
+support: >-
+  If you've been consistent with a bedtime routine for three or more weeks and sleep onset still takes more than 45 minutes, or if your child wakes multiple times per night, it's worth talking to your pediatrician. Sleep disorders — including delayed sleep phase syndrome (common in teens), sleep apnea, and restless leg syndrome — are medical conditions that routines alone won't fix. Children with ADHD and autism also have higher rates of sleep difficulties and may need additional support beyond behavioral approaches.
+crisis: false
+deepDiveLabel: >-
+  Healthy Bodies Calm Homes — Sleep, Food, and Movement
+deepDiveHref: /docs/healthy-bodies-calm-homes
+related:
+  - label: >-
+      Morning chaos — routines
+    href: /help/routines
+  - label: >-
+      My kid melts down over everything
+    href: /help/meltdowns
