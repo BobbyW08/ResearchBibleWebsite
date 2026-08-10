@@ -71,6 +71,7 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 | `/dashboard` | Quick-reference index | Live (redirects to /dashboard/adhd) |
 | `/dashboard/adhd` | ADHD quick-reference dashboard | Live |
 | `/dashboard/[topic]` | Future topic dashboards | Not built — needs JSON data per topic |
+| `/tech-consequences` | Tech Safety & Consequence Setup — interactive parental-controls wizard (pick your phone + your child's devices, get tailored step-by-step setup instructions, a workarounds list, and a printable checklist for 11 device types + home Wi-Fi) | Live 2026-08-10 — standalone, unlisted (no header/footer nav link by design). Ported from `TechConsequences_ParentGuide.html` (repo root, kept untracked as reference, same as `CPRS_Interactive_Site.html`). Content is hardcoded in `lib/tech-consequences-data.ts` (not Keystatic — matches how `/docs` deep dives stay hand-authored), components in `components/marketing/tech-consequences/`. Screenshots hotlink Apple's CDN directly (`cdsassets.apple.com`) — not self-hosted, may break if Apple changes those URLs |
 
 ### CMS / Admin Routes
 
