@@ -1,0 +1,71 @@
+slugName: screens
+icon: Smartphone
+featured: false
+tag: >-
+  Screens & devices
+title: >-
+  What do I do about screens?
+cardTeaser: >-
+  Why limits backfire and what actually works.
+headline: >-
+  What do I do about screens?
+intro: >-
+  You set the limit. You enforced it. You took the device away — and what came back was a reaction that felt wildly out of proportion. Meltdown. Rage. Panic. And now you're wondering: is this normal? Is something actually wrong? And why does nothing you try seem to stick?
+defaultAge: "6-9"
+ageScenario25: >-
+  Your 4-year-old loses it completely when the show ends — crying, throwing themselves down. Screen time has become something their brain expects and demands, not something that's just enjoyable.
+ageScenario69: >-
+  Your 8-year-old has started sneaking the iPad and lying about it. They knew the rule. The pull to get back online is stronger than their fear of consequences.
+ageScenario1012: >-
+  Your 11-year-old's whole social world lives in a group chat. Cutting off their phone doesn't feel like a limit — it feels like being cut off from everyone.
+ageScenario13plus: >-
+  Your 15-year-old can't get through dinner without checking their phone. When you ask about it, they explode. Their mood, social status, and self-image all run through what happens on that screen.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Screen compulsivity isn't a willpower problem, and it isn't a parenting failure. It's the predictable result of systems that were engineered to keep kids coming back. Gaming platforms and social media are designed by teams of engineers specifically to make stopping hard — using the same reward mechanics as slot machines.
+  - discriminant: p
+    value: >-
+      Here's the deeper issue: with enough repetition, screen behavior stops being a choice and becomes a habit — automatically triggered by cues in the environment. The sight of the device, a notification sound, a moment of boredom. The behavior fires before your child has consciously decided anything. That's why "just try harder" doesn't work. You can't willpower your way out of a habit. Habits require changing the environment, not changing character.
+  - discriminant: p
+    value: >-
+      There's also a motivation piece. When kids start gaming or posting for fun, they often shift over time to gaming or posting for performance — how many wins, how many likes. That shift moves them from <strong>intrinsic motivation</strong> ("I enjoy this") to contingent motivation ("I need the number to go up to feel okay"). At that point, the screen isn't just entertaining — it's regulating their mood.
+backfires:
+  - title: >-
+      Taking the device away without an alternative.
+    body: >-
+      If you remove the screen without building a compelling substitute, you create a motivation vacuum. The child's brain needs something to reward it. Without an alternative, it returns to the most reliably rewarding thing available — which is usually the thing you just removed.
+  - title: >-
+      Starting with the conclusion.
+    body: >-
+      Sitting your child down to say "You're spending too much time on this, so we're making changes" puts them on the defensive before any understanding has been built. They don't feel heard — they feel managed. The conversation closes before it opens.
+  - title: >-
+      Punishing kids for telling you when they go over.
+    body: >-
+      If exceeding the limit gets the device confiscated, your child learns one thing: don't tell you next time. Your visibility into what's actually happening drops to zero — which is the opposite of what keeps them safe.
+tries:
+  - title: >-
+      Move devices out of bedrooms tonight.
+    body: >-
+      This is the highest-leverage single change most families can make. Charge phones in a shared family space. When the device isn't present, the environmental cue can't fire the habit. Frame it as a family-wide change, not a punishment for your child.
+  - title: >-
+      Start with a curiosity conversation.
+    body: >-
+      Before you change anything else, ask: "Help me understand what makes this so compelling. What does it give you that other things don't?" Then actually listen. The answer tells you what function the screen is serving — social connection, escape, competence — and that tells you what kind of alternative might actually work.
+  - title: >-
+      Build the alternative first, reduce screens second.
+    body: >-
+      Identify one activity your child shows any interest in and enroll them — a group class, team sport, creative pursuit, anything that puts them around peers. Run it for four to six weeks alongside normal screen time before touching limits. Alternatives only work if they have time to become genuinely rewarding.
+support: >-
+  Seek professional support if your child shows real distress — not just frustration — when devices are unavailable: severe irritability, inability to focus on anything, significant anxiety or depression between sessions. Also seek support if screen use has become the primary way your child is managing emotional pain, or if their self-worth seems to rise and fall with metrics like likes, views, or wins. At that point, the behavior is serving a psychological function that needs more than a parenting adjustment.
+crisis: false
+deepDiveLabel: >-
+  Screen Time and Gaming — When It Becomes Compulsive
+deepDiveHref: /docs/screen-gaming-compulsive-use
+related:
+  - label: >-
+      My kid won't listen
+    href: /help/wontlisten
+  - label: >-
+      My kid is anxious or worried
+    href: /help/anxiety

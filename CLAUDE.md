@@ -46,7 +46,7 @@ Source: Fontpair "Agent" starter kit. Apply automatically to all parenting pract
 - **Animation:** Motion
 - **Booking:** Cal.com — direct outbound links to the `intro-call` event (not embedded)
 - **Newsletter:** Substack embed — inside an on-page `Dialog` (shadcn/base-ui) triggered from header, homepage Connect tile, footer, and `/about`. Not a full-page embed and not an outbound link anymore. Component: `components/marketing/newsletter-dialog.tsx`; subdomain constant in `lib/links.ts`.
-- **CMS:** Keystatic — **listed in this doc historically but no config actually exists in the repo** (`keystatic.config.ts` and friends were never found on disk as of 2026-08-06). Treat all "Keystatic manages X" claims below as aspirational until config files actually exist. Content is hardcoded in components for now.
+- **CMS:** Keystatic — **built 2026-08-08, GitHub storage mode.** `keystatic.config.ts` at repo root manages `testimonials`, `painPoints`, `awarenessModules` (collections), plus `faq`/`footer`/`siteSettings`/`about` (singletons). Every editable string on the homepage, `/help`, `/help/[slug]`, and `/about` is now CMS-managed — see Keystatic CMS section for the full list and the two things still deliberately not wired up.
 - **Database:** Neon (Postgres) — real and provisioned, all tables exist, `neon_auth` schema live
 - **Auth:** Better Auth via Neon Managed — enabled and committed; reachable but unproven past sign-up (1 real user signed up, never completed onboarding)
 - **Hosting:** Vercel
@@ -62,7 +62,7 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 | Route | Purpose | Status |
 |---|---|---|
 | `/` | Homepage | Live — Hero → Pain Points → Connect → Meet Bobby → Testimonials → FAQ → Footer. No more content placeholders (bio, testimonials, and JSON-LD `jobTitle` are all real now) |
-| `/about` | Standalone About Bobby page | Live — real bio/credentials (military → business → behavioral health path, CPRS ID, training list). One clearly-marked placeholder block remains (personal disclosure paragraph) plus a `{/* TODO: photo */}` slot — both intentionally left for Bobby, not invented |
+| `/about` | Standalone About Bobby page | Live — real bio/credentials (military → business → behavioral health path, CPRS ID, training list), **CMS-managed via the `about` singleton as of 2026-08-08**. One clearly-marked placeholder block remains (personal disclosure paragraph, editable as the `personalDisclosure` field — page shows an amber "Bobby — write this" callout automatically while it's blank) plus a `{/* TODO: photo */}` slot (not CMS-manageable, no image field wired up, no real photo exists yet) — both intentionally left for Bobby, not invented |
 | `/help` | Pain Point index | Live — "Common situations" (10 pain-point cards) + "Big picture" (2 awareness-module cards) |
 | `/help/[slug]` | Pain Point pages | Live for 10 slugs: `meltdowns`, `screens`, `wontlisten`, `anxiety`, `bedtime`, `homework`, `aggression`, `routines`, `teen`, `burnout` — plus 2 awareness modules, `modern` and `mentalhealth`. See Pain Point Pages section below — slugs differ from the original 11-item plan, reconciled against real content from `CPRS_Interactive_Site.html` |
 | `/docs` | 36-topic categorized gallery (Stabilize / Connect / Structure / Adapt) | Live — all topic pages resolve |
@@ -71,13 +71,14 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 | `/dashboard` | Quick-reference index | Live (redirects to /dashboard/adhd) |
 | `/dashboard/adhd` | ADHD quick-reference dashboard | Live |
 | `/dashboard/[topic]` | Future topic dashboards | Not built — needs JSON data per topic |
+| `/tech-consequences` | Tech Safety & Consequence Setup — interactive parental-controls wizard (pick your phone + your child's devices, get tailored step-by-step setup instructions, a workarounds list, and a printable checklist for 11 device types + home Wi-Fi) | Live 2026-08-10 — standalone, unlisted (no header/footer nav link by design). Ported from `TechConsequences_ParentGuide.html` (repo root, kept untracked as reference, same as `CPRS_Interactive_Site.html`). Content is hardcoded in `lib/tech-consequences-data.ts` (not Keystatic — matches how `/docs` deep dives stay hand-authored), components in `components/marketing/tech-consequences/`. Screenshots hotlink Apple's CDN directly (`cdsassets.apple.com`) — not self-hosted, may break if Apple changes those URLs |
 
 ### CMS / Admin Routes
 
 | Route | Purpose | Status |
 |---|---|---|
-| `/keystatic` | Keystatic CMS admin UI | **Not built.** No config files exist in the repo despite this doc previously claiming "Config complete" — corrected 2026-08-06 |
-| `/api/keystatic` | Keystatic API handler | **Not built.** Same correction as above |
+| `/keystatic` | Keystatic CMS admin UI | Built 2026-08-08. Reachable but **not yet functional** — needs Bobby to create a GitHub App (walks you through it on first visit) and set 4 env vars (see Keystatic CMS section) before writes work |
+| `/api/keystatic` | Keystatic API handler | Built 2026-08-08. Same GitHub App dependency as above |
 
 ### Dormant Routes (committed, reachable, not actively used)
 
@@ -100,10 +101,10 @@ Rebuilt around a CPRS peer-support positioning (superseding the earlier "researc
 
 1. **Header** — wordmark "Bobby Washburn" (`<md`) / "Bobby Washburn Parenting Support" (`md+`), two-tier responsive text in the same link. Nav: About · Pain Points · FAQ (no "Guides" item — removed from the header nav specifically; the footer still links to `/docs` as "Guides")
 2. **Hero** — "You've tried everything... That's exactly where I come in." Primary CTA → `/help`, secondary → Cal.com `intro-call`
-3. **Pain Points** — 3 featured cards (`meltdowns`, `wontlisten`, `routines`, via a `featured` flag in `lib/pain-points.ts`) + "See all pain points" → `/help`
+3. **Pain Points** — 3 featured cards (`meltdowns`, `wontlisten`, `routines`, via a `featured` checkbox on the Keystatic `painPoints` collection) + "See all pain points" → `/help`
 4. **Connect** — 3 tiles: Newsletter (opens the signup modal), Instagram (disabled, "Coming soon"), Book a Call (→ Cal.com `intro-call`)
 5. **Meet Bobby** — condensed personal narrative (ADHD/depression/substance use lived experience → CPRS), links to `/about`
-6. **Testimonials** — full-bleed, auto-scrolling marquee, inverted navy colors (`bg-primary`/`text-primary-foreground`), 9 real quotes from `lib/testimonials.ts`. Pauses on hover/focus, respects `prefers-reduced-motion` (falls back to a swipeable row)
+6. **Testimonials** — full-bleed, auto-scrolling marquee, inverted navy colors (`bg-primary`/`text-primary-foreground`), 9 real quotes — CMS-managed via the Keystatic `testimonials` collection (`content/testimonials/*.yaml`) as of 2026-08-08; `lib/testimonials.ts` was deleted, it's fully superseded. Pauses on hover/focus, respects `prefers-reduced-motion` (falls back to a swipeable row)
 7. **FAQ** — 6 Q&As, CPRS/peer-support framing (first question: "So this isn't therapy?")
 8. **Footer** — Sitemap (About/Pain Points/Guides/FAQ) + Connect (Book a Call/Newsletter modal/LinkedIn/Instagram-disabled)
 
@@ -122,7 +123,7 @@ Rebuilt around a CPRS peer-support positioning (superseding the earlier "researc
 
 **Built and live** as of 2026-08-06. Custom layout — NOT Fumadocs. Content ported from `CPRS_Interactive_Site.html` (a standalone prototype Bobby supplied; still sits untracked at the repo root — fully incorporated into the site now, safe to delete or keep as reference, Bobby's call).
 
-Data lives in `lib/pain-points.ts` — `painPoints: PainPointTopic[]` (10 topics) and `awarenessModules: AwarenessModule[]` (2 topics, a lighter-weight template: narrative sections instead of age-tabs/backfires/tries). `getHelpEntry(slug)` looks up either kind for `/help/[slug]`.
+**CMS-managed as of 2026-08-08.** Content lives in Keystatic: `painPoints` collection (`content/pain-points/*.yaml`, 10 entries) and `awarenessModules` collection (`content/awareness-modules/*.yaml`, 2 entries — a lighter-weight template: narrative sections instead of age-tabs/backfires/tries). `lib/pain-points.ts` now holds only the shared TypeScript types (`PainPointTopic`, `AwarenessModule`, `ContentBlock`, etc.) — the actual data and the `getHelpEntry(slug)`/`getAllPainPoints()`/`getFeaturedPainPoints()` lookups moved to `lib/pain-points-reader.ts` (async, reads via `lib/keystatic-reader.ts`). Icon fields store a name string (`Flame`, `Smartphone`, ...) resolved back to a `LucideIcon` component via `lib/pain-point-icons.ts` — keep both files' icon lists in sync if a new icon is ever needed. One known tradeoff: `painPoints` is a Keystatic *collection* (one YAML file per entry, for clean per-entry diffs), which means display order comes from the collection's file listing, not authored intent — the 3 featured homepage cards may not appear in exactly the original meltdowns/wontlisten/routines order. Not worth fixing unless it visibly matters; the `faq` singleton pattern was deliberately used elsewhere for order-sensitive content instead.
 
 | Slug | Topic | Deep-dive link (`/docs/...`) |
 |---|---|---|
@@ -257,9 +258,39 @@ Data source: `content/data/[topic].json`.
 
 ## Keystatic CMS
 
-**Correction (2026-08-06):** this section previously claimed "four config files created" and "config complete" for `/keystatic` and `/api/keystatic`. Neither is true — a repo-wide search found no `keystatic.config.ts` or any other Keystatic config file, and both routes are unbuilt. All content this section describes (testimonials, homepage copy, FAQ, footer, About Bobby page) is currently hardcoded directly in components (`lib/testimonials.ts`, `components/marketing/*.tsx`, `app/about/page.tsx`), not CMS-managed.
+**Built 2026-08-08** on the `feat/keystatic-cms` branch — GitHub storage mode (edits commit directly to `BobbyW08/ResearchBibleWebsite` via a GitHub App; Vercel's serverless filesystem is read-only in production, so local-storage mode wasn't viable).
 
-If Keystatic gets built for real later, the original intent still stands: manage blog posts, testimonials, homepage copy, FAQ, footer, and About Bobby page as a metadata layer, while topic page body content stays Google Drive–sourced.
+**What's CMS-managed now:**
+- `testimonials` — collection, one YAML file per entry at `content/testimonials/*.yaml` (`quote`, `attribution`)
+- `painPoints` — collection, one YAML file per entry at `content/pain-points/*.yaml` (10 entries: `meltdowns`, `screens`, `wontlisten`, `anxiety`, `bedtime`, `homework`, `aggression`, `routines`, `teen`, `burnout`). Every field on `/help/[slug]` for these — tag, title, intro, all 4 age-band scenarios, `whatHappening` (a `p`/`stat`/`list` conditional block array), `backfires`, `tries`, `support`, `deepDive`, `related`, the `featured` flag, and the icon (stored as a name string, e.g. `Flame`, resolved to a `LucideIcon` via `lib/pain-point-icons.ts`) — is editable
+- `awarenessModules` — collection, one YAML file per entry at `content/awareness-modules/*.yaml` (`modern`, `mentalhealth`). Same base fields as `painPoints` plus `sections` (heading + the same conditional block array), no age-tabs/backfires/tries
+- `faq` — singleton at `content/faq/data.yaml` (ordered array of `question`/`answer`; a singleton rather than a collection specifically so the admin UI gives native drag-to-reorder — order is narratively load-bearing, it opens with "So this isn't therapy?")
+- `footer` — singleton at `content/footer/data.yaml` (`tagline`, `contactEmail`, `copyrightText`, and `sections` → `links`, where each link's `linkType` is a conditional field — `url` / `newsletter` / `comingSoon` — that maps onto the existing `NewsletterDialog`/`ComingSoonTrigger`/plain-`<Link>` special-casing in `footer.tsx`)
+- `about` — singleton at `content/about/data.yaml`. Every paragraph, heading, the 4 phases, the training list, and the CTA copy on `/about` is editable, including `personalDisclosure` — left blank in the seed content on purpose; the page shows an amber "Bobby — write this" callout automatically whenever that field is empty, same UX as the old hardcoded placeholder, just editable from Keystatic instead of JSX now. The `{/* TODO: photo */}` slot stays hardcoded — no image field exists yet, no real photo to put there
+- `siteSettings` — singleton at `content/site-settings/data.yaml` (`substackSubdomain`, `calComUrl`) — **the singleton exists and holds real values, but nothing reads from it yet.** `lib/links.ts` and the 5 hardcoded Cal.com URLs (header, hero, connect, footer, about) were deliberately left unwired — rewiring them means converting several client components to fetch-and-pass-props, which was judged too large to bundle into "infra + easy wins." Next step if this matters: wire those 5 call sites + `lib/links.ts` to `reader.singletons.siteSettings.read()`.
+
+All existing live content (9 testimonials, 6 FAQ items, both footer sections, 10 pain points, 2 awareness modules, the full About page bio) has been carried over verbatim into the seed YAML files, so nothing regressed to empty.
+
+**Reader wiring:** `lib/keystatic-reader.ts` exports a shared `reader = createReader(process.cwd(), keystaticConfig)`. `testimonials.tsx` and `faq.tsx` are async Server Components that read content and pass it to client children (`testimonials-marquee.tsx`, `faq-accordion.tsx`) that keep only the interactive bits. `footer.tsx` and `about/page.tsx` are already Server Components, so they just swapped hardcoded data for reader calls. `pain-points.tsx` (the homepage teaser) is now async too, using the same `FadeInView` client wrapper pattern as `faq.tsx` to preserve its scroll-fade-in animation. `app/help/page.tsx` and `app/help/[slug]/page.tsx` (including `generateStaticParams`) are async and use `lib/pain-points-reader.ts` — this is where the Keystatic-shaped data (icon name strings, the `{discriminant, value}` conditional-field shape) gets transformed back into the pre-existing `PainPointTopic`/`AwarenessModule`/`ContentBlock` TypeScript shapes, so `pain-point-detail.tsx`, `awareness-module-detail.tsx`, `pain-point-content.tsx`, `pain-point-age-tabs.tsx`, `pain-point-accordion.tsx`, `pain-point-support-callout.tsx`, and `pain-point-card.tsx` needed **zero changes** — they still consume exactly the types they always did. `lib/pain-points.ts` now holds only those shared types, not data.
+
+**GitHub App set up and OAuth login confirmed working, 2026-08-08.** App name `research-bible-website`, installed scoped to this one repo. Credentials are in `.env.local` (not committed). Note: this app was **not** created fresh through Keystatic's own setup wizard — it's the same GitHub App Vercel auto-created for its own "Connect to GitHub" project-linking flow (visible from its Homepage URL and two `connect.vercel.com` callback URLs, both harmless to leave in place). Repurposing it worked because its `Contents` repository permission already happened to be `Read and write` — the one permission Keystatic actually needs. If that permission is ever missing (e.g. Vercel resets it, or this needs replicating for another project), create a dedicated GitHub App instead of relying on that coincidence.
+
+**Still to do:**
+1. Add the same 4 env vars (`KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`) to the Vercel project dashboard (Production) — **without them, `npm run build` fails outright**, since the route handler validates them at build time, not just runtime
+2. Add a production callback URL on the GitHub App once the domain is ready: `https://bobby-washburn.com/api/keystatic/github/oauth/callback` — Vercel preview URLs are skipped, they're unstable per-deployment
+3. Re-seed content once for real through the admin UI (or trust the hand-authored YAML files already committed) to prove the GitHub OAuth → commit write path end-to-end
+
+**Known gotcha #1, fixed 2026-08-08 — `/keystatic` renders blank in a real browser (dev only):** GitHub-storage-mode Keystatic wraps its admin UI in a `RedirectToLoopback` component that, per RFC 8252, hard-navigates `localhost` → `127.0.0.1` on first mount (required for the OAuth loopback flow) and renders nothing until that navigation completes. Next.js 16 added dev-server origin protection (`allowedDevOrigins`) that does not include `127.0.0.1` by default, so the redirected page's own dev assets (HMR socket, RSC chunks) got silently blocked — no console error, no server error, just a permanently blank page. This is a known, open upstream issue (Thinkmill/keystatic #1549). **Fixed** by adding `allowedDevOrigins: ["127.0.0.1"]` to `next.config.ts` — dev-only config, doesn't affect `next build`/production. If `/keystatic` ever goes blank again after an upgrade, check this first before assuming the integration code is wrong — it very likely isn't (confirmed against Keystatic's own compiled source and their current docs, both match this repo's implementation).
+
+**Known gotcha #2, fixed 2026-08-08 — GitHub OAuth fails with "The redirect_uri is not associated with this application":** happens on first login attempt even with a correctly-created GitHub App, because gotcha #1's loopback redirect means the OAuth request is built from the `127.0.0.1` origin, not `localhost`. Keystatic's own server code (`@keystatic/core/dist/keystatic-core-api-generic.node.js`) hints at adding a portless `http://127.0.0.1/api/keystatic/github/oauth/callback` callback URL, but that alone was **not sufficient here** — GitHub Apps did not honor the RFC 8252 "any port for loopback" leniency in practice. **Fixed** by also adding the exact-port callback URL: `http://127.0.0.1:3000/api/keystatic/github/oauth/callback`. Register both — costs nothing, and the exact-port one is what actually resolved it. Also double-check the GitHub App settings were actually **saved** — that tripped this up once too.
+
+**Deliberately not gated by `proxy.ts`:** `/keystatic` and `/api/keystatic` are reachable without a session cookie. `proxy.ts`'s Better Auth check protects a different identity system (end-user `profiles` accounts) — GitHub-mode Keystatic's actual write authorization is GitHub's own permission model (a write attempt from a non-collaborator 403s at the GitHub API regardless of reaching the page). Reachability without write access is Keystatic's documented design intent for GitHub mode.
+
+**Still out of scope:** `content/docs/*.mdx` (37 Fumadocs deep-dive pages) and `content/data/*.json` (dashboard data) stay Google-Drive/hand-authored, matching the original intent below — these were never on the migration list. `/about`, `lib/pain-points.ts`'s content, testimonials, FAQ, and the footer are all CMS-managed as of 2026-08-08 (see "What's CMS-managed now" above) — the only remaining unwired piece is `siteSettings` (see its bullet above for why).
+
+**Known limitation — `painPoints` display order isn't authored order.** Collections don't have native drag-reorder in Keystatic (only singletons/arrays do), so the 3 featured homepage cards and the `/help` grid render in whatever order the collection's file listing returns (alphabetical-ish by slug), not the original meltdowns → wontlisten → routines narrative order. Cosmetic, not a data-integrity issue — flagged in case reordering ever becomes a real ask, in which case the fix is restructuring `painPoints` as a singleton + `fields.array`, same pattern as `faq`.
+
+If Keystatic gets extended further, the original intent still stands: manage blog posts, homepage copy, and the About Bobby page as a metadata layer, while topic page body content stays Google Drive–sourced.
 
 ---
 
@@ -309,7 +340,7 @@ Neon is real and provisioned. All code is committed (`ae51b02` and later). Do no
 
 - **Vercel local link:** `.vercel/project.json` points at a stale project ID. Re-run `vercel link` and select `prj_2AgBQ4NhUvGsAij6A6N7YLnRovdQ` before using any local Vercel CLI commands.
 - ~~Hero Lorem Ipsum~~ — resolved. `hero.tsx` was fully rewritten with real copy; the credibility-strip section no longer exists on the homepage at all.
-- **Keystatic doesn't exist** (found 2026-08-06, see Keystatic CMS section) — this doc claimed config files existed for two prior revisions. If Keystatic is genuinely wanted, it needs to be built from scratch, not "reconnected."
+- ~~Keystatic doesn't exist~~ — resolved 2026-08-08. Built on `feat/keystatic-cms` (see Keystatic CMS section). Still needs Bobby to create the GitHub App and set 4 env vars before `/keystatic` actually works, and `npm run build` will fail in any environment missing those vars.
 - **Untracked folders at repo root** (not committed, not in `.gitignore` — clarify intent before next push): `E-Books/`, `Instruction Docs/`, `Parent Facing Content/`, `Planning Docs/`, `Quick Guides/`, `Research Bibles/`, `Website Copy/`, `CPRS_Interactive_Site.html`. These should either be gitignored or moved out of the repo root entirely — raw content does not belong in the repo. `CPRS_Interactive_Site.html` specifically has now been fully ported into `lib/pain-points.ts` (see Pain Point Pages) — safe to delete or archive elsewhere whenever Bobby confirms, nothing on the live site depends on the file itself anymore.
 
 ---

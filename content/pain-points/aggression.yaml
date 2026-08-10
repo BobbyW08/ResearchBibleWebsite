@@ -1,0 +1,71 @@
+slugName: aggression
+icon: Hand
+featured: false
+tag: >-
+  Aggression & hitting
+title: >-
+  My kid hits, bites, or throws things
+cardTeaser: >-
+  What aggressive behavior communicates — and how to respond.
+headline: >-
+  My kid hits, bites, or throws things
+intro: >-
+  It's frightening and exhausting. You're managing the injury, keeping siblings safe, trying to stay calm while something in you is panicking. And the question underneath all of it: is this normal? Is something wrong? Am I doing something wrong?
+defaultAge: "6-9"
+ageScenario25: >-
+  Your 3-year-old bites their sibling when frustrated or throws toys when things don't go their way. This is extremely common at this age — the regulatory skills literally don't exist yet. They're not bad; they're 3.
+ageScenario69: >-
+  Your 7-year-old hits when frustrated and can't say why. They look surprised afterward, like they didn't choose it. That's reactive aggression: the brain fired before thinking was involved.
+ageScenario1012: >-
+  Your 11-year-old slams doors, throws things, occasionally gets physical when cornered. The outbursts feel bigger than they used to because their body is bigger but their regulation hasn't caught up.
+ageScenario13plus: >-
+  Your 15-year-old doesn't throw things, but they're verbally aggressive in ways that feel frightening — threatening, intimidating, explosive. Big-body aggression in teens needs the same response principles, with safety planning added.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Aggressive behavior in children is always communicating something. It isn't random, and it isn't a character verdict on your child — or on you. There are two distinct types, and they need different responses.
+  - discriminant: p
+    value: >-
+      The first is <strong>reactive aggression</strong>: a hot, explosive response to frustration, threat, or overwhelm. The child's <strong>threat-detection system</strong> fires before the thinking brain can intervene. This is the "I didn't even decide to hit — I just hit" kind. It's most common in children with ADHD, anxiety, trauma histories, or high sensory sensitivity. Their threshold for dysregulation is lower, and their ability to pause before responding is still developing.
+  - discriminant: p
+    value: >-
+      The second is <strong>proactive aggression</strong>: more calculated, less emotional. The child has figured out that aggression works — it gets them out of a demand, gets them the toy, gets a reaction. Both matter, but they call for completely different approaches. Most early childhood aggression is reactive — a child with too-big feelings and not enough skills to handle them. The question isn't "how do I punish this?" It's "what is this communicating, and what skill does my child need instead?"
+backfires:
+  - title: >-
+      Backing down after aggression.
+    body: >-
+      If your child hits and then the demand disappears — the bath gets cancelled, the homework gets postponed — their brain has received a clear message: hitting works. Every time aggression produces the result they wanted, it becomes more likely to happen again. This is the most important pattern to interrupt, and also the hardest one in the heat of the moment.
+  - title: >-
+      Trying to reason at the peak.
+    body: >-
+      During a full aggressive episode, the thinking brain is offline. Explanations, consequences, and lectures don't reach a dysregulated child — they just add more stimulation to an already overwhelmed system. The time for all of that is after full calm, not during.
+  - title: >-
+      Focusing only on the peak and missing the warning signs.
+    body: >-
+      Most aggressive episodes move through predictable stages. The earliest stages — increased tension, short sentences, a shift in body posture — are the stages where you can still change the outcome. By the time there's hitting, you've missed several windows. Learning your child's early warning signs is more powerful than any consequence.
+tries:
+  - title: >-
+      Hold the expectation calmly after the episode.
+    body: >-
+      Once your child has returned to baseline — and everyone is safe — whatever they were trying to escape still applies. Calmly, matter-of-factly, without punishment or lecture: the bath still happens, the homework is still done, the desired item is still not available. This breaks the most fundamental piece of the pattern: aggression stops working as a strategy.
+  - title: >-
+      Learn the early warning signs and catch them.
+    body: >-
+      Think about the last three or four aggressive episodes. What happened in the 5–10 minutes before? Increased tension? Repeated questions? Body posture changes? Once you know your child's pattern, you can intervene before the peak — offer a movement break, reduce a demand, change the environment — and the episode often doesn't happen at all.
+  - title: >-
+      Teach replacement skills during calm time.
+    body: >-
+      "Use your words" isn't specific enough. Practice the specific words: "I need a break." "This is too hard." "I'm angry." Role-play it. Praise it when it happens. Skills taught at baseline stick; skills demanded during dysregulation don't.
+support: >-
+  Seek support if aggression is happening daily, involves injury to others, isn't decreasing over several weeks despite consistent responses, or if you can't keep everyone safe during episodes. Also seek support if your child seems to have no emotional response to aggression — no remorse, no distress, no awareness that it hurt someone. Both extremes can indicate something worth a professional evaluation. A behavioral therapist or pediatrician is the right starting point.
+crisis: false
+deepDiveLabel: >-
+  Supporting Aggressive Children
+deepDiveHref: /docs/supporting-aggressive-children
+related:
+  - label: >-
+      My kid melts down over everything
+    href: /help/meltdowns
+  - label: >-
+      My kid won't listen
+    href: /help/wontlisten

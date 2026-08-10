@@ -1,0 +1,71 @@
+slugName: wontlisten
+icon: Ear
+featured: true
+tag: >-
+  Defiance & compliance
+title: >-
+  My kid won't listen
+cardTeaser: >-
+  Understanding why — and responses that actually change the pattern.
+headline: >-
+  My kid won't listen
+intro: >-
+  You've asked three times. Your voice is rising. They're still doing the exact thing you asked them not to do — or nowhere near the thing you asked them to do. And you're starting to wonder if they simply don't care what you say, or if there's something fundamentally off.
+defaultAge: "6-9"
+ageScenario25: >-
+  You ask your 4-year-old to put shoes on. Nothing. Again. Nothing. Louder. Now it's a meltdown. The ask became a power struggle without you meaning for it to.
+ageScenario69: >-
+  Your 7-year-old pretends not to hear you until your voice gets sharp. Quiet requests disappear. You've accidentally trained them to respond to your yell.
+ageScenario1012: >-
+  Your 10-year-old responds to every request with "why do I have to?" Every instruction becomes a negotiation and you're exhausted by 8 PM.
+ageScenario13plus: >-
+  Your 14-year-old isn't defiant exactly — they're just absent. Not doing what you ask, not arguing. Just not doing it. Passive non-compliance is harder to address than open defiance.
+whatHappening:
+  - discriminant: p
+    value: >-
+      All behavior serves a purpose. When your child "won't listen," their brain is almost always doing one of four things: trying to get out of something that feels hard or unpleasant (escape), trying to get your attention — even if it looks like a negative interaction (attention), trying to access something they want (tangible), or responding to a sensory need.
+  - discriminant: p
+    value: >-
+      Understanding which one is happening changes everything about how you respond. A child who melts down when you announce homework time is usually motivated by escape — the task feels hard or overwhelming, and the meltdown reliably makes the demand go away. A child who acts up the moment you're on a phone call is usually motivated by attention — even your irritated attention is more satisfying than being ignored.
+  - discriminant: p
+    value: >-
+      This isn't manipulation in the strategic, adult sense. It's your child's brain running the program that's worked before. Most of the time, they're not even aware they're doing it. When you understand the function, the response becomes obvious.
+backfires:
+  - title: >-
+      Repeating the instruction over and over.
+    body: >-
+      Multiple warnings with no follow-through teach your child that your words don't have weight. They learn to wait out the first three or four asks because consequences only appear when you reach a certain volume. You end up training them to respond to your yell, not your ask.
+  - title: >-
+      Long explanations during the conflict.
+    body: >-
+      When your child is already in a state of resistance, a lengthy explanation of why they should listen tends to escalate, not resolve. Their brain is already activated, and more words feel like more pressure. Save the reasoning for a calm moment later.
+  - title: >-
+      Backing down after escalation.
+    body: >-
+      If your child throws a fit and you remove the demand, you've just demonstrated that escalation works. The next time you make a request, their nervous system already knows the playbook. Consistency matters more than perfect execution.
+tries:
+  - title: >-
+      Do the HALT check before you respond.
+    body: >-
+      HALT: Hungry, Angry, Lonely, Tired. Before you interpret the behavior as defiance, run through the list. Many "won't listen" moments are a depleted nervous system trying to communicate a basic need. A snack and five minutes of connection can dissolve what looks like willful resistance.
+  - title: >-
+      Give one clear instruction and follow through every time.
+    body: >-
+      Not "I'm going to count to three and then..." — just a calm, direct expectation and a consequence that follows reliably if it isn't met. Consequences work through consistency, not severity. One expectation, followed through calmly every time, is more effective than a dozen rules enforced unpredictably.
+  - title: >-
+      Offer a choice within the limit.
+    body: >-
+      "Do you want to start with math or reading?" gives your child genuine agency without negotiating the actual expectation. Kids who feel some control over how they do a thing are dramatically more likely to do it. The choice belongs to them; the expectation stays with you.
+support: >-
+  If your child's level of defiance is significantly out of step with peers their age, happening across all settings (home, school, others' homes), or accompanied by persistent aggression, it's worth a professional evaluation. Conditions like ADHD, anxiety, and oppositional defiant disorder (ODD) can make compliance genuinely harder than it looks from the outside — and they respond differently than typical behavior. A pediatrician or behavioral therapist can help you figure out what's actually driving the pattern.
+crisis: false
+deepDiveLabel: >-
+  Understanding Your Child's Behavior
+deepDiveHref: /docs/understanding-child-behavior
+related:
+  - label: >-
+      My kid melts down over everything
+    href: /help/meltdowns
+  - label: >-
+      The homework war
+    href: /help/homework

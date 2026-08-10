@@ -1,0 +1,71 @@
+slugName: routines
+icon: Clock
+featured: true
+tag: >-
+  Routines & structure
+title: >-
+  Morning chaos — routines
+cardTeaser: >-
+  How structure frees up your child's brain and reduces the nagging.
+headline: >-
+  Morning chaos — why your mornings fall apart (and how routines actually fix it)
+intro: >-
+  You've said "get dressed" four times. Shoes are missing. Someone is still in bed. The clock is running, your voice is getting sharper, and you're leaving 12 minutes late again. By the time you get in the car, everyone is dysregulated and the day hasn't even started.
+defaultAge: "6-9"
+ageScenario25: >-
+  Morning with a toddler is chaos with shoes. Predictability is even more critical at this age — young children's brains have almost no internal sequence. Everything depends on the external routine.
+ageScenario69: >-
+  Your 8-year-old knows the routine but still won't follow it without prompting. You're saying "get dressed" for the fourth time and they're standing in the kitchen looking at nothing.
+ageScenario1012: >-
+  Your 11-year-old used to manage the morning. Now they're barely functional before school. Something shifted. They need more explicit structure, not more parental nagging.
+ageScenario13plus: >-
+  Your 15-year-old won't get up. The alarm goes off six times. You're late every morning. At this age, the routine conversation has to shift — you're transferring ownership of the sequence to them, not managing it for them.
+whatHappening:
+  - discriminant: p
+    value: >-
+      Your child's brain doesn't like surprises. It's constantly trying to predict what comes next — and when the morning routine changes day to day, or when "get dressed" can mean now or in fifteen minutes depending on your tone, their brain has no choice but to stay on alert, waiting to figure out what's happening. That alert state consumes the cognitive resources they'd otherwise use for actually moving through the morning.
+  - discriminant: p
+    value: >-
+      When a predictable sequence is in place, something shifts. Their brain can relax slightly — it knows what's coming. The mental energy that was burning on "what do I do next?" gets freed up for actually doing the thing. This is why consistent routines reduce the constant prompting: not because your child suddenly became more obedient, but because their brain isn't working as hard to orient to the unpredictable.
+  - discriminant: p
+    value: >-
+      The key word is consistent. An imperfect routine done the same way every day outperforms a perfect routine done three days a week. Brains learn from repetition. After three to four weeks of consistent repetition, the sequence starts to become automatic — and automatic sequences require far less adult enforcement.
+backfires:
+  - title: >-
+      Being the external brain.
+    body: >-
+      When you prompt each step — "now get dressed, now find your shoes, now brush your teeth" — your child never builds the internal sequence. You've become the routine. The moment you're distracted or quiet, nothing happens. The goal is to externalize the routine itself, not your prompting.
+  - title: >-
+      Varying the order or timing.
+    body: >-
+      If breakfast sometimes comes before getting dressed and sometimes after, the sequence never becomes automatic. Automaticity requires a stable context. Variation resets the clock every time.
+  - title: >-
+      Consequences and battles during the rush.
+    body: >-
+      Trying to address behavior (arguing, threats, lectures) while simultaneously trying to get out the door makes both things worse. The morning is not the time for discipline. It's the time to execute the system.
+tries:
+  - title: >-
+      Make the chart the boss, not you.
+    body: >-
+      Write or draw 4–5 steps on an index card or whiteboard: wake up, bathroom, dressed, breakfast, backpack. Post it where your child will see it. When they ask "what do I do now?" point to the chart. "What does the chart say?" removes you from the loop and puts the sequence in charge. This is the single highest-impact change most families can make.
+  - title: >-
+      Give five-minute warnings before each transition.
+    body: >-
+      "In five minutes we're leaving. Shoes on and backpack ready." Advance notice gives the brain time to prepare for the shift. Without it, transitions feel like interruptions. With it, they feel expected.
+  - title: >-
+      Protect consistency for three weeks before evaluating.
+    body: >-
+      The routine will not feel automatic in week one. It won't feel much easier in week two. By week three to four, with genuine consistency (same order, same time, every day), it starts to shift. Many parents give up at day seven, right before the payoff. Give it the full window.
+support: >-
+  If you've been consistent for four or more weeks and mornings are still taking more than twice the expected time, or if your child is completely unable to transition out of bed or through sequences despite the routine, it's worth talking to your pediatrician. ADHD, anxiety, and sensory sensitivities all commonly interfere with morning routines in ways that go beyond what structure alone can fix — and there are specific supports for all three.
+crisis: false
+deepDiveLabel: >-
+  How Structure and Routines Actually Help
+deepDiveHref: /docs/structure-routines-parenting
+related:
+  - label: >-
+      Bedtime battles
+    href: /help/bedtime
+  - label: >-
+      My kid won't listen
+    href: /help/wontlisten

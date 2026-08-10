@@ -4,21 +4,22 @@ import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import PainPointDetail from "@/components/marketing/pain-point-detail";
 import AwarenessModuleDetail from "@/components/marketing/awareness-module-detail";
-import { allHelpEntries, getHelpEntry } from "@/lib/pain-points";
+import { getAllHelpEntries, getHelpEntry } from "@/lib/pain-points-reader";
 
 type HelpPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return allHelpEntries.map((entry) => ({ slug: entry.slug }));
+export async function generateStaticParams() {
+  const entries = await getAllHelpEntries();
+  return entries.map((entry) => ({ slug: entry.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: HelpPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const entry = getHelpEntry(slug);
+  const entry = await getHelpEntry(slug);
   if (!entry) return {};
 
   return {
@@ -29,7 +30,7 @@ export async function generateMetadata({
 
 export default async function HelpPage({ params }: HelpPageProps) {
   const { slug } = await params;
-  const entry = getHelpEntry(slug);
+  const entry = await getHelpEntry(slug);
 
   if (!entry) notFound();
 
