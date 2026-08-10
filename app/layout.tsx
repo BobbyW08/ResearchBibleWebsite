@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { DM_Sans, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -75,6 +76,7 @@ export default function RootLayout({
             <TooltipProvider>{children}</TooltipProvider>
           </Providers>
         </RootProvider>
+        <Analytics />
       </body>
     </html>
   );
