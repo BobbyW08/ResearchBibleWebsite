@@ -50,3 +50,6 @@ next-env.d.ts
 .tmp.driveupload/
 
 .vercel
+
+# committed zip export artifact — removed, keep it out going forward
+files.zip
