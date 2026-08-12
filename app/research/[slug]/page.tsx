@@ -40,7 +40,7 @@ export default async function ResearchBiblePage({ params }: ResearchBiblePagePro
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-8 lg:py-16">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-8 lg:py-16">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Research Bible &middot; v{entry.version}
           </p>

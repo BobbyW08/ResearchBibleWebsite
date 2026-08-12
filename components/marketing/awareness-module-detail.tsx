@@ -5,7 +5,7 @@ import { ContentBlocks, DeeperLinks } from "@/components/marketing/pain-point-co
 
 function AwarenessModuleDetail({ module }: { module: AwarenessModule }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-8 lg:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 lg:py-14">
       <Badge variant="outline" className="mb-3 h-auto bg-accent/10 px-3 py-1 text-xs text-accent-foreground">
         {module.tag}
       </Badge>

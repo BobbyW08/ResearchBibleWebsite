@@ -8,7 +8,7 @@ import { BackfireList, ContentBlocks, DeeperLinks, SectionHead } from "@/compone
 
 function PainPointDetail({ topic }: { topic: PainPointTopic }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-8 lg:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 lg:py-14">
       <Badge variant="outline" className="mb-3 h-auto gap-1.5 px-3 py-1 text-xs">
         <MapPin className="h-3 w-3" />
         {topic.tag}
