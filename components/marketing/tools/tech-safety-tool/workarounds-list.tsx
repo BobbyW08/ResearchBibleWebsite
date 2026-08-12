@@ -3,7 +3,7 @@ import {
   WORKAROUNDS,
   type DeviceId,
   type WorkaroundKey,
-} from "@/lib/tech-consequences-data";
+} from "@/lib/tools/tech-safety-tool-data";
 
 export function WorkaroundsList({ selected }: { selected: Set<DeviceId> }) {
   const keys = new Set<WorkaroundKey>(DEVICE_WORKAROUNDS.wifi);

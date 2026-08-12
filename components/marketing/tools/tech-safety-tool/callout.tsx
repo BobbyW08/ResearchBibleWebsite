@@ -1,4 +1,4 @@
-import type { Callout as CalloutData } from "@/lib/tech-consequences-data";
+import type { Callout as CalloutData } from "@/lib/tools/tech-safety-tool-data";
 
 const TONE_STYLES: Record<CalloutData["tone"], string> = {
   amber: "border-amber-300/60 bg-amber-50 text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/30 dark:text-amber-100",

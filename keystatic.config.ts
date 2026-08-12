@@ -208,6 +208,32 @@ export default config({
         }),
       },
     }),
+
+    researchBibles: collection({
+      label: "Research Bibles",
+      slugField: "slugName",
+      path: "content/research-bibles/*/",
+      format: { contentField: "body" },
+      entryLayout: "form",
+      columns: ["title"],
+      schema: {
+        slugName: fields.slug({ name: { label: "Slug" } }),
+        title: fields.text({ label: "Title", validation: { isRequired: true } }),
+        version: fields.text({ label: "Version (auto-computed by sync, do not hand-edit)" }),
+        lastUpdated: fields.date({ label: "Last updated" }),
+        tags: fields.array(fields.text({ label: "Tag" }), { label: "Tags" }),
+        noindex: fields.checkbox({ label: "Hide from search engines", defaultValue: false }),
+        changelog: fields.array(
+          fields.object({
+            date: fields.date({ label: "Date" }),
+            summary: fields.text({ label: "Summary", multiline: true }),
+            prUrl: fields.url({ label: "PR URL" }),
+          }),
+          { label: "Changelog", itemLabel: (props) => props.fields.summary.value || "New entry" },
+        ),
+        body: fields.mdx({ label: "Body" }),
+      },
+    }),
   },
 
   singletons: {

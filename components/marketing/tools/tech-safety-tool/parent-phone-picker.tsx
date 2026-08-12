@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { ParentPhone } from "@/lib/tech-consequences-data";
+import type { ParentPhone } from "@/lib/tools/tech-safety-tool-data";
 
 const OPTIONS: { id: ParentPhone; icon: string; title: string; description: string }[] = [
   { id: "iphone", icon: "📱", title: "I have an iPhone", description: "Controls Apple devices remotely via Family Sharing" },

@@ -1,4 +1,4 @@
-import { ALL_DEVICES, CHECKLISTS, type DeviceId } from "@/lib/tech-consequences-data";
+import { ALL_DEVICES, CHECKLISTS, type DeviceId } from "@/lib/tools/tech-safety-tool-data";
 
 export function ChecklistSection({ selected }: { selected: Set<DeviceId> }) {
   const groups: (DeviceId | "wifi")[] = [...ALL_DEVICES.filter((d) => selected.has(d)), "wifi"];

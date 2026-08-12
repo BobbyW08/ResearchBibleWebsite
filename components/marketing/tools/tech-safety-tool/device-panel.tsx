@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PanelData, ParentPhone, Step } from "@/lib/tech-consequences-data";
+import type { PanelData, ParentPhone, Step } from "@/lib/tools/tech-safety-tool-data";
 import { Callout } from "./callout";
 
 function StepRow({ step, index }: { step: Step; index: number }) {

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ALL_DEVICES, DEVICE_PICKER, type DeviceId } from "@/lib/tech-consequences-data";
+import { ALL_DEVICES, DEVICE_PICKER, type DeviceId } from "@/lib/tools/tech-safety-tool-data";
 import { PrintButton } from "./print-button";
 
 export function DevicePickerGrid({

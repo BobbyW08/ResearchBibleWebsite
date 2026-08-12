@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ALL_DEVICES, type DeviceId, type ParentPhone, DEVICE_PANELS } from "@/lib/tech-consequences-data";
+import { ALL_DEVICES, type DeviceId, type ParentPhone, DEVICE_PANELS } from "@/lib/tools/tech-safety-tool-data";
 import { ParentPhonePicker } from "./parent-phone-picker";
 import { DevicePickerGrid } from "./device-picker-grid";
 import { DevicePanel } from "./device-panel";
@@ -38,7 +38,7 @@ function SectionBanner({ number, title, subtitle, className }: { number: number;
   );
 }
 
-export function TechConsequencesGuide() {
+export function TechSafetyToolGuide() {
   const [parentPhone, setParentPhone] = useState<ParentPhone | null>(null);
   const [selected, setSelected] = useState<Set<DeviceId>>(new Set());
 

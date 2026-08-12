@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
-import { TechConsequencesGuide } from "@/components/marketing/tech-consequences/tech-consequences-guide";
+import { TechSafetyToolGuide } from "@/components/marketing/tools/tech-safety-tool/tech-safety-tool-guide";
 
 export const metadata: Metadata = {
   title: "Tech Safety & Consequence Setup Guide",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Step-by-step parental controls for every device your child uses. Tell us your setup, and this guide builds itself around your family.",
 };
 
-export default function TechConsequencesPage() {
+export default function TechSafetyToolPage() {
   return (
     <div className="flex flex-1 flex-col">
       <Header />
@@ -36,7 +36,7 @@ export default function TechConsequencesPage() {
             </div>
           </div>
 
-          <TechConsequencesGuide />
+          <TechSafetyToolGuide />
 
           <div className="mt-10 border-t border-border pt-4 text-center text-xs text-muted-foreground print:mt-6">
             <strong className="text-foreground">Bobby Washburn Parenting Support</strong> ·{" "}

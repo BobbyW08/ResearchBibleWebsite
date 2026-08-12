@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
   // dev-origin protection silently blocks the redirected page's dev assets,
   // leaving /keystatic blank with no console/server error.
   allowedDevOrigins: ["127.0.0.1"],
+  async redirects() {
+    return [
+      {
+        source: "/tech-consequences",
+        destination: "/tools/tech-safety-tool",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);
