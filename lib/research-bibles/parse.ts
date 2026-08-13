@@ -4,83 +4,96 @@
  * Drive), these extract the pieces the webhook needs: title, the latest
  * changelog entry, and the cleaned MDX body.
  *
- * IMPORTANT — no real `RB_*.md` fixtures exist in this repo checkout. Every
- * pattern matched here (title line, Refinement Log block shape, the
- * `{.underline}` Pandoc span) comes from the handoff doc and prior
- * investigation, NOT from a real file. Unit tests below use synthetic
- * fixtures constructed to match the documented shape exactly. Bobby must
- * manually verify these regexes against a real `RB_*.md` (ideally
- * `RB_Anxiety_and_Depression.md`, flagged separately as having a possibly
- * malformed header) before trusting this in production. See the "manual
- * steps" list in the handoff round's final report.
+ * Title heading may be either ATX style (`# Research Bible: <Title>`, what
+ * Google Docs actually exports as of 2026-08) or Setext style
+ * (`Research Bible: <Title>` followed by a `===` underline, the original
+ * documented shape). Both are accepted; see extractTitle/extractBody.
  */
 
 export class BibleParseError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "BibleParseError";
-  }
+    constructor(message: string) {
+          super(message);
+          this.name = "BibleParseError";
+    }
 }
 
 /**
- * Strict title extraction. Only accepts a Setext-style H1 of the exact form:
+ * Title extraction. Accepts either:
+ *
+ *   # Research Bible: <Title>
+ *
+ * (ATX style — confirmed 2026-08-13 against real Drive exports) or the
+ * original documented Setext style:
  *
  *   Research Bible: <Title>
  *   ========================
  *
- * on the first non-blank lines of the file. No fuzzy matching, no fallback —
- * title is core identity, so a non-conforming file should fail loudly (the
- * webhook route turns this into a 400) rather than guess.
+ * on the first non-blank lines of the file. No fuzzy matching beyond that,
+ * no other fallback — title is core identity, so a non-conforming file
+ * should fail loudly (the webhook route turns this into a 400) rather than
+ * guess.
  */
 export function extractTitle(raw: string): string {
-  const lines = raw.split(/\r\n|\r|\n/);
-  let i = 0;
-  while (i < lines.length && lines[i].trim() === "") i++;
+    const lines = raw.split(/\r\n|\r|\n/);
+    let i = 0;
+    while (i < lines.length && lines[i].trim() === "") i++;
 
   const titleLine = lines[i];
-  const underlineLine = lines[i + 1];
+    if (titleLine === undefined) {
+          throw new BibleParseError("Could not extract bible title: file has no non-blank lines");
+    }
 
-  if (titleLine === undefined || underlineLine === undefined) {
-    throw new BibleParseError(
-      "Could not extract bible title: file has fewer than two non-blank lines at the top",
-    );
-  }
+  const atxMatch = /^#\s+Research Bible: (.+)$/.exec(titleLine.trim());
+    if (atxMatch) {
+          const title = atxMatch[1].trim();
+          if (!title) {
+                  throw new BibleParseError("Could not extract bible title: title text is empty");
+          }
+          return title;
+    }
+
+  const underlineLine = lines[i + 1];
+    if (underlineLine === undefined) {
+          throw new BibleParseError(
+                  "Could not extract bible title: file has fewer than two non-blank lines at the top",
+                );
+    }
 
   const titleMatch = /^Research Bible: (.+)$/.exec(titleLine);
-  if (!titleMatch) {
-    throw new BibleParseError(
-      `Could not extract bible title: first non-blank line does not match "Research Bible: <Title>" (got: ${JSON.stringify(titleLine)})`,
-    );
-  }
+    if (!titleMatch) {
+          throw new BibleParseError(
+                  `Could not extract bible title: first non-blank line does not match "Research Bible: <Title>" or "# Research Bible: <Title>" (got: ${JSON.stringify(titleLine)})`,
+                );
+    }
 
   if (!/^=+$/.test(underlineLine.trim())) {
-    throw new BibleParseError(
-      `Could not extract bible title: expected a Setext underline ("===...") on the line after the title (got: ${JSON.stringify(underlineLine)})`,
-    );
+        throw new BibleParseError(
+                `Could not extract bible title: expected a Setext underline ("===...") on the line after the title (got: ${JSON.stringify(underlineLine)})`,
+              );
   }
 
   const title = titleMatch[1].trim();
-  if (!title) {
-    throw new BibleParseError("Could not extract bible title: title text is empty");
-  }
+    if (!title) {
+          throw new BibleParseError("Could not extract bible title: title text is empty");
+    }
 
   return title;
 }
 
 const REFINEMENT_LOG_BLOCK_RE =
-  /\*\*Refinement Log — [^*\n]+\*\*([\s\S]*?)(?=\n\*\*Refinement Log — |\n#{1,6}\s|$)/;
+    /\*\*Refinement Log — [^*\n]+\*\*([\s\S]*?)(?=\n\*\*Refinement Log — |\n#{1,6}\s|$)/;
 const DATE_LINE_RE = /Date:\s*(.+)/;
 const FINDINGS_LINE_RE = /Findings integrated:\s*([\s\S]*?)(?:\n\s*\n|$)/;
 
 function todayUtcIsoDate(): string {
-  return new Date().toISOString().slice(0, 10);
+    return new Date().toISOString().slice(0, 10);
 }
 
 function tryParseDate(value: string): string | null {
-  const trimmed = value.trim();
-  const parsed = new Date(trimmed);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString().slice(0, 10);
+    const trimmed = value.trim();
+    const parsed = new Date(trimmed);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toISOString().slice(0, 10);
 }
 
 /**
@@ -99,21 +112,21 @@ function tryParseDate(value: string): string | null {
  * pipeline's purpose.
  */
 export function extractChangelogEntry(raw: string): { date: string; summary: string } {
-  const blockMatch = REFINEMENT_LOG_BLOCK_RE.exec(raw);
-  if (!blockMatch) {
-    return {
-      date: todayUtcIsoDate(),
-      summary: "Initial sync — no refinement log entry found in source.",
-    };
-  }
+    const blockMatch = REFINEMENT_LOG_BLOCK_RE.exec(raw);
+    if (!blockMatch) {
+          return {
+                  date: todayUtcIsoDate(),
+                  summary: "Initial sync — no refinement log entry found in source.",
+          };
+    }
 
   const block = blockMatch[1];
 
   const dateMatch = DATE_LINE_RE.exec(block);
-  const date = (dateMatch && tryParseDate(dateMatch[1])) || todayUtcIsoDate();
+    const date = (dateMatch && tryParseDate(dateMatch[1])) || todayUtcIsoDate();
 
   const findingsMatch = FINDINGS_LINE_RE.exec(block);
-  const summary = findingsMatch ? findingsMatch[1].trim() : "";
+    const summary = findingsMatch ? findingsMatch[1].trim() : "";
 
   return { date, summary };
 }
@@ -126,7 +139,7 @@ export function extractChangelogEntry(raw: string): { date: string; summary: str
  * is the only pattern seen so far.
  */
 export function stripPandocArtifacts(raw: string): string {
-  return raw.replace(/\[([^\]]*)\]\{\.underline\}/g, "$1");
+    return raw.replace(/\[([^\]]*)\]\{\.underline\}/g, "$1");
 }
 
 /**
@@ -140,30 +153,36 @@ export function stripPandocArtifacts(raw: string): string {
  * structural header/log content.
  */
 export function extractBody(raw: string): string {
-  const lines = raw.split(/\r\n|\r|\n/);
+    const lines = raw.split(/\r\n|\r|\n/);
 
-  // Skip leading blank lines, then the Setext title line + underline.
+  // Skip leading blank lines, then the title line (ATX "# Research Bible: X"
+  // is a single line; Setext is the title line + "===" underline).
   let i = 0;
-  while (i < lines.length && lines[i].trim() === "") i++;
-  if (/^Research Bible: /.test(lines[i] ?? "") && /^=+$/.test((lines[i + 1] ?? "").trim())) {
-    i += 2;
-  }
+    while (i < lines.length && lines[i].trim() === "") i++;
+    if (/^#\s+Research Bible: /.test((lines[i] ?? "").trim())) {
+          i += 1;
+    } else if (/^Research Bible: /.test(lines[i] ?? "") && /^=+$/.test((lines[i + 1] ?? "").trim())) {
+          i += 2;
+    }
 
-  // Skip any further header metadata lines (e.g. "Module:", "Document Type:")
-  // up to the first blank line or the first real Markdown heading.
+  // Skip any further header metadata lines (e.g. "Module:", "Document Type:",
+  // or the same wrapped in "**...**" bold markers) up to the first blank
+  // line or the first real Markdown heading.
   while (i < lines.length) {
-    const line = lines[i];
-    if (line.trim() === "") {
-      i++;
-      continue;
-    }
-    if (/^#{1,6}\s/.test(line) || /^\*\*Refinement Log/.test(line)) break;
-    // A metadata line looks like "Label: value" with no leading heading marker.
-    if (/^[A-Za-z][A-Za-z /]*:\s*.+/.test(line) && !/^https?:/.test(line)) {
-      i++;
-      continue;
-    }
-    break;
+        const line = lines[i];
+        if (line.trim() === "") {
+                i++;
+                continue;
+        }
+        if (/^#{1,6}\s/.test(line) || /^\*\*Refinement Log/.test(line)) break;
+        // A metadata line looks like "Label: value" or "**Label:** value", with
+      // no leading heading marker.
+      const unwrapped = line.replace(/^\*\*([^*]+)\*\*/, "$1");
+        if (/^[A-Za-z][A-Za-z /]*:\s*.+/.test(unwrapped) && !/^https?:/.test(unwrapped)) {
+                i++;
+                continue;
+        }
+        break;
   }
 
   const remaining = lines.slice(i).join("\n");
@@ -181,5 +200,5 @@ export function extractBody(raw: string): string {
  * entry -> "1.1", etc.
  */
 export function computeVersion(existingChangelogLength: number): string {
-  return `1.${existingChangelogLength}`;
+    return `1.${existingChangelogLength}`;
 }
