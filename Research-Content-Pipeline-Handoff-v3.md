@@ -15,22 +15,9 @@
 
 ## What you're building
 
-### 1. `content/sync-config.json`
+### 1. `content/sync-config.json` — already done
 
-Add a second folder entry:
-
-```json
-{
-  "researchBibles": {
-    "driveFolderId": "1DYDwFPEyWFmsHR-XKvviajypNlDQedT2"
-  },
-  "parentFacingContent": {
-    "driveFolderId": "REPLACE_WITH_PARENT_FACING_CONTENT_FOLDER_ID"
-  }
-}
-```
-
-Use the JSON-edit-via-Python pattern from CLAUDE.md's Build Rules, not manual editing. Leave the placeholder — Bobby supplies the real folder ID once the Drive folder exists.
+The `parentFacingContent.driveFolderId` entry is already set to the real folder (`111KCplYo8z-HccO-tnRRGr0apxtxQUeq`, from Bobby's Drive share link). Nothing to do here — just confirming it's live so you don't overwrite it with a placeholder.
 
 ### 2. Source-file contract (what the fixed skill will produce in Drive)
 
@@ -148,7 +135,7 @@ Once this lands, update: the Research Bible Ingestion Pipeline section's scope n
 
 ## Manual steps only Bobby can do
 
-1. Create the `Parent Facing Content` Drive folder (if it doesn't exist yet) and supply its real ID into `content/sync-config.json`.
+1. ~~Create the `Parent Facing Content` Drive folder and supply its real ID.~~ Done — folder ID is already in `content/sync-config.json`.
 2. Confirm `GITHUB_CONTENT_SYNC_TOKEN` and `WEBHOOK_SECRET` are set in Vercel Production (already an open item for the bible half too — same variables cover both).
 3. Update and re-run the Apps Script per §5.
 
