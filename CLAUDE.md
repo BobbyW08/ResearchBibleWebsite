@@ -187,7 +187,7 @@ Keeps the internal research bibles current in the repo, upstream of the Content 
 
 Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` stays in the schema as an audit log only.
 
-**Scope:** bible sync only. Pain-point/module Drive sync does not exist and isn't planned this round — that YAML schema isn't finalized and `parent-content-builder` doesn't yet produce conforming files for it. When it's built, it needs its own webhook path and `folderKey`, not an extension of the bible flow (different schemas).
+**Scope:** bible sync is built (see below). Pain-point/module Drive sync is in progress — the Keystatic schema for both collections is already complete (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios all exist and the 10 live pain-point / 2 live awareness-module files already conform to it), but the webhook has no `parentFacingContent` branch yet and the `parent-content-builder` skill (Claude Desktop, outside this repo) doesn't yet produce files in the shape the new parser expects. Full spec in `Research-Content-Pipeline-Handoff-v3.md` at repo root.
 
 **What's built:**
 - `keystatic.config.ts` → `researchBibles` collection, `content/research-bibles/*/index.mdx`, `format: { contentField: "body" }` (frontmatter + `---` + MDX body in one file). Fields: `slugName`, `title`, `version`, `lastUpdated`, `tags`, `noindex`, `changelog` (array of `date`/`summary`/`prUrl`), `body`. No entries exist yet.
@@ -240,6 +240,8 @@ Own nav shell, outside Fumadocs. Components: `DashboardShell`, `StatCard`, `Cons
 ---
 
 ## Keystatic CMS
+
+Non-technical how-to for making edits once this is live: `KEYSTATIC-EDITING-GUIDE.md` at repo root (also covers what's editable here vs. hand-authored-only).
 
 GitHub storage mode — edits commit directly to `BobbyW08/ResearchBibleWebsite` via a GitHub App (Vercel's serverless filesystem is read-only in production, so local-storage mode isn't viable).
 
@@ -367,8 +369,8 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **`parent-content-builder` skill fields:** needs `cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenario content added. Confirm where Claude Code can actually see/edit the live skill definition before editing — don't assume the location.
-- **`painPoints`/`awarenessModules` missing fields:** no `cardTeaser` or `crisis` (boolean) field yet — needed once `parent-content-builder` produces them.
+- **`parent-content-builder` skill fields:** confirmed the skill still outputs its old flat frontmatter/prose format, not the granular fields the live Keystatic schema needs (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios, structured backfires/tries). The skill lives outside this repo (Claude Desktop's skill storage) — Claude Code cannot see or edit it, only Claude Desktop/Cowork can. Being fixed there, not here.
+- **`painPoints`/`awarenessModules` schema:** already has every field needed (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios) — this was previously listed as missing here; it isn't. The real gap is upstream (the skill, above) and in the webhook (no `parentFacingContent` ingestion path yet).
 - **`files.zip`** sits at the repo root and is git-tracked — confirm with Bobby whether it should be removed.
 - **`CPRS_Interactive_Site.html`, `TechConsequences_ParentGuide.html`, `adhd-prototype.html`, `tech_transitions_per_parenting_generation.html`** sit untracked at the repo root as prototype/reference files. Nothing in the live site depends on them — confirm with Bobby whether to delete or relocate.
 - **Research Bible Ingestion Pipeline** is uncommitted, in-progress work — see its Verification section for exactly what's unconfirmed before treating it as production-ready.
