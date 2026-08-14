@@ -88,6 +88,7 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 | `/tools/tech-safety-tool` | Tech Safety & Consequence Setup — interactive parental-controls wizard (pick your phone + your child's devices → tailored setup steps, workarounds list, printable checklist for 11 device types + home Wi-Fi) | Live, standalone, unlisted (no header/footer nav link by design). Data in `lib/tools/tech-safety-tool-data.ts`, components in `components/marketing/tools/tech-safety-tool/`. Screenshots hotlink Apple's CDN directly (`cdsassets.apple.com`) — not self-hosted, may break if Apple changes those URLs |
 | `/research` | Research Bible Library index | Not in header/footer nav by design — reachable by direct URL only. No entries exist yet (see Research Bible Ingestion Pipeline) |
 | `/research/[slug]` | Individual research bible, public | Same nav-hidden-by-design pattern. `generateMetadata` sets `robots: {index: !entry.noindex}` per bible. Changelog renders as a visible "Updates" section on the page |
+| `/api/search` | Fumadocs search endpoint (`createFromSource`) | Live, backs the `/docs` search UI |
 
 ### CMS / Admin / Internal Routes
 
@@ -102,11 +103,13 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 | Route | Purpose | Status |
 |---|---|---|
 | `/auth/[path]` | Sign in / sign up / reset | Reachable. Not needed for launch. Flow unproven end-to-end. |
+| `/api/auth/[...path]` | Better Auth handler | Reachable. Backs the unproven sign-up → onboarding → account flow. |
 | `/onboarding` | Account type gate | Not needed for launch. |
 | `/account/[path]` | Account management | Not needed for launch. |
-| `/api/refresh` | Old Google Drive Doc/Sheet sync | Not wired (placeholder IDs, no service account credentials). The Doc→MDX half is superseded by `/api/webhooks/drive-content-sync` — do not build further against this route's Doc path. The Sheet→JSON dashboard-data half's status needs confirming with Bobby before reviving. |
+| `/account/pending-reviews` | Review approval UI page | Full built page (fetches reviews, approve/reject buttons, status badges) — not just a bare API. Same audit-log caveat as `/api/account/pending-reviews` below: `pending_reviews` is an audit-log table only, git PR review + merge is the real approval mechanism. Candidate for removal alongside the API route. |
+| `/api/refresh` | Old Google Drive Doc/Sheet sync | Currently unreachable, not merely unwired: `content/sync-config.json`'s `adhd` key still holds literal placeholder strings for `docId`/`sheetId`, and the route requires an exact match against those before doing anything — so no real caller could ever pass its own guard. Neither the Doc→MDX nor the Sheet→JSON half runs today. `content/docs/*.mdx` and `content/data/*.json` are static, hand-authored files and are unaffected either way. The Doc→MDX half is superseded by `/api/webhooks/drive-content-sync` — do not build further against this route's Doc path. The Sheet→JSON dashboard-data half's status needs confirming with Bobby before reviving. |
 | `/api/research-bible/notify-change` | Old Doc-polling webhook | Never fired. Superseded by `/api/webhooks/drive-content-sync`. Do not build further against this route. |
-| `/api/account/pending-reviews` | Review approval API | Table exists, empty. `pending_reviews` is an audit-log table only — git PR review + merge is the actual approval mechanism. Candidate for removal. |
+| `/api/account/pending-reviews` | Review approval API | Table exists, empty. `pending_reviews` is an audit-log table only — git PR review + merge is the actual approval mechanism. Candidate for removal alongside its page above. |
 | `/api/cascade/*` | Word doc / video script cascade | Not built. Not in current scope. |
 
 ---
@@ -156,13 +159,13 @@ Each pain-point page: tag/eyebrow, headline, intro, an interactive age-band scen
 Four pillars, 36 topics, rendered via Fumadocs. All 36 pages resolve and are live. ADHD is the flagship (888 lines, full interactive components). The other 35 are prose-complete at webpage copy tier (200–430 lines each) — finished prose, no dashboard JSON, consensus meters, or comparison panel data yet.
 Depth standard for flagship pages: 7,000–9,000 words, mechanism-level explanations required.
 
-**🔴 Stabilize (9):** What Do You Want · De-Escalation · Parent Emotional Regulation · Structure & Routine · Understanding Behavior · **Understanding ADHD** (`content/docs/adhd.mdx`, live) · Understanding Autism Spectrum Disorder · Understanding Anxiety & Depression · Trauma Informed Parenting
+**🔴 Stabilize (9):** What Do You Want · De-Escalation · Structure & Routine · Understanding Behavior · **Understanding ADHD** (`content/docs/adhd.mdx`, live) · Understanding Autism Spectrum Disorder · Understanding Anxiety & Depression · Understanding Neurodivergence · Trauma Informed Parenting
 
-**🟡 Connect (8):** Parental Self Care · Connection Principles · Values · Parenting Styles · Communication · Family Dynamics · Motivation · Mindsets
+**🟡 Connect (7):** Parental Self Care · Connection Principles · Parenting Styles · Communication · Family Dynamics · Motivation · Mindsets
 
 **🟢 Structure (6):** Applying Parenting Strategies · Child Development · Teen Autonomy and Identity · Principles of Effective Discipline · Behavior-Reward-Consequence System · Co-Parenting
 
-**🔵 Adapt (13):** Public Places Without Panic · Supporting Aggressive Children · Household Finance & Money Skills · Healthy Bodies, Calm Homes · Big Transitions, Big Feelings · Raising Resilient and Kind Kids · Contribution and Chores · Modern Digital and Social World · Friendship and Social Coaching · Parental Mental Health & Substance Abuse · School Assistance · High Risk Kids · Modern Parenting
+**🔵 Adapt (14):** Public Places Without Panic · Supporting Aggressive Children · Household Finance & Money Skills · Healthy Bodies, Calm Homes · Big Transitions, Big Feelings · Raising Resilient and Kind Kids · Contribution and Chores · Modern Digital and Social World · Screen Time and Gaming · Friendship and Social Coaching · Parental Mental Health & Substance Abuse · School Assistance · High Risk Kids · Modern Parenting
 
 ---
 
@@ -371,8 +374,10 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 - **`parent-content-builder` skill fields:** confirmed the skill still outputs its old flat frontmatter/prose format, not the granular fields the live Keystatic schema needs (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios, structured backfires/tries). The skill lives outside this repo (Claude Desktop's skill storage) — Claude Code cannot see or edit it, only Claude Desktop/Cowork can. Being fixed there, not here.
 - **`painPoints`/`awarenessModules` schema:** already has every field needed (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios) — this was previously listed as missing here; it isn't. The real gap is upstream (the skill, above) and in the webhook (no `parentFacingContent` ingestion path yet).
-- **`files.zip`** sits at the repo root and is git-tracked — confirm with Bobby whether it should be removed.
-- **`CPRS_Interactive_Site.html`, `TechConsequences_ParentGuide.html`, `adhd-prototype.html`, `tech_transitions_per_parenting_generation.html`** sit untracked at the repo root as prototype/reference files. Nothing in the live site depends on them — confirm with Bobby whether to delete or relocate.
+- **`adhd-prototype.html`** sits at the repo root, git-tracked, unreferenced anywhere in the codebase — confirm with Bobby whether to delete or relocate. (`CPRS_Interactive_Site.html`, `TechConsequences_ParentGuide.html`, `tech_transitions_per_parenting_generation.html`, and `files.zip` — all previously listed here — no longer exist in the working tree or git history; this entry is now accurate to just the one remaining file.)
+- **`homepage-copy.md`** sits at the repo root, git-tracked — the original homepage-build spec doc. Homepage is now live and matches it; confirm with Bobby whether to keep as reference or remove now that it's implemented.
+- **`.claude-dir-test/`** — empty, untracked directory at the repo root, unclear origin/purpose. Confirm with Bobby whether it's safe to remove.
+- **`README.md`** is unmodified `create-next-app` boilerplate (mentions Geist font, which isn't this project's font system) — zero project-specific content. Not urgent, but worth replacing with real project documentation at some point.
 - **Research Bible Ingestion Pipeline** is uncommitted, in-progress work — see its Verification section for exactly what's unconfirmed before treating it as production-ready.
 - **Testimonial publish consent** needs Bobby's explicit confirmation (anonymized, but consent-sensitive population).
 - **Substack subdomain** (`roughlyeducated`) needs Bobby's confirmation before the embed ships.
@@ -393,6 +398,7 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 | CMS-managed content | `content/{testimonials,pain-points,awareness-modules,faq,footer,about,site-settings,research-bibles}/` |
 | Hand-authored content | `content/docs/*.mdx`, `content/data/*.json` |
 | Shared logic | `lib/` — see `lib/auth/`, `lib/db/`, `lib/github/`, `lib/google/`, `lib/research-bibles/`, `lib/tools/` |
+| **Naming collision — read carefully** | `lib/research-bibles.ts` (no trailing slash) is unrelated to the Research Bible Ingestion Pipeline. It's a hardcoded 36-entry list (`researchBibles`, `CATEGORY_INFO`, `CATEGORY_ORDER`) grouping the `/docs` topic gallery into the 4 pillars — consumed by `content/docs/index.mdx` → `components/docs/research-bibles-grid.tsx`. The actual ingestion pipeline lives in `lib/research-bibles/` (folder) and `lib/research-bibles-reader.ts`. Don't edit one when you mean the other. |
 | CMS schema | `keystatic.config.ts` |
 | DB schema | `lib/db/schema.ts`, `drizzle/` migrations |
 | Middleware | `proxy.ts` (this project's name for Next.js middleware) |
