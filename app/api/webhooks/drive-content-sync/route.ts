@@ -19,6 +19,19 @@ import {
   stripPandocArtifacts,
 } from "@/lib/research-bibles/parse";
 import { parseBibleFile, serializeBibleFile, type BibleFrontmatter } from "@/lib/research-bibles/frontmatter";
+import {
+  ContentParseError,
+  getSourceStatus,
+  parseAwarenessModuleSource,
+  parsePainPointSource,
+} from "@/lib/pain-points/parse";
+import {
+  canonicalizeForDedup,
+  diffTopLevelFields,
+  extractFeaturedFlag,
+  serializeAwarenessModuleYaml,
+  serializePainPointYaml,
+} from "@/lib/pain-points/yaml";
 
 export const runtime = "nodejs";
 
@@ -84,6 +97,8 @@ function checkRateLimit(): boolean {
 }
 
 const BIBLE_FILENAME_RE = /^RB_.*\.md$/i;
+const PAIN_POINT_FILENAME_RE = /^PainPoint_.*\.md$/i;
+const MODULE_FILENAME_RE = /^Module_.*\.md$/i;
 
 function slugify(title: string): string {
   return title
@@ -207,6 +222,150 @@ async function handleBibleSync(fileId: string, fileName: string): Promise<SyncRe
   }
 }
 
+/**
+ * Shared branch/commit/PR mechanics for pain-point and awareness-module
+ * syncs. Unlike the bible flow, these files don't store their own PR URL
+ * in-content, so there's no follow-up commit — one commit, one PR.
+ */
+async function commitYamlAndOpenPr(
+  filePath: string,
+  fileContents: string,
+  branchPrefix: string,
+  slug: string,
+  prTitle: string,
+  prBody: string,
+): Promise<SyncResult & { status: number }> {
+  const branchName = `content-sync/${branchPrefix}-${slug}-${todayUtcIsoDate()}`;
+
+  try {
+    const baseSha = await getDefaultBranchSha();
+    await createBranch(branchName, baseSha);
+
+    const shaOnBranch = await getFileSha(filePath, branchName);
+    await putFile(
+      filePath,
+      fileContents,
+      `content-sync: sync ${slug}`,
+      branchName,
+      shaOnBranch ?? undefined,
+    );
+
+    const prUrl = await openPullRequest(prTitle, prBody, branchName, "main");
+
+    return { success: true, status: 200, slug, prUrl, branch: branchName };
+  } catch (err) {
+    return {
+      success: false,
+      status: 502,
+      error: `GitHub sync failed: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
+async function handlePainPointSync(fileId: string, fileName: string): Promise<SyncResult & { status: number }> {
+  let raw: string;
+  try {
+    raw = await fetchDriveFileContent(fileId);
+  } catch (err) {
+    return { success: false, status: 502, error: `Drive fetch failed: ${err instanceof Error ? err.message : String(err)}` };
+  }
+
+  const status = getSourceStatus(raw);
+  if (status !== "ready") {
+    return {
+      success: true,
+      status: 200,
+      noop: true,
+      skipped: true,
+      message: `status is ${JSON.stringify(status ?? null)}, not "ready" — skipping`,
+    };
+  }
+
+  let data: ReturnType<typeof parsePainPointSource>;
+  try {
+    data = parsePainPointSource(raw, fileName);
+  } catch (err) {
+    if (err instanceof ContentParseError) {
+      return { success: false, status: 400, error: err.message };
+    }
+    throw err;
+  }
+
+  const filePath = `content/pain-points/${data.slugName}.yaml`;
+  const existingRaw = await getFileContent(filePath, "main");
+  const featured = extractFeaturedFlag(existingRaw);
+  const newYaml = serializePainPointYaml(data, featured);
+
+  if (existingRaw && canonicalizeForDedup(existingRaw) === canonicalizeForDedup(newYaml)) {
+    return { success: true, status: 200, noop: true, slug: data.slugName, message: "Content unchanged — no PR opened" };
+  }
+
+  const changedFields = diffTopLevelFields(existingRaw, newYaml);
+  const prBody = existingRaw
+    ? `Automated content sync from Drive for pain point **${data.title}** (\`${data.slugName}\`).\n\nChanged fields: ${changedFields.join(", ")}\n\nReview the diff and merge to publish.`
+    : `Automated content sync from Drive — new pain point **${data.title}** (\`${data.slugName}\`).\n\nReview the diff and merge to publish.`;
+
+  return commitYamlAndOpenPr(filePath, newYaml, "pain-point", data.slugName, `Content sync: ${data.title}`, prBody);
+}
+
+async function handleAwarenessModuleSync(fileId: string, fileName: string): Promise<SyncResult & { status: number }> {
+  let raw: string;
+  try {
+    raw = await fetchDriveFileContent(fileId);
+  } catch (err) {
+    return { success: false, status: 502, error: `Drive fetch failed: ${err instanceof Error ? err.message : String(err)}` };
+  }
+
+  const status = getSourceStatus(raw);
+  if (status !== "ready") {
+    return {
+      success: true,
+      status: 200,
+      noop: true,
+      skipped: true,
+      message: `status is ${JSON.stringify(status ?? null)}, not "ready" — skipping`,
+    };
+  }
+
+  let data: ReturnType<typeof parseAwarenessModuleSource>;
+  try {
+    data = parseAwarenessModuleSource(raw, fileName);
+  } catch (err) {
+    if (err instanceof ContentParseError) {
+      return { success: false, status: 400, error: err.message };
+    }
+    throw err;
+  }
+
+  const filePath = `content/awareness-modules/${data.slugName}.yaml`;
+  const existingRaw = await getFileContent(filePath, "main");
+  const newYaml = serializeAwarenessModuleYaml(data);
+
+  if (existingRaw && existingRaw.trim() === newYaml.trim()) {
+    return { success: true, status: 200, noop: true, slug: data.slugName, message: "Content unchanged — no PR opened" };
+  }
+
+  const changedFields = diffTopLevelFields(existingRaw, newYaml);
+  const prBody = existingRaw
+    ? `Automated content sync from Drive for awareness module **${data.title}** (\`${data.slugName}\`).\n\nChanged fields: ${changedFields.join(", ")}\n\nReview the diff and merge to publish.`
+    : `Automated content sync from Drive — new awareness module **${data.title}** (\`${data.slugName}\`).\n\nReview the diff and merge to publish.`;
+
+  return commitYamlAndOpenPr(filePath, newYaml, "module", data.slugName, `Content sync: ${data.title}`, prBody);
+}
+
+async function handleParentFacingContentSync(
+  fileId: string,
+  fileName: string,
+): Promise<SyncResult & { status: number }> {
+  if (PAIN_POINT_FILENAME_RE.test(fileName)) return handlePainPointSync(fileId, fileName);
+  if (MODULE_FILENAME_RE.test(fileName)) return handleAwarenessModuleSync(fileId, fileName);
+  return {
+    success: false,
+    status: 400,
+    error: `Unrecognized filename "${fileName}" in parentFacingContent folder — expected PainPoint_*.md or Module_*.md`,
+  };
+}
+
 export async function POST(request: Request): Promise<Response> {
   try {
     if (!isAuthorized(request)) {
@@ -229,11 +388,18 @@ export async function POST(request: Request): Promise<Response> {
       return jsonResponse({ success: false, error: "Missing fileId/fileName/folderKey" }, 400);
     }
 
-    if (folderKey !== "researchBibles" || !BIBLE_FILENAME_RE.test(fileName)) {
+    let result: SyncResult & { status: number };
+    if (folderKey === "researchBibles" && BIBLE_FILENAME_RE.test(fileName)) {
+      result = await handleBibleSync(fileId, fileName);
+    } else if (
+      folderKey === "parentFacingContent" &&
+      (PAIN_POINT_FILENAME_RE.test(fileName) || MODULE_FILENAME_RE.test(fileName))
+    ) {
+      result = await handleParentFacingContentSync(fileId, fileName);
+    } else {
       return jsonResponse({ success: false, error: "not yet supported" }, 400);
     }
 
-    const result = await handleBibleSync(fileId, fileName);
     const { status, ...body } = result;
     return jsonResponse(body, status);
   } catch (err) {

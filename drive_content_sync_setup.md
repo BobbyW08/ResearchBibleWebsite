@@ -1,44 +1,60 @@
-# Drive Content Sync — Apps Script Setup (Research Bibles only)
+# Drive Content Sync — Apps Script Setup (Research Bibles + Parent Facing Content)
 
 **Status:** reference documentation only — this is not runnable by Claude Code. Bobby
 pastes the script below into Apps Script (script.google.com) himself, fills in `CONFIG`,
 and runs `setup()` once from the Apps Script editor to install the time-driven trigger.
 
-This covers **only** the `researchBibles` Drive folder → `/api/webhooks/drive-content-sync`
-webhook. It is a separate script from the existing `drive_sync_setup/` and `notify_change.gs`
-files at the repo root, which serve the live old Doc/Sheet pipeline (`/api/refresh`,
-`/api/research-bible/notify-change`) — **do not touch those**, they're unrelated and still in
-use for their own topics.
+This covers **both** the `researchBibles` and `parentFacingContent` Drive folders →
+`/api/webhooks/drive-content-sync` webhook. It is a separate script from the existing
+`drive_sync_setup/` and `notify_change.gs` files at the repo root, which serve the live old
+Doc/Sheet pipeline (`/api/refresh`, `/api/research-bible/notify-change`) — **do not touch
+those**, they're unrelated and still in use for their own topics.
 
 ## What it does
 
 1. On a time-driven trigger (every N minutes, your choice — 15 is reasonable for a
-   low-traffic internal folder), lists files in a single Drive folder (the one whose ID goes
-   in `content/sync-config.json`'s `researchBibles.driveFolderId`) modified since the last
-   run.
+   low-traffic internal setup), lists files in **each configured Drive folder** (currently
+   two: `content/sync-config.json`'s `researchBibles.driveFolderId` and
+   `parentFacingContent.driveFolderId`) modified since the last run.
 2. Persists "last run" as a timestamp in `PropertiesService` (script properties), so each run
-   only looks at what changed since the previous run — no full folder re-scan every time.
-3. For each changed file, POSTs `{ fileId, fileName, folderKey: "researchBibles" }` to the
-   webhook, with an `X-Webhook-Secret` header matching `WEBHOOK_SECRET`.
+   only looks at what changed since the previous run — no full folder re-scan every time. The
+   timestamp is shared across both folders (one `checkForChanges()` pass covers both).
+3. For each changed file, POSTs `{ fileId, fileName, folderKey }` to the webhook — `folderKey`
+   is whichever folder's config entry matched — with an `X-Webhook-Secret` header matching
+   `WEBHOOK_SECRET`.
 4. The webhook route (`app/api/webhooks/drive-content-sync/route.ts`) does the actual
    fetch-from-Drive / parse / dedup / GitHub-PR work — this script's only job is "tell the
    webhook what changed."
 
-Only files matching `RB_*.md` are treated as bibles by the webhook — anything else in that
-folder currently 400s with `{ success: false, error: "not yet supported" }`. Filtering by
-filename here too (rather than just relying on the webhook to reject) avoids firing pointless
-webhook calls for every unrelated file someone drops in the folder.
+Only files matching each folder's expected filename pattern are POSTed — `RB_*.md` for
+`researchBibles`, `PainPoint_*.md` or `Module_*.md` for `parentFacingContent`. Anything else in
+either folder is skipped here (never reaches the webhook), and would 400 with
+`{ success: false, error: "not yet supported" }` if it somehow did. Filtering by filename here
+too (rather than just relying on the webhook to reject) avoids firing pointless webhook calls
+for every unrelated file someone drops in a folder.
 
 ## Script
 
 ```javascript
+const FOLDERS = [
+  {
+    // content/sync-config.json -> researchBibles.driveFolderId
+    driveFolderId: "REPLACE_WITH_RESEARCH_BIBLES_FOLDER_ID",
+    folderKey: "researchBibles",
+    fileNamePattern: /^RB_.*\.md$/i,
+  },
+  {
+    // content/sync-config.json -> parentFacingContent.driveFolderId
+    driveFolderId: "REPLACE_WITH_PARENT_FACING_CONTENT_FOLDER_ID",
+    folderKey: "parentFacingContent",
+    fileNamePattern: /^(PainPoint|Module)_.*\.md$/i,
+  },
+];
+
 const CONFIG = {
-  // content/sync-config.json -> researchBibles.driveFolderId
-  driveFolderId: "REPLACE_WITH_RESEARCH_BIBLES_FOLDER_ID",
   webhookUrl: "https://bobby-washburn.com/api/webhooks/drive-content-sync",
   // Must match the WEBHOOK_SECRET env var on Vercel exactly.
   webhookSecret: "REPLACE_WITH_WEBHOOK_SECRET",
-  folderKey: "researchBibles",
 };
 
 const LAST_RUN_PROPERTY_KEY = "driveContentSync_lastRunIso";
@@ -56,7 +72,7 @@ function setup() {
     .create();
 
   // Seed last-run so the first real run doesn't try to sync every file ever
-  // placed in the folder.
+  // placed in either folder.
   PropertiesService.getScriptProperties().setProperty(
     LAST_RUN_PROPERTY_KEY,
     new Date().toISOString(),
@@ -70,33 +86,35 @@ function checkForChanges() {
   const lastRunIso = props.getProperty(LAST_RUN_PROPERTY_KEY) || "1970-01-01T00:00:00.000Z";
   const runStartedAt = new Date().toISOString();
 
-  const query =
-    `'${CONFIG.driveFolderId}' in parents and trashed = false and modifiedTime > '${lastRunIso}'`;
+  FOLDERS.forEach((folder) => {
+    const query =
+      `'${folder.driveFolderId}' in parents and trashed = false and modifiedTime > '${lastRunIso}'`;
 
-  let pageToken = null;
-  do {
-    const response = Drive.Files.list({
-      q: query,
-      fields: "nextPageToken, files(id, name, modifiedTime)",
-      pageToken: pageToken,
-    });
+    let pageToken = null;
+    do {
+      const response = Drive.Files.list({
+        q: query,
+        fields: "nextPageToken, files(id, name, modifiedTime)",
+        pageToken: pageToken,
+      });
 
-    (response.files || []).forEach((file) => {
-      if (!/^RB_.*\.md$/i.test(file.name)) return;
-      postToWebhook(file.id, file.name);
-    });
+      (response.files || []).forEach((file) => {
+        if (!folder.fileNamePattern.test(file.name)) return;
+        postToWebhook(file.id, file.name, folder.folderKey);
+      });
 
-    pageToken = response.nextPageToken;
-  } while (pageToken);
+      pageToken = response.nextPageToken;
+    } while (pageToken);
+  });
 
   props.setProperty(LAST_RUN_PROPERTY_KEY, runStartedAt);
 }
 
-function postToWebhook(fileId, fileName) {
+function postToWebhook(fileId, fileName, folderKey) {
   const payload = {
     fileId: fileId,
     fileName: fileName,
-    folderKey: CONFIG.folderKey,
+    folderKey: folderKey,
   };
 
   const options = {
@@ -108,21 +126,24 @@ function postToWebhook(fileId, fileName) {
   };
 
   const response = UrlFetchApp.fetch(CONFIG.webhookUrl, options);
-  Logger.log(`${fileName}: HTTP ${response.getResponseCode()} — ${response.getContentText()}`);
+  Logger.log(`${fileName} (${folderKey}): HTTP ${response.getResponseCode()} — ${response.getContentText()}`);
 }
 ```
 
 ## Setup steps (Bobby)
 
-1. In Apps Script (script.google.com), create a new project (or reuse an existing one scoped
-   to this purpose — do not add this to the script backing the old `notify_change.gs`
-   pipeline, keep them separate).
-2. Enable the **Drive API advanced service** (`Drive.Files.list` above needs it): Services (+)
-   → Google Workspace APIs → "Drive API" → Add.
-3. Paste the script above, fill in `CONFIG.driveFolderId` (matches
-   `content/sync-config.json`'s `researchBibles.driveFolderId`) and `CONFIG.webhookSecret`
-   (matches the `WEBHOOK_SECRET` env var on Vercel).
-4. Run `setup()` once manually from the editor (authorize when prompted).
+1. In Apps Script (script.google.com), open the existing project used for the `researchBibles`
+   trigger (do not add this to the script backing the old `notify_change.gs` pipeline, keep
+   them separate).
+2. Enable the **Drive API advanced service** (`Drive.Files.list` above needs it), if not
+   already enabled: Services (+) → Google Workspace APIs → "Drive API" → Add.
+3. Replace the existing script with the updated version above. Fill in both
+   `FOLDERS[0].driveFolderId` (`researchBibles.driveFolderId`) and
+   `FOLDERS[1].driveFolderId` (`parentFacingContent.driveFolderId` — matches
+   `content/sync-config.json`), plus `CONFIG.webhookSecret` (matches the `WEBHOOK_SECRET` env
+   var on Vercel).
+4. Run `setup()` once manually from the editor (re-running is safe/idempotent — it replaces
+   the existing trigger and reseeds the last-run timestamp).
 5. Optionally run `checkForChanges()` manually once to confirm it doesn't error before relying
    on the trigger.
 6. Confirm the trigger exists: Triggers (clock icon in the left sidebar) should show
@@ -135,6 +156,5 @@ function postToWebhook(fileId, fileName) {
   `modifiedTime` still falls after the (now-advanced) `lastRunIso` cutoff. A file that fails to
   sync and isn't touched again in Drive will need a manual re-save (or a manual
   `checkForChanges()` run after temporarily rolling back `lastRunIso`) to retry.
-- Single folder only, matching this round's bibles-only scope — extending to a second folder
-  for pain-point/module sync is explicitly out of scope (see CLAUDE.md's Content Sync
-  Pipeline section) and would need its own `folderKey` + filename-matching branch here.
+- Both folders share one `lastRunIso` cutoff and one trigger — adding a third folder later
+  means adding a third `FOLDERS` entry, not a new trigger.
