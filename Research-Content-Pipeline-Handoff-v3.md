@@ -5,13 +5,15 @@
 ## Corrections from the prior version of this doc
 
 1. **Pain Point Pages and Awareness Modules render via the `painPoints` / `awarenessModules` Keystatic collections at `/help/[slug]`** — `content/pain-points/*.yaml` and `content/awareness-modules/*.yaml`, both YAML data files, not MDX. They do **not** go through `content/docs/`. `/docs/[topic]` is a separate, unrelated Fumadocs collection (36 hand-authored deep-dive pages) — do not touch it as part of this work.
-2. **The `parent-content-builder` skill has NOT been updated** to match the live Keystatic schema, despite an earlier draft of this doc claiming that fix was already applied. Fixing that skill is **not your job** — it lives outside this repo, in Claude Desktop's skill storage, and is being handled separately by Bobby/Claude Desktop. Don't search the codebase for it. What you need from it is just the **source-file contract** in §2 below — that's the exact shape the fixed skill will produce, so build your parser against it.
+2. **The `parent-content-builder` skill has now been fully rewritten and matches §2 below exactly** (done 2026-08-13, via Claude Desktop/Cowork, outside this repo). Earlier drafts of this doc went back and forth on whether this fix had actually landed — it has, now. Still not your job to touch the skill itself (it lives outside this repo, in Claude Desktop's skill storage) — but §2 is no longer speculative, it's the live contract.
 
 ## What's already built and working — reference pattern, don't change
 
-- Research bible pipeline: `content/research-bibles/*/index.mdx` Keystatic collection, `/research/[slug]` route, `lib/research-bibles/{parse,frontmatter,render-mdx}.ts`, `lib/google/drive.ts`, `lib/github/contents.ts`, and the bible half of `app/api/webhooks/drive-content-sync/route.ts`. Fully coded, unit-tested (`lib/research-bibles/parse.test.ts`), `build`/`lint`/`tsc` all clean as of the last commit on this branch. **Use `handleBibleSync` in the webhook route as your structural template** — same fetch → parse → validate → dedup → branch → PR shape applies below, just with a different (more granular) parser since the target schema is structured fields, not one MDX body.
+- Research bible pipeline: `content/research-bibles/*/index.mdx` Keystatic collection, `/research/[slug]` route, `lib/research-bibles/{parse,frontmatter,render-mdx}.ts`, `lib/google/drive.ts`, `lib/github/contents.ts`, and the bible half of `app/api/webhooks/drive-content-sync/route.ts`. Fully coded, unit-tested (`lib/research-bibles/parse.test.ts`, 15/15 passing), `lint`/`tsc` clean. **Merged to `main` and deployed** (PR #1, merged 2026-08-13) — this is no longer branch-only work. The Apps Script trigger for the `researchBibles` Drive folder is installed and confirmed running (`setup()` executed successfully). **Still not proven:** a real end-to-end run — dropping an actual `RB_*.md` file in Drive and confirming it produces a real PR — hasn't happened yet. That's the one open item on the bible half, separate from the pain-point build below.
+  - Note for context: while PR #1 was open, a second, independent commit landed directly on `main` that also touched `lib/research-bibles/parse.ts` (title extraction/changelog logic) with a regressed approach — it reintroduced Setext-title support and dropped the filename-based changelog fallback, both of which CLAUDE.md documents as verified-wrong/needed based on real Drive files. That commit's version was discarded in favor of this branch's version when resolving the merge conflict. If you see that alternate approach referenced anywhere (e.g. in git history), it was superseded — don't reintroduce it.
 - Keystatic schema for `painPoints` and `awarenessModules` (`keystatic.config.ts`) — already complete. Has every field needed: `cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios, etc. **Do not change this schema.**
 - The 10 live pain-point YAML files (`content/pain-points/*.yaml`) and 2 awareness-module files (`content/awareness-modules/*.yaml`) already conform to this schema. Use them as ground truth for exact field shapes — e.g. `content/pain-points/meltdowns.yaml` and `content/awareness-modules/modern.yaml`.
+- The `Parent Facing Content` Drive folder is real and wired: `content/sync-config.json`'s `parentFacingContent.driveFolderId` is set (see §1). Nothing has been dropped in it yet by the updated skill — it's plumbing-ready, not yet content-tested.
 
 ## What you're building
 
@@ -19,9 +21,9 @@
 
 The `parentFacingContent.driveFolderId` entry is already set to the real folder (`111KCplYo8z-HccO-tnRRGr0apxtxQUeq`, from Bobby's Drive share link). Nothing to do here — just confirming it's live so you don't overwrite it with a placeholder.
 
-### 2. Source-file contract (what the fixed skill will produce in Drive)
+### 2. Source-file contract (what the skill produces in Drive now)
 
-Files land in the `Parent Facing Content` Drive folder as `PainPoint_[Name].md` or `Module_[Name].md`. This is the exact frontmatter + section-header shape to parse for. If real files ever look different once the skill is actually fixed, the parser is wrong, not this contract — flag the mismatch rather than silently adapting.
+Files land in the `Parent Facing Content` Drive folder as `PainPoint_[Name].md` or `Module_[Name].md`. This is the exact frontmatter + section-header shape the live, updated `parent-content-builder` skill now produces — verified against the skill definition itself, not just described secondhand. If a real file ever looks different from this, the parser is wrong or the skill drifted, not this contract — flag the mismatch rather than silently adapting.
 
 **Pain Point frontmatter:**
 
