@@ -187,7 +187,7 @@ Keeps the internal research bibles current in the repo, upstream of the Content 
 
 Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` stays in the schema as an audit log only.
 
-**Scope:** bible sync only. Pain-point/module Drive sync does not exist and isn't planned this round — that YAML schema isn't finalized and `parent-content-builder` doesn't yet produce conforming files for it. When it's built, it needs its own webhook path and `folderKey`, not an extension of the bible flow (different schemas).
+**Scope:** bible sync is built (see below). Pain-point/module Drive sync is in progress — the Keystatic schema for both collections is already complete (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios all exist and the 10 live pain-point / 2 live awareness-module files already conform to it), but the webhook has no `parentFacingContent` branch yet and the `parent-content-builder` skill (Claude Desktop, outside this repo) doesn't yet produce files in the shape the new parser expects. Full spec in `Research-Content-Pipeline-Handoff-v3.md` at repo root.
 
 **What's built:**
 - `keystatic.config.ts` → `researchBibles` collection, `content/research-bibles/*/index.mdx`, `format: { contentField: "body" }` (frontmatter + `---` + MDX body in one file). Fields: `slugName`, `title`, `version`, `lastUpdated`, `tags`, `noindex`, `changelog` (array of `date`/`summary`/`prUrl`), `body`. No entries exist yet.
@@ -197,7 +197,7 @@ Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` st
 - `lib/research-bibles-reader.ts` — `getAllResearchBibles()` / `getResearchBible(slug)`, same pattern as `lib/pain-points-reader.ts`.
 - `lib/google/drive.ts` — `fetchDriveFileContent(fileId)` via direct `fetch` + `lib/google/serviceAccountAuth.ts` (no `googleapis` package).
 - `lib/github/contents.ts` — hand-rolled GitHub REST client: `getDefaultBranchSha`, `createBranch`, `getFileSha`, `getFileContent`, `putFile`, `updateFile`, `openPullRequest`. Auth via `GITHUB_CONTENT_SYNC_TOKEN` (separate from Keystatic's own `KEYSTATIC_GITHUB_*` app credentials).
-- `app/api/webhooks/drive-content-sync/route.ts` — the sync webhook. Auth: `X-Webhook-Secret` header, timing-safe compare against `WEBHOOK_SECRET` (same env var as `/api/refresh`). Body: `{fileId, fileName, folderKey}` — only `folderKey === "researchBibles"` + filename matching `RB_*.md` is handled, anything else 400s. Flow: fetch from Drive → title extraction (typed `BibleParseError` on failure) → changelog-block extraction (falls back to a placeholder entry on first sync if no Refinement Log block exists) → Pandoc-artifact strip → body extraction → sha256 dedup guard against the live GitHub file (no-op 200 if unchanged) → version computed server-side from changelog length → branch `content-sync/bible-<slug>-<date>` → commit → open PR → follow-up commit filling the real PR URL into the changelog entry. Has an in-memory token-bucket rate limiter (module-level state, resets on cold start — acceptable for a low-traffic internal webhook, not a true distributed limiter).
+- `app/api/webhooks/drive-content-sync/route.ts` — the sync webhook. Auth: `X-Webhook-Secret` header, timing-safe compare against `WEBHOOK_SECRET` (same env var as `/api/refresh`). Body: `{fileId, fileName, folderKey}` — only `folderKey === "researchBibles"` + filename matching `RB_*.md` is handled, anything else 400s. Flow: fetch from Drive → title extraction (typed `BibleParseError` on failure) → changelog-entry extraction (in-body Refinement Log block if present; otherwise falls back to the `_DDMMYY` date suffix on `fileName`; otherwise today's date with a genuine "initial sync" summary) → Pandoc-artifact strip → body extraction → sha256 dedup guard against the live GitHub file (no-op 200 if unchanged) → version computed server-side from changelog length → branch `content-sync/bible-<slug>-<date>` → commit → open PR → follow-up commit filling the real PR URL into the changelog entry. Has an in-memory token-bucket rate limiter (module-level state, resets on cold start — acceptable for a low-traffic internal webhook, not a true distributed limiter).
 - `app/robots.ts` — disallows `/docs/` and `/help/` for all agents except Googlebot. `/research/` is intentionally not disallowed — visibility is controlled per-entry via `noindex`.
 - `app/sitemap.ts` — static routes + `/docs/[slug]` (via Fumadocs' `source.generateParams()`) + `/help/[slug]` + `/research/[slug]` for every non-`noindex` bible.
 - `drive_content_sync_setup.md` (repo root) — Apps Script reference for the `researchBibles`-folder-only trigger. Separate from `drive_sync_setup/`/`notify_change.gs`, which still serve the old (dormant) pipeline.
@@ -206,13 +206,15 @@ Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` st
 - `version` is site-owned, never parsed from source. Defaults to `"1.0"` on first sync, auto-increments on every subsequent sync (derived from changelog array length after the new entry is prepended).
 - `tags` is site-owned, never sourced from Drive. Defaults to `[]` on first sync; Bobby assigns manually via `/keystatic`. Permanent once set — later syncs must never touch `tags`.
 
-**Verification still needed before trusting this in production:**
-- No real `RB_*.md` file has been available to test against — every regex in `parse.ts` (title line, Refinement Log block shape, `{.underline}` span) is validated only against synthetic fixtures.
+**Verified against real files (2026-08-12):**
+- Checked `parse.ts` against real files in the Research Bibles Drive folder (folder ID `1DYDwFPEyWFmsHR-XKvviajypNlDQedT2`, now set in `content/sync-config.json`'s `researchBibles.driveFolderId`). All real bibles use an ATX-style H1 (`# Research Bible: <Title>`), NOT the Setext style previously assumed — `extractTitle`/`extractBody` have been corrected to match.
+- The `research-bible-refinement` skill (Step 7) confirmed to deliberately NOT write a `**Refinement Log**` block into the body anymore — it logs externally to `_WeeklyRefinementLog.md` and stamps a `_DDMMYY` date suffix on the filename instead. `extractChangelogEntry` now reads that filename suffix as a fallback signal instead of assuming every sync is a fresh "initial sync."
+- `RB_Anxiety_and_Depression.md` is confirmed malformed: its title was never styled as Heading&nbsp;1 in the source Google Doc, so it exports with no Markdown heading at all. It will 400 on `extractTitle` until Bobby fixes the heading style in the Doc — this is expected/intentional (title parsing should stay strict), not a code bug.
+
+**Still outstanding:**
 - The frontmatter serializer's output hasn't been diffed against what a real hand-created `/keystatic` entry for this collection actually produces (blocked on Keystatic's GitHub App env vars — see Keystatic CMS section).
-- `RB_Anxiety_and_Depression.md`'s header may be malformed relative to the expected title-line pattern — unconfirmed.
-- The webhook route hasn't been exercised end-to-end (no live dev run, no real GitHub PAT, no live Drive file tested yet).
-- Need a real sample title line from an actual `RB_*.md` file to confirm the title-parsing heuristic against real formatting, not a guess.
-- Confirm which local folder is the Drive-synced source for `RB_*.md` files.
+- The webhook route hasn't been exercised end-to-end against a live Drive file + real GitHub PAT (only unit-tested against fixtures so far).
+- The Apps Script trigger (`drive_content_sync_setup.md`) is not installed yet — manual step for Bobby in script.google.com: paste the script, set `CONFIG.driveFolderId` to `1DYDwFPEyWFmsHR-XKvviajypNlDQedT2` and `CONFIG.webhookSecret` to match `WEBHOOK_SECRET`, then run `setup()` once.
 
 ---
 
@@ -238,6 +240,8 @@ Own nav shell, outside Fumadocs. Components: `DashboardShell`, `StatCard`, `Cons
 ---
 
 ## Keystatic CMS
+
+Non-technical how-to for making edits once this is live: `KEYSTATIC-EDITING-GUIDE.md` at repo root (also covers what's editable here vs. hand-authored-only).
 
 GitHub storage mode — edits commit directly to `BobbyW08/ResearchBibleWebsite` via a GitHub App (Vercel's serverless filesystem is read-only in production, so local-storage mode isn't viable).
 
@@ -365,8 +369,8 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **`parent-content-builder` skill fields:** needs `cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenario content added. Confirm where Claude Code can actually see/edit the live skill definition before editing — don't assume the location.
-- **`painPoints`/`awarenessModules` missing fields:** no `cardTeaser` or `crisis` (boolean) field yet — needed once `parent-content-builder` produces them.
+- **`parent-content-builder` skill fields:** confirmed the skill still outputs its old flat frontmatter/prose format, not the granular fields the live Keystatic schema needs (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios, structured backfires/tries). The skill lives outside this repo (Claude Desktop's skill storage) — Claude Code cannot see or edit it, only Claude Desktop/Cowork can. Being fixed there, not here.
+- **`painPoints`/`awarenessModules` schema:** already has every field needed (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios) — this was previously listed as missing here; it isn't. The real gap is upstream (the skill, above) and in the webhook (no `parentFacingContent` ingestion path yet).
 - **`files.zip`** sits at the repo root and is git-tracked — confirm with Bobby whether it should be removed.
 - **`CPRS_Interactive_Site.html`, `TechConsequences_ParentGuide.html`, `adhd-prototype.html`, `tech_transitions_per_parenting_generation.html`** sit untracked at the repo root as prototype/reference files. Nothing in the live site depends on them — confirm with Bobby whether to delete or relocate.
 - **Research Bible Ingestion Pipeline** is uncommitted, in-progress work — see its Verification section for exactly what's unconfirmed before treating it as production-ready.

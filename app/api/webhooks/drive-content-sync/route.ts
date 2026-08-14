@@ -98,7 +98,7 @@ function todayUtcIsoDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-async function handleBibleSync(fileId: string): Promise<SyncResult & { status: number }> {
+async function handleBibleSync(fileId: string, fileName: string): Promise<SyncResult & { status: number }> {
   let raw: string;
   try {
     raw = await fetchDriveFileContent(fileId);
@@ -121,7 +121,7 @@ async function handleBibleSync(fileId: string): Promise<SyncResult & { status: n
     return { success: false, status: 400, error: `Title "${title}" produced an empty slug` };
   }
 
-  const changelogEntry = extractChangelogEntry(raw);
+  const changelogEntry = extractChangelogEntry(raw, fileName);
   const stripped = stripPandocArtifacts(raw);
   const cleanedBody = extractBody(stripped);
 
@@ -233,7 +233,7 @@ export async function POST(request: Request): Promise<Response> {
       return jsonResponse({ success: false, error: "not yet supported" }, 400);
     }
 
-    const result = await handleBibleSync(fileId);
+    const result = await handleBibleSync(fileId, fileName);
     const { status, ...body } = result;
     return jsonResponse(body, status);
   } catch (err) {
