@@ -22,7 +22,7 @@ const tools: ToolCard[] = [
     title: "Tech Safety & Consequence Setup",
     description:
       "Pick your phone and your child's devices, and get a tailored step-by-step parental-controls guide, a workarounds list, and a printable checklist.",
-    href: "/tools/tech-safety-tool",
+    href: "/tech-safety",
     icon: ShieldCheck,
   },
 ];

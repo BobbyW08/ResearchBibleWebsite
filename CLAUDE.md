@@ -37,16 +37,16 @@ Content philosophy: research bibles are internal practitioner documents. Parent-
 
 | Role | Value |
 |---|---|
-| Headline font | Space Grotesk |
-| Body font | DM Sans |
-| Background | `#F1F5FF` |
-| Text | `#1E1527` |
-| Primary | `#0F172A` |
-| Accent | `#343F58` |
-| Surface | `#FFFFFF` |
-| Border | `#C6D4F3` |
+| Title (hero-level) | Archivo — **placeholder** for "Philly Sans"; Bobby is resolving licensing/a production substitute. Swapping the real font in is a one-line change: the `titlePlaceholder` font component and `--font-title-placeholder` variable in `app/layout.tsx` |
+| Subtitle | Roboto Slab — **placeholder** for "Rockwell", same swap note as above (`subtitlePlaceholder` / `--font-subtitle-placeholder`) |
+| Heading / Subheading / Body | Libre Franklin (real, final — `app/layout.tsx`'s `libreFranklin`, mapped to both `--font-heading` and `--font-sans`) |
+| Quotes / testimonial text | Caveat (real, final — `font-quote` utility) |
+| Red (primary accent) | `#B40000` (`--primary` / `bg-primary` / `text-primary`) |
+| Near-black | `#111111` (`--foreground`, `--secondary`; also `--brand-black` / `bg-brand-black` for the literal near-black field, e.g. the footer and the Proof Wall hero) |
+| Off-white | `#F8F8F8` (`--background`; also `--brand-offwhite` / `bg-brand-offwhite` for literal off-white surfaces, e.g. the Proof Wall's paper testimonial cards) |
+| Gradient | Linear, 180°, `#111111` → `#B40000` — `.bg-brand-gradient` utility class (`app/globals.css`), used on the homepage Proof Wall hero |
 
-Source: Fontpair "Agent" starter kit. Apply automatically to all parenting-practice content (decks, handouts, Substack, web) without prompting.
+All of the above are CSS custom properties in `app/globals.css` (`:root`/`.dark`, which mirror each other — one deliberate light identity, no dark mode). Because nearly every component uses the semantic Tailwind tokens (`bg-primary`, `text-foreground`, `bg-background`, etc.) rather than hardcoded colors, this palette applies site-wide — Fumadocs `/docs` pages, the dashboard, and `/common-pain-points` all re-theme from the same variables, not just the marketing pages.
 
 ---
 
@@ -57,7 +57,7 @@ Source: Fontpair "Agent" starter kit. Apply automatically to all parenting-pract
 - **UI components:** shadcn/ui + ShadcnSpace (free tier)
 - **Animation:** Motion
 - **Booking:** Cal.com — direct outbound links to the `intro-call` event (not embedded)
-- **Newsletter:** Substack embed inside an on-page `Dialog` (shadcn/base-ui), triggered from header, homepage Connect tile, footer, and `/about`. Component: `components/marketing/newsletter-dialog.tsx`; subdomain constant in `lib/links.ts`.
+- **Newsletter:** Substack embed inside an on-page `Dialog` (shadcn/base-ui), triggered from the header (mobile menu), the footer's Connect column, `/services`' closing CTA, and as the "Join the waitlist" CTA on the Live Q&As / Cohorts cards on `/services`. Component: `components/marketing/newsletter-dialog.tsx`; subdomain constant in `lib/links.ts`.
 - **CMS:** Keystatic, GitHub storage mode. `keystatic.config.ts` manages `testimonials`, `painPoints`, `awarenessModules`, `researchBibles` (collections) plus `faq`/`footer`/`siteSettings`/`about` (singletons). See Keystatic CMS section.
 - **Database:** Neon (Postgres) — provisioned, tables exist, `neon_auth` schema live
 - **Auth:** Better Auth via Neon Managed — enabled. Sign-up → onboarding → account flow is not yet verified end-to-end.
@@ -74,20 +74,24 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 
 | Route | Purpose | Status |
 |---|---|---|
-| `/` | Homepage | Live — Hero → Pain Points → Connect → Meet Bobby → Testimonials → FAQ → Footer |
-| `/about` | About Bobby page | Live, CMS-managed via the `about` singleton. `personalDisclosure` field and a photo slot are intentionally blank for Bobby to fill in — the page shows an amber "Bobby — write this" callout while `personalDisclosure` is empty |
-| `/help` | Pain Point index | Live — "Common situations" (10 pain-point cards) + "Big picture" (2 awareness-module cards) |
-| `/help/[slug]` | Pain Point pages | Live for 10 slugs (see Pain Point Pages table) + 2 awareness modules (`modern`, `mentalhealth`) |
+| `/` | Homepage | Live — Header → Hero (Proof Wall) → Start Here → Quick Credential → FAQ → Footer |
+| `/about-bobby` | About Bobby page | Live, CMS-managed via the `about` singleton. The H1 ("About Bobby") and section structure are fixed, not CMS fields — see Homepage/About redesign notes below. `photo` is a real Keystatic image field; the page shows a placeholder box until Bobby uploads one. `/about` 301s here |
+| `/services` | Services for Parents | Live, static content (not CMS-managed). Hero ("We Build [photo] Your Path") → "Start Walking Your Path" (Stabilize/Connect/Structure/Adapt phases) → "What I Offer" (1:1 Sessions, Weekly Group, Live Q&As, Cohorts) → closing CTA |
+| `/services/organizations` | Services for Organizations & Nonprofits | Live, static content. Hero → "What I Offer" (Staff Training, Case Consultation, Parent Education Workshops, Reintegration Aftercare) → CTA. The CTA is a plain `mailto:` link, not the Cal.com intro-call flow used elsewhere — the org sales cycle is longer/more relationship-driven and there's no dedicated contact form or scheduling link yet |
+| `/common-pain-points` | Pain Point index | Live — "Common situations" (10 pain-point cards) + "Big picture" (2 awareness-module cards). `/help` 301s here |
+| `/common-pain-points/[slug]` | Pain Point pages | Live for 10 slugs (see Pain Point Pages table) + 2 awareness modules (`modern`, `mentalhealth`). `/help/[slug]` 301s here |
 | `/docs` | 36-topic categorized gallery (Stabilize / Connect / Structure / Adapt) | Live — all topic pages resolve |
 | `/docs/adhd` | ADHD Deep Dive — flagship, full interactive components | Live |
 | `/docs/[topic]` | 35 remaining deep dives — prose complete at webpage copy tier | Live as prose — no dashboard JSON yet |
 | `/dashboard` | Quick-reference index | Live, redirects to `/dashboard/adhd` |
 | `/dashboard/adhd` | ADHD quick-reference dashboard | Live |
 | `/dashboard/[topic]` | Future topic dashboards | Not built — needs JSON data per topic |
-| `/tools` | Tools index | Live |
-| `/tools/tech-safety-tool` | Tech Safety & Consequence Setup — interactive parental-controls wizard (pick your phone + your child's devices → tailored setup steps, workarounds list, printable checklist for 11 device types + home Wi-Fi) | Live, standalone, unlisted (no header/footer nav link by design). Data in `lib/tools/tech-safety-tool-data.ts`, components in `components/marketing/tools/tech-safety-tool/`. Screenshots hotlink Apple's CDN directly (`cdsassets.apple.com`) — not self-hosted, may break if Apple changes those URLs |
+| `/tools` | Tools index | Live, unlisted (no header/footer nav link by design) — lists the tech safety tool, now linking to `/tech-safety` |
+| `/tech-safety` | Tech Safety & Consequence Setup — interactive parental-controls wizard (pick your phone + your child's devices → tailored setup steps, workarounds list, printable checklist for 11 device types + home Wi-Fi) | Live, standalone, unlisted (no header/footer nav link by design). The consequence framework ("Applying It as a Consequence") now renders as step 2, right after the phone/device picker and before the device-by-device setup guide. Data in `lib/tools/tech-safety-tool-data.ts`, components in `components/marketing/tools/tech-safety-tool/`. Screenshots hotlink Apple's CDN directly (`cdsassets.apple.com`) — not self-hosted, may break if Apple changes those URLs. `/tools/tech-safety-tool` 301s here |
 | `/research` | Research Bible Library index | Not in header/footer nav by design — reachable by direct URL only. No entries exist yet (see Research Bible Ingestion Pipeline) |
 | `/research/[slug]` | Individual research bible, public | Same nav-hidden-by-design pattern. `generateMetadata` sets `robots: {index: !entry.noindex}` per bible. Changelog renders as a visible "Updates" section on the page |
+
+**301 redirects** (`next.config.ts`): `/about` → `/about-bobby`, `/tools/tech-safety-tool` → `/tech-safety`, `/help` → `/common-pain-points`, `/help/:slug` → `/common-pain-points/:slug`, `/tech-consequences` → `/tech-safety`.
 
 ### CMS / Admin / Internal Routes
 
@@ -115,18 +119,27 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 
 Section order in `app/page.tsx`:
 
-1. **Header** — wordmark, two-tier responsive text. Nav: About · Pain Points · FAQ (footer separately links `/docs` as "Guides")
-2. **Hero** — primary CTA → `/help`, secondary → Cal.com `intro-call`
-3. **Pain Points** — 3 featured cards (via a `featured` checkbox on the Keystatic `painPoints` collection) + "See all pain points" → `/help`
-4. **Connect** — 3 tiles: Newsletter (opens signup modal), Instagram (disabled, "Coming soon"), Book a Call (→ Cal.com `intro-call`)
-5. **Meet Bobby** — condensed personal narrative, links to `/about`
-6. **Testimonials** — full-bleed auto-scrolling marquee, inverted colors, 9 quotes, CMS-managed via `content/testimonials/*.yaml`. Pauses on hover/focus, respects `prefers-reduced-motion` (falls back to a swipeable row)
-7. **FAQ** — 6 Q&As, CPRS/peer-support framing (opens with "So this isn't therapy?")
-8. **Footer** — Sitemap (About/Pain Points/Guides/FAQ) + Connect (Book a Call/Newsletter modal/LinkedIn/Instagram-disabled)
+1. **Header** (`components/marketing/header.tsx`) — nav: About (`/about-bobby`) · Start Here (in-page anchor, `/#start-here`) · Services (`/services`) · FAQs (in-page anchor, `/#faq`). No dropdown. On the homepage only, the header is rendered with `logoAnimatesIn` — its wordmark starts invisible and crossfades in via Motion's `useScroll`/`useTransform` as the user scrolls past the hero, timed to match the hero's own logo shrinking out (see #2). Every other page renders the header with the logo always visible.
+2. **Hero — "Proof Wall"** (`hero.tsx` + `proof-wall-hero.tsx`) — near-black-to-red gradient (`bg-brand-gradient`) field. A large wordmark shrinks/fades via scroll-linked Motion transforms as the user scrolls (handing off to the header's wordmark, see #1). Five tilted "paper" testimonial cards (off-white, tape accent, Caveat quote text, cursor-parallax) surround a central statement, sourced live from the `testimonials` Keystatic collection (falls back to hardcoded copy if the collection is empty). CTA links straight out to the Cal.com `intro-call` URL, not an internal page.
+3. **Start Here** (`start-here.tsx`) — 4 tiles, each a direct link: Tech Safety Tool (`/tech-safety`), Common Pain Points (`/common-pain-points`), Services (`/services`), Organizations (`/services/organizations`).
+4. **Quick Credential** (`quick-credential.tsx`) — photo slot + 5 bulleted credential lines (CPRS/RI Board ID, current role, military background, training, work history), "Learn more" → `/about-bobby`.
+5. **FAQ** — 6 Q&As, CPRS/peer-support framing (opens with "Is this therapy?"). Scroll target for the nav's "FAQs" anchor.
+6. **Footer** (two-column, bymonolog.com pattern) — left column mirrors the header nav (About/Start Here/Services/FAQs); right column is Connect (Book a Call, Newsletter modal, contact email, LinkedIn/Substack/Instagram-disabled icons). Rendered on every page, not just the homepage.
+
+The old standalone Connect section, Meet Bobby section, homepage Pain Points grid, and full-bleed Testimonials marquee were removed in the redesign — their content/purpose now lives in the sections above or in the footer.
 
 ---
 
-## Pain Point Pages (`/help`, `/help/[slug]`)
+## Services Pages (`/services`, `/services/organizations`)
+
+Static content (not CMS-managed) — `app/services/page.tsx` and `app/services/organizations/page.tsx`, sharing `components/marketing/services/offer-card.tsx` for the pricing/offering cards.
+
+- **`/services` (For Parents):** Hero ("We Build [photo] Your Path") → "Start Walking Your Path" (the Stabilize/Connect/Structure/Adapt framework — this content lives here only, not duplicated on `/about-bobby`) → "What I Offer" (1:1 Sessions and Weekly Group are `available`; Live Q&As and Cohorts are `comingSoon` with a "Join the waitlist" CTA that opens the Newsletter dialog — chosen as the lowest-effort option consistent with the existing stack, since there's no dedicated waitlist table or Resend integration) → closing CTA. A second "Talk to Bobby" CTA sits inside the Weekly Group card, in addition to the page's closing CTA — intentional, not a duplicate.
+- **`/services/organizations`:** Hero → "What I Offer" (Staff Training & Professional Development, Case Consultation, Parent Education Workshops — the $850 flat-rate contracted-group-work offering, not to be confused with the business plan's separate $150–300/session "Paid Parent-Education Evenings," which isn't built — and Reintegration Aftercare Plan) → "Let's Talk" CTA, a plain `mailto:` link rather than the Cal.com intro-call flow.
+
+---
+
+## Pain Point Pages (`/common-pain-points`, `/common-pain-points/[slug]`)
 
 Custom layout — NOT Fumadocs. CMS-managed via Keystatic: `painPoints` collection (`content/pain-points/*.yaml`, 10 entries) and `awarenessModules` collection (`content/awareness-modules/*.yaml`, 2 entries — narrative sections instead of age-tabs/backfires/tries). `lib/pain-points.ts` holds only shared TypeScript types; data and lookups (`getHelpEntry`, `getAllPainPoints`, `getFeaturedPainPoints`) live in `lib/pain-points-reader.ts` (async, reads via `lib/keystatic-reader.ts`). Icon fields store a name string (`Flame`, `Smartphone`, ...) resolved to a `LucideIcon` via `lib/pain-point-icons.ts` — keep both files' icon lists in sync when adding an icon.
 
@@ -198,8 +211,8 @@ Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` st
 - `lib/google/drive.ts` — `fetchDriveFileContent(fileId)` via direct `fetch` + `lib/google/serviceAccountAuth.ts` (no `googleapis` package).
 - `lib/github/contents.ts` — hand-rolled GitHub REST client: `getDefaultBranchSha`, `createBranch`, `getFileSha`, `getFileContent`, `putFile`, `updateFile`, `openPullRequest`. Auth via `GITHUB_CONTENT_SYNC_TOKEN` (separate from Keystatic's own `KEYSTATIC_GITHUB_*` app credentials).
 - `app/api/webhooks/drive-content-sync/route.ts` — the sync webhook. Auth: `X-Webhook-Secret` header, timing-safe compare against `WEBHOOK_SECRET` (same env var as `/api/refresh`). Body: `{fileId, fileName, folderKey}` — only `folderKey === "researchBibles"` + filename matching `RB_*.md` is handled, anything else 400s. Flow: fetch from Drive → title extraction (typed `BibleParseError` on failure) → changelog-entry extraction (in-body Refinement Log block if present; otherwise falls back to the `_DDMMYY` date suffix on `fileName`; otherwise today's date with a genuine "initial sync" summary) → Pandoc-artifact strip → body extraction → sha256 dedup guard against the live GitHub file (no-op 200 if unchanged) → version computed server-side from changelog length → branch `content-sync/bible-<slug>-<date>` → commit → open PR → follow-up commit filling the real PR URL into the changelog entry. Has an in-memory token-bucket rate limiter (module-level state, resets on cold start — acceptable for a low-traffic internal webhook, not a true distributed limiter).
-- `app/robots.ts` — disallows `/docs/` and `/help/` for all agents except Googlebot. `/research/` is intentionally not disallowed — visibility is controlled per-entry via `noindex`.
-- `app/sitemap.ts` — static routes + `/docs/[slug]` (via Fumadocs' `source.generateParams()`) + `/help/[slug]` + `/research/[slug]` for every non-`noindex` bible.
+- `app/robots.ts` — disallows `/docs/` and `/common-pain-points/` for all agents except Googlebot. `/research/` is intentionally not disallowed — visibility is controlled per-entry via `noindex`.
+- `app/sitemap.ts` — static routes + `/docs/[slug]` (via Fumadocs' `source.generateParams()`) + `/common-pain-points/[slug]` + `/research/[slug]` for every non-`noindex` bible.
 - `drive_content_sync_setup.md` (repo root) — Apps Script reference for the `researchBibles`-folder-only trigger. Separate from `drive_sync_setup/`/`notify_change.gs`, which still serve the old (dormant) pipeline.
 
 **Bible metadata rules:**
@@ -247,13 +260,13 @@ GitHub storage mode — edits commit directly to `BobbyW08/ResearchBibleWebsite`
 
 **CMS-managed:**
 - `testimonials` — collection, `content/testimonials/*.yaml` (`quote`, `attribution`)
-- `painPoints` — collection, `content/pain-points/*.yaml`, 10 entries. Every field on `/help/[slug]` for these is editable: tag, title, intro, all 4 age-band scenarios, `whatHappening` (conditional block array), `backfires`, `tries`, `support`, `deepDive`, `related`, `featured`, icon (name string)
+- `painPoints` — collection, `content/pain-points/*.yaml`, 10 entries. Every field on `/common-pain-points/[slug]` for these is editable: tag, title, intro, all 4 age-band scenarios, `whatHappening` (conditional block array), `backfires`, `tries`, `support`, `deepDive`, `related`, `featured`, icon (name string)
 - `awarenessModules` — collection, `content/awareness-modules/*.yaml`, 2 entries. Same base fields as `painPoints` plus `sections`, no age-tabs/backfires/tries
 - `researchBibles` — collection, `content/research-bibles/*/`, no entries yet — see Research Bible Ingestion Pipeline
 - `faq` — singleton, `content/faq/data.yaml` (ordered `question`/`answer` array — singleton specifically for native drag-to-reorder, since order is narratively load-bearing)
-- `footer` — singleton, `content/footer/data.yaml` (`tagline`, `contactEmail`, `copyrightText`, `sections` → `links`, each link's `linkType` conditional on `url`/`newsletter`/`comingSoon`, mapped in `footer.tsx`)
-- `about` — singleton, `content/about/data.yaml`. Every paragraph/heading/phase/training item/CTA is editable, including `personalDisclosure` (intentionally blank — see Site Map). Photo slot is hardcoded, no image field exists
-- `siteSettings` — singleton, `content/site-settings/data.yaml` (`substackSubdomain`, `calComUrl`) — **holds real values but nothing reads from it yet.** `lib/links.ts` and the 5 hardcoded Cal.com URLs (header, hero, connect, footer, about) are not wired to it. Wiring means converting those client components to fetch-and-pass-props.
+- `footer` — singleton, `content/footer/data.yaml` (`tagline`, `contactEmail`, `copyrightText`). The sitemap/Connect link columns themselves are hardcoded in `footer.tsx`, mirroring the header nav — not CMS-driven, since the redesign makes header/footer nav consistency a design rule rather than free-form editable content.
+- `about` — singleton, `content/about/data.yaml`. Fields: `heroSubhead`, `credentialBadge`, `photo` (real Keystatic image field — shows a placeholder box on the page until Bobby uploads one), `shortAboutParagraphs`, `cprsId`, `currentRole`, `training`, `prior`, `also`. The H1 ("About Bobby") is fixed copy, not a field. There's no more blank/placeholder `personalDisclosure` field — Bobby's full personal account is written directly into `shortAboutParagraphs` now. The four-phase framework section was removed from this page entirely (it lives only on `/services` as "Start Walking Your Path")
+- `siteSettings` — singleton, `content/site-settings/data.yaml` (`substackSubdomain`, `calComUrl`) — **holds real values but nothing reads from it yet.** `lib/links.ts` and the hardcoded Cal.com URLs across the site are not wired to it. Wiring means converting those client components to fetch-and-pass-props.
 
 **Not CMS-managed:** `content/docs/*.mdx` (37 Fumadocs deep-dive pages) and `content/data/*.json` (dashboard data) stay hand-authored/Google-Drive-sourced.
 
@@ -277,7 +290,7 @@ GitHub storage mode — edits commit directly to `BobbyW08/ResearchBibleWebsite`
 | LinkedIn | Bobby's personal account | Direct outbound link — live (header, footer) |
 | Instagram | `bobby__washburn` | Disabled — zero content lives there. Every instance site-wide renders as a disabled trigger (`components/marketing/coming-soon-trigger.tsx`) with a "Coming soon" tooltip/badge, `aria-disabled="true"`. Not in the Person JSON-LD `sameAs` array. Re-enable by swapping in a real `<a>` once there's content |
 | Facebook | — | Not implemented. No icon, link, or reference anywhere in the codebase |
-| Cal.com | `bobby-washburn/intro-call` | Direct outbound link — live (all 6 CTAs site-wide: header, hero, footer, connect tile, about page ×2) |
+| Cal.com | `bobby-washburn/intro-call` | Direct outbound link — live across header, homepage hero (Proof Wall), `/about-bobby` (×2), `/services` (×3), and the footer |
 | Substack | `roughlyeducated` | On-page signup modal (`components/marketing/newsletter-dialog.tsx`) with an embedded iframe, plus an outbound "Or read past issues on Substack →" link inside the modal. Subdomain constant: `lib/links.ts` → `SUBSTACK_SUBDOMAIN` — needs Bobby's confirmation this is correct before the embed ships |
 
 Cal.com and LinkedIn are direct outbound links; Substack is the one embed.
@@ -310,8 +323,8 @@ No COPPA exposure, no accidental PII collection for minors. This is a product/le
 
 ## Content Protection / SEO
 
-- `app/robots.ts`: disallows `/docs/` and `/help/` for all non-Googlebot agents (blocks GPTBot, ClaudeBot, CCBot, PerplexityBot, etc.); Googlebot fully allowed. `/research/` is not disallowed — visibility is per-entry via each bible's `noindex` field.
-- `app/sitemap.ts`: static routes + `/docs/[slug]` + `/help/[slug]` + `/research/[slug]` (non-`noindex` only)
+- `app/robots.ts`: disallows `/docs/` and `/common-pain-points/` for all non-Googlebot agents (blocks GPTBot, ClaudeBot, CCBot, PerplexityBot, etc.); Googlebot fully allowed. `/research/` is not disallowed — visibility is per-entry via each bible's `noindex` field.
+- `app/sitemap.ts`: static routes (including `/services`, `/services/organizations`) + `/docs/[slug]` + `/common-pain-points/[slug]` + `/research/[slug]` (non-`noindex` only)
 - All content pages: full meta titles, descriptions, structured data for SEO
 - Rate limiting on content routes via Vercel middleware (prevents bulk scraping)
 
@@ -374,8 +387,10 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 - **`files.zip`** sits at the repo root and is git-tracked — confirm with Bobby whether it should be removed.
 - **`CPRS_Interactive_Site.html`, `TechConsequences_ParentGuide.html`, `adhd-prototype.html`, `tech_transitions_per_parenting_generation.html`** sit untracked at the repo root as prototype/reference files. Nothing in the live site depends on them — confirm with Bobby whether to delete or relocate.
 - **Research Bible Ingestion Pipeline** is uncommitted, in-progress work — see its Verification section for exactly what's unconfirmed before treating it as production-ready.
-- **Testimonial publish consent** needs Bobby's explicit confirmation (anonymized, but consent-sensitive population).
 - **Substack subdomain** (`roughlyeducated`) needs Bobby's confirmation before the embed ships.
+- **"Parent Education Workshops" naming** on `/services/organizations`: this is the $850/flat Group-Contracting engagement from the business plan. Worth confirming with Bobby that the name doesn't cause confusion with the separate (unbuilt, not on the site) $150–300/session "Paid Parent-Education Evenings" offering.
+- **`/services/organizations`'s "Let's Talk" CTA** currently routes to a plain `mailto:` link as a placeholder — confirm with Bobby whether a dedicated contact form or scheduling link should replace it.
+- **About-Bobby photo** — the `about` singleton's `photo` field is live but empty; the page shows a placeholder box until Bobby uploads one via `/keystatic` (blocked on the same GitHub App env vars as the rest of Keystatic writes).
 
 ---
 

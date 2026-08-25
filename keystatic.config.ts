@@ -284,45 +284,6 @@ export default config({
           defaultValue:
             "© 2026 Bobby Washburn. Peer support and parenting education — not therapy, diagnosis, or medical advice.",
         }),
-        sections: fields.array(
-          fields.object({
-            title: fields.text({ label: "Section title" }),
-            links: fields.array(
-              fields.object({
-                title: fields.text({ label: "Link text" }),
-                linkType: fields.conditional(
-                  fields.select({
-                    label: "Link type",
-                    options: [
-                      { label: "Regular URL", value: "url" },
-                      { label: "Newsletter signup modal", value: "newsletter" },
-                      { label: "Coming soon (disabled)", value: "comingSoon" },
-                    ],
-                    defaultValue: "url",
-                  }),
-                  {
-                    url: fields.object({
-                      href: fields.url({
-                        label: "URL",
-                        validation: { isRequired: true },
-                      }),
-                    }),
-                    newsletter: fields.empty(),
-                    comingSoon: fields.empty(),
-                  },
-                ),
-              }),
-              {
-                label: "Links",
-                itemLabel: (props) => props.fields.title.value || "New link",
-              },
-            ),
-          }),
-          {
-            label: "Sections",
-            itemLabel: (props) => props.fields.title.value || "New section",
-          },
-        ),
       },
     }),
 
@@ -351,45 +312,37 @@ export default config({
       path: "content/about/data",
       format: { data: "yaml" },
       schema: {
-        heroLine1: fields.text({ label: "Hero line 1", validation: { isRequired: true } }),
-        heroLine2Italic: fields.text({ label: "Hero line 2 (italic)", validation: { isRequired: true } }),
-        heroIntro: fields.text({ label: "Hero intro paragraph", multiline: true, validation: { isRequired: true } }),
-        section1Heading: fields.text({ label: "Section 1 heading", validation: { isRequired: true } }),
-        section1Paragraphs: fields.array(fields.text({ label: "Paragraph", multiline: true }), {
-          label: "Section 1 paragraphs",
+        // Per homepage-redesign-v3.md / Bobby_Washburn_Site_Copy_redux_v1.docx:
+        // the H1 itself is fixed plain copy ("About Bobby"), not a CMS field —
+        // the "You don't need fixing..." headline and the framework strip were
+        // dropped in the final redesign, and there's no per-field variant of a
+        // one-line page title worth exposing here.
+        heroSubhead: fields.text({
+          label: "Hero subhead",
+          validation: { isRequired: true },
+          defaultValue: "Peer support to help you handle this, and whatever's next.",
         }),
-        section1Quote: fields.text({ label: "Pull quote", multiline: true, validation: { isRequired: true } }),
-        section2Heading: fields.text({ label: "Section 2 heading", validation: { isRequired: true } }),
-        section2Paragraphs: fields.array(fields.text({ label: "Paragraph", multiline: true }), {
-          label: "Section 2 paragraphs (career history)",
+        credentialBadge: fields.text({
+          label: "Credential badge (near photo)",
+          validation: { isRequired: true },
+          defaultValue: "CPRS Certified · RI Board #202153",
         }),
-        personalDisclosure: fields.text({
-          label: "Personal disclosure",
-          multiline: true,
-          defaultValue: "",
+        photo: fields.image({
+          label: "Photo",
+          directory: "public/images/about",
+          publicPath: "/images/about/",
           description:
-            "Two to five sentences on what happened that put you on this side of the table. What happened -> what it cost -> what changed -> why that makes you useful to the parent reading this. Whatever you write here is permanent and public. Leave blank to show a placeholder callout on the live page instead.",
+            "Not live yet — the page shows a placeholder box until this is set.",
         }),
-        section3Heading: fields.text({ label: "Section 3 heading", validation: { isRequired: true } }),
-        section3Intro: fields.text({ label: "Section 3 intro paragraph", multiline: true, validation: { isRequired: true } }),
-        phases: fields.array(
-          fields.object({
-            name: fields.text({ label: "Name", validation: { isRequired: true } }),
-            line: fields.text({ label: "Line", multiline: true, validation: { isRequired: true } }),
-          }),
-          { label: "Phases", itemLabel: (props) => props.fields.name.value || "New phase" },
-        ),
-        section3Outro: fields.array(fields.text({ label: "Paragraph", multiline: true }), {
-          label: "Section 3 closing paragraphs",
+        shortAboutParagraphs: fields.array(fields.text({ label: "Paragraph", multiline: true }), {
+          label: "Short About Me — paragraphs",
+          itemLabel: (props) => props.value.slice(0, 60) || "New paragraph",
         }),
         cprsId: fields.text({ label: "CPRS ID line", validation: { isRequired: true } }),
         currentRole: fields.text({ label: "Current role", multiline: true, validation: { isRequired: true } }),
         training: fields.array(fields.text({ label: "Item" }), { label: "Training list" }),
         prior: fields.text({ label: "Prior (military etc.)", multiline: true, validation: { isRequired: true } }),
         also: fields.text({ label: "Also (publications etc.)", multiline: true }),
-        ctaHeading: fields.text({ label: "CTA heading", validation: { isRequired: true } }),
-        ctaBody: fields.text({ label: "CTA body", multiline: true, validation: { isRequired: true } }),
-        ctaFooterNote: fields.text({ label: "CTA footer note", multiline: true, validation: { isRequired: true } }),
       },
     }),
   },

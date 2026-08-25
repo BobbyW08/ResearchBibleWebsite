@@ -5,7 +5,16 @@ import { getAllResearchBibles } from "@/lib/research-bibles-reader";
 
 const SITE_URL = "https://bobby-washburn.com";
 
-const STATIC_ROUTES = ["/", "/about", "/help", "/docs", "/research"];
+const STATIC_ROUTES = [
+  "/",
+  "/about-bobby",
+  "/services",
+  "/services/organizations",
+  "/common-pain-points",
+  "/tech-safety",
+  "/docs",
+  "/research",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [docsParams, helpEntries, bibles] = await Promise.all([
@@ -25,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
   const helpEntriesSitemap: MetadataRoute.Sitemap = helpEntries.map((entry) => ({
-    url: `${SITE_URL}/help/${entry.slug}`,
+    url: `${SITE_URL}/common-pain-points/${entry.slug}`,
   }));
 
   const researchEntries: MetadataRoute.Sitemap = bibles

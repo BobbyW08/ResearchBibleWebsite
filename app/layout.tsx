@@ -1,19 +1,38 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { DM_Sans, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Archivo, Caveat, Geist_Mono, Libre_Franklin, Roboto_Slab } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+// Heading + subheading + body, per the brand system — real spec, not a placeholder.
+const libreFranklin = Libre_Franklin({
+  variable: "--font-libre-franklin",
   subsets: ["latin"],
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+// Quote / testimonial text, per the brand system — real spec, not a placeholder.
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
+});
+
+// Placeholder for "Philly Sans" (hero-level title font). Bobby is resolving
+// licensing/a production substitute before this ships — swapping the real font
+// in only means changing this import and the --font-title-placeholder variable
+// name below, nothing structural.
+const titlePlaceholder = Archivo({
+  variable: "--font-title-placeholder",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
+
+// Placeholder for "Rockwell" (subtitle font). Same swap note as above.
+const subtitlePlaceholder = Roboto_Slab({
+  variable: "--font-subtitle-placeholder",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -63,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${dmSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${libreFranklin.variable} ${caveat.variable} ${titlePlaceholder.variable} ${subtitlePlaceholder.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

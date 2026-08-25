@@ -82,8 +82,16 @@ export function TechSafetyToolGuide() {
         </div>
       </div>
 
-      <StepLabel
+      <SectionBanner
         number={2}
+        title="Applying It as a Consequence"
+        subtitle="The technical setup is only half the picture — read this before you lock anything down"
+        className="bg-amber-800"
+      />
+      <ConsequenceFramework />
+
+      <StepLabel
+        number={3}
         title="Your Device Setup Guide"
         description="Full step-by-step for each device. Steps 1–3 get you set up. Steps 4–6 lock it down and apply consequences."
       />
@@ -106,20 +114,12 @@ export function TechSafetyToolGuide() {
       </div>
 
       <SectionBanner
-        number={3}
+        number={4}
         title="Know Their Workarounds"
         subtitle="Tailored to your selected devices — close these gaps before they happen"
         className="bg-violet-700"
       />
       <WorkaroundsList selected={selected} />
-
-      <SectionBanner
-        number={4}
-        title="Applying It as a Consequence"
-        subtitle="The technical setup is only half the picture"
-        className="bg-amber-800"
-      />
-      <ConsequenceFramework />
 
       <SectionBanner
         number={5}

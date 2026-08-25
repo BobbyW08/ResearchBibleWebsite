@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Logo from "@/assets/logo/logo";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
@@ -29,11 +29,14 @@ type NavigationSection = {
   href: string;
 };
 
+// Per homepage-redesign-v3.md: About / Start Here / Services / FAQs, no dropdown.
+// Start Here and FAQs are in-page anchors on the homepage; from any other page
+// they still work — the browser navigates home, then scrolls to the anchor.
 const navigationData: NavigationSection[] = [
-  { title: "About", href: "/about" },
-  { title: "Pain Points", href: "/help" },
-  { title: "Tools", href: "/tools" },
-  { title: "FAQ", href: "/#faq" },
+  { title: "About", href: "/about-bobby" },
+  { title: "Start Here", href: "/#start-here" },
+  { title: "Services", href: "/services" },
+  { title: "FAQs", href: "/#faq" },
 ];
 
 const BookACallButton = ({ className }: { className?: string }) => (
@@ -55,9 +58,24 @@ const BookACallButton = ({ className }: { className?: string }) => (
   </Link>
 );
 
-const Header = () => {
+type HeaderProps = {
+  /**
+   * True only on the homepage, where the Proof Wall hero renders its own large
+   * wordmark that shrinks into this slot as the user scrolls (see hero.tsx).
+   * The header's own logo starts invisible and crossfades in over the same
+   * scroll range the hero logo shrinks and fades out over, so the whole thing
+   * reads as one continuous motion rather than a jump cut. Every other page
+   * has no big hero logo to hand off from, so the header logo is just always
+   * visible there.
+   */
+  logoAnimatesIn?: boolean;
+};
+
+const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
   const [sticky, setSticky] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { scrollY } = useScroll();
+  const animatedLogoOpacity = useTransform(scrollY, [40, 220], [0, 1]);
 
   const handleScroll = useCallback(() => {
     setSticky(window.scrollY >= 50);
@@ -95,7 +113,9 @@ const Header = () => {
       >
         <div>
           <Link href="/" aria-label="Bobby Washburn Parenting Support">
-            <Logo />
+            <motion.div style={logoAnimatesIn ? { opacity: animatedLogoOpacity } : undefined}>
+              <Logo />
+            </motion.div>
           </Link>
         </div>
 

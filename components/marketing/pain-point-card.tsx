@@ -15,7 +15,7 @@ function PainPointCard({ entry, className }: PainPointCardProps) {
 
   return (
     <Link
-      href={`/help/${slug}`}
+      href={`/common-pain-points/${slug}`}
       className={cn(
         "group flex h-full flex-col gap-3 rounded-lg border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,

@@ -13,7 +13,27 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/tech-consequences",
-        destination: "/tools/tech-safety-tool",
+        destination: "/tech-safety",
+        permanent: true,
+      },
+      {
+        source: "/about",
+        destination: "/about-bobby",
+        permanent: true,
+      },
+      {
+        source: "/tools/tech-safety-tool",
+        destination: "/tech-safety",
+        permanent: true,
+      },
+      {
+        source: "/help",
+        destination: "/common-pain-points",
+        permanent: true,
+      },
+      {
+        source: "/help/:slug",
+        destination: "/common-pain-points/:slug",
         permanent: true,
       },
     ];

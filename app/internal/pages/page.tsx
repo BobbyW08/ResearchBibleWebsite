@@ -13,12 +13,14 @@ export const metadata: Metadata = {
 // by a collection at all.
 const ONE_OFF_ROUTES = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Help index", href: "/help" },
+  { label: "About", href: "/about-bobby" },
+  { label: "Services (parents)", href: "/services" },
+  { label: "Services (organizations)", href: "/services/organizations" },
+  { label: "Common pain points index", href: "/common-pain-points" },
   { label: "Docs gallery", href: "/docs" },
   { label: "Dashboard", href: "/dashboard" },
   { label: "Research bibles index", href: "/research" },
-  { label: "Tech Safety & Consequence Setup", href: "/tech-consequences" },
+  { label: "Tech Safety & Consequence Setup", href: "/tech-safety" },
   { label: "Tools", href: "/tools" },
   { label: "Keystatic admin", href: "/keystatic" },
 ];
@@ -39,11 +41,11 @@ async function getRegistrySections() {
     },
     {
       label: "Pain Points",
-      entries: painPointSlugs.map((slug) => ({ label: slug, href: `/help/${slug}` })),
+      entries: painPointSlugs.map((slug) => ({ label: slug, href: `/common-pain-points/${slug}` })),
     },
     {
       label: "Awareness Modules",
-      entries: awarenessModuleSlugs.map((slug) => ({ label: slug, href: `/help/${slug}` })),
+      entries: awarenessModuleSlugs.map((slug) => ({ label: slug, href: `/common-pain-points/${slug}` })),
     },
     {
       label: "Testimonials (no public route — CMS entries only)",
