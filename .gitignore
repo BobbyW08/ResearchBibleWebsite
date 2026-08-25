@@ -53,3 +53,6 @@ next-env.d.ts
 
 # committed zip export artifact — removed, keep it out going forward
 files.zip
+
+.vercel
+.env*.local
