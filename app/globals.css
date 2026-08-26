@@ -224,30 +224,3 @@
   }
 }
 
-/* Start Here — Common Pain Points vertical carousel (components/marketing/start-here.tsx).
-   All items render twice in the DOM for the seamless loop, but since every item is
-   present on load (not fetched on interaction), the homepage still gets full SEO
-   credit for every pain-point search term per homepage-redesign-v3.md Section 2. */
-@keyframes marquee-scroll-vertical {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
-}
-
-.marquee-track-vertical {
-  animation: marquee-scroll-vertical 32s linear infinite;
-}
-
-.marquee-group-vertical:hover .marquee-track-vertical,
-.marquee-group-vertical:focus-within .marquee-track-vertical {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track-vertical {
-    animation: none;
-  }
-}

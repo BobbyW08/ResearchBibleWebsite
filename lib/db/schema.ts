@@ -44,6 +44,21 @@ export const topicProgress = pgTable(
   (table) => [unique().on(table.userId, table.topicId)],
 );
 
+// Lightweight interest-signal capture (e.g. the Live Q&A "Show Interest"
+// widget on /services — see components/marketing/services/interest-signup-widget.tsx).
+// `source` labels which widget/offer captured the email so this one table can
+// be reused elsewhere later without a schema change.
+export const interestSignups = pgTable(
+  "interest_signups",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    email: text("email").notNull(),
+    source: text("source").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [unique().on(table.email, table.source)],
+);
+
 // Pending content reviews — research bible changes staged for approval
 export const pendingReviews = pgTable("pending_reviews", {
   id: uuid("id").defaultRandom().primaryKey(),

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
+import InterestSignupWidget from "@/components/marketing/services/interest-signup-widget";
 
 export type OfferCardData = {
   // Stable anchor ID so other pages (e.g. the homepage Start Here Row 2 panels)
@@ -17,6 +18,9 @@ export type OfferCardData = {
   } & (
     | { kind: "link"; href: string; external?: boolean }
     | { kind: "newsletter" }
+    // Interactive email-capture widget (homepage-redesign-v5.md Section 6) —
+    // used by the Live Q&A card instead of the generic newsletter dialog.
+    | { kind: "interest-signup"; source: string }
   );
 };
 
@@ -43,11 +47,12 @@ function OfferCard({ anchorId, title, description, details, availability, cta }:
         </ul>
         {cta && (
           <div className="mt-auto flex flex-col gap-1.5 pt-3">
-            {cta.kind === "newsletter" ? (
+            {cta.kind === "newsletter" && (
               <NewsletterDialog triggerClassName="inline-flex w-fit items-center gap-1 text-sm font-semibold text-primary transition-all hover:gap-2">
                 {cta.label} →
               </NewsletterDialog>
-            ) : (
+            )}
+            {cta.kind === "link" && (
               <Link
                 href={cta.href}
                 target={cta.external ? "_blank" : undefined}
@@ -56,6 +61,9 @@ function OfferCard({ anchorId, title, description, details, availability, cta }:
               >
                 {cta.label} →
               </Link>
+            )}
+            {cta.kind === "interest-signup" && (
+              <InterestSignupWidget label={cta.label} source={cta.source} />
             )}
             {cta.note && <p className="text-xs font-normal text-muted-foreground">{cta.note}</p>}
           </div>

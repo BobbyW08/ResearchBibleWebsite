@@ -90,7 +90,7 @@ export default async function AboutBobbyPage() {
           <div className="flex flex-col items-center gap-6 text-center">
             {about.photo ? (
               <Image
-                src={about.photo}
+                src={`/images/about/${about.photo}`}
                 alt="Photo of Bobby Washburn"
                 width={128}
                 height={128}

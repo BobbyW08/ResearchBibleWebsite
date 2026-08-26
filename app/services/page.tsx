@@ -89,16 +89,19 @@ export default function ServicesPage() {
               <p className="text-xs font-semibold uppercase tracking-widest text-primary">
                 For Parents
               </p>
+              <p className="font-heading text-xl font-medium tracking-tight text-foreground sm:text-2xl">
+                Most families who find their way to me are lost.
+              </p>
+              <p className="text-base font-normal text-muted-foreground">
+                Sometimes you can see a path. Sometimes the trees are too dense to see through.
+                Either way, you need a guide.
+              </p>
               <WedgedHeroHeadline />
               <p className="text-base font-normal text-muted-foreground">
-                Most families who find their way to me are lost. I tell them you may feel like
-                you are standing in an enormous, dark forest. Sometimes you can see a path,
-                sometimes the trees are too dense to see through, and sometimes you need a guide
-                to get you through the difficult passes. I don&apos;t hand you a map and walk
-                away; we&apos;ll discover the changes you want to make, then build the path with
-                you, one real step at a time. We may take steps forward and one back; we may take
-                steps sideways instead of forward, as long as we keep moving in the direction we
-                want to go, that&apos;s progress.
+                I don&apos;t hand you a map and walk away. We&apos;ll discover the changes you
+                want to make, then build the path with you, one real step at a time. We may take
+                steps forward and one back, or sideways instead of forward — as long as we keep
+                moving in the direction we want to go, that&apos;s progress.
               </p>
               <div>
                 <Link

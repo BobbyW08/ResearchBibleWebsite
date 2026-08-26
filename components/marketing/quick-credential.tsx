@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check } from "lucide-react";
 import { motion } from "motion/react";
-import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
+import bobbyPhoto from "@/assets/bobby-quick-credential.jpg";
 
 const CREDENTIAL_BULLETS: string[] = [
   "Certified Peer Recovery Specialist (CPRS), Rhode Island Certification Board, ID 202153",
@@ -24,9 +25,10 @@ function QuickCredential() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
-            <PlaceholderPhoto
+            <Image
+              src={bobbyPhoto}
               alt="Photo of Bobby Washburn"
-              className="aspect-4/3 w-full rounded-lg"
+              className="aspect-4/3 w-full rounded-lg object-cover"
             />
           </motion.div>
 

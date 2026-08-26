@@ -15,6 +15,13 @@
       "when": 1785005258932,
       "tag": "0001_flowery_major_mapleleaf",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787757344386,
+      "tag": "0002_minor_nextwave",
+      "breakpoints": true
     }
   ]
 }
