@@ -29,13 +29,16 @@ type NavigationSection = {
   href: string;
 };
 
-// Per homepage-redesign-v3.md: About / Start Here / Services / FAQs, no dropdown.
-// Start Here and FAQs are in-page anchors on the homepage; from any other page
-// they still work — the browser navigates home, then scrolls to the anchor.
+// Per homepage-redesign-v3.md: About / Start Here / Parents / FAQs, no dropdown.
+// "Parents" (renamed from "Services") links to /services — Organizations is
+// deliberately not a header item, reached via Start Here or the footer nav
+// instead (see footer.tsx). Start Here and FAQs are in-page anchors on the
+// homepage; from any other page they still work — the browser navigates home,
+// then scrolls to the anchor.
 const navigationData: NavigationSection[] = [
   { title: "About", href: "/about-bobby" },
   { title: "Start Here", href: "/#start-here" },
-  { title: "Services", href: "/services" },
+  { title: "Parents", href: "/services" },
   { title: "FAQs", href: "/#faq" },
 ];
 
@@ -76,6 +79,12 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { scrollY } = useScroll();
   const animatedLogoOpacity = useTransform(scrollY, [40, 220], [0, 1]);
+  // Per homepage-redesign-v3.md: header and hero are one continuous flat
+  // #111111 surface — while the header is still transparent over the hero
+  // (not yet sticky), its logo/nav render light-on-dark to match; once
+  // scrolled past the hero into the frosted sticky pill, they go back to the
+  // normal dark-on-light styling used on every other page.
+  const onHeroField = logoAnimatesIn && !sticky;
 
   const handleScroll = useCallback(() => {
     setSticky(window.scrollY >= 50);
@@ -101,7 +110,10 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: "easeInOut" }}
-      className="inset-x-0 z-50 px-4 flex items-center justify-center sticky top-0 h-20"
+      className={cn(
+        "inset-x-0 z-50 px-4 flex items-center justify-center sticky top-0 h-20",
+        onHeroField && "bg-brand-black",
+      )}
     >
       <div
         className={cn(
@@ -114,19 +126,29 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
         <div>
           <Link href="/" aria-label="Bobby Washburn Parenting Support">
             <motion.div style={logoAnimatesIn ? { opacity: animatedLogoOpacity } : undefined}>
-              <Logo />
+              <Logo onDark={onHeroField} />
             </motion.div>
           </Link>
         </div>
 
         <div>
-          <NavigationMenu className="max-lg:hidden bg-muted p-0.5 rounded-full">
+          <NavigationMenu
+            className={cn(
+              "max-lg:hidden p-0.5 rounded-full",
+              onHeroField ? "bg-transparent" : "bg-muted",
+            )}
+          >
             <NavigationMenuList className="flex gap-0">
               {navigationData.map((navItem) => (
                 <NavigationMenuItem key={navItem.title}>
                   <NavigationMenuLink
                     render={<Link href={navItem.href} />}
-                    className="px-2 lg:px-4 py-2 text-sm font-medium rounded-full text-muted-foreground hover:text-foreground hover:bg-background outline outline-transparent hover:outline-border hover:shadow-xs transition tracking-normal"
+                    className={cn(
+                      "px-2 lg:px-4 py-2 text-sm font-medium rounded-full outline outline-transparent transition tracking-normal",
+                      onHeroField
+                        ? "text-brand-offwhite/80 hover:text-brand-offwhite hover:bg-white/10"
+                        : "text-muted-foreground hover:text-foreground hover:bg-background hover:outline-border hover:shadow-xs",
+                    )}
                   >
                     {navItem.title}
                   </NavigationMenuLink>
@@ -142,7 +164,14 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
           <div className="lg:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger id="mobile-menu-trigger">
-                <span className="rounded-full border border-border p-2 block">
+                <span
+                  className={cn(
+                    "rounded-full border p-2 block",
+                    onHeroField
+                      ? "border-brand-offwhite/30 text-brand-offwhite"
+                      : "border-border text-foreground",
+                  )}
+                >
                   <Menu width={20} height={20} />
                   <span className="sr-only">Menu</span>
                 </span>

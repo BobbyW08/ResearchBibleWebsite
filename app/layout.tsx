@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { Archivo, Caveat, Geist_Mono, Libre_Franklin, Roboto_Slab } from "next/font/google";
+import { Archivo, Arvo, Caveat, Geist_Mono, Libre_Franklin } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "./providers";
@@ -28,11 +28,13 @@ const titlePlaceholder = Archivo({
   weight: ["600", "700", "800"],
 });
 
-// Placeholder for "Rockwell" (subtitle font). Same swap note as above.
-const subtitlePlaceholder = Roboto_Slab({
-  variable: "--font-subtitle-placeholder",
+// Subtitle font — resolved, per homepage-redesign-v3.md: Arvo replaces the
+// Rockwell placeholder (free Google Font, no licensing issue). Real/final,
+// not a placeholder — unlike titlePlaceholder above.
+const arvo = Arvo({
+  variable: "--font-arvo",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -82,7 +84,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${libreFranklin.variable} ${caveat.variable} ${titlePlaceholder.variable} ${subtitlePlaceholder.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${libreFranklin.variable} ${caveat.variable} ${titlePlaceholder.variable} ${arvo.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

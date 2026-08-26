@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import Logo from "@/assets/logo/logo";
 import { Separator } from "@/components/ui/separator";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
@@ -11,13 +12,16 @@ const FALLBACK_CONTACT_EMAIL = "bobbywashburn0@gmail.com";
 const FALLBACK_COPYRIGHT =
   "© 2026 Bobby Washburn. Peer support and parenting education — not therapy, diagnosis, or medical advice.";
 
-// Mirrors the header nav — see homepage-redesign-v3.md's two-column
-// (bymonolog.com-pattern) footer: left column is the sitemap, right column is
-// Connect (newsletter, socials, Book a Call).
+// Per homepage-redesign-v3.md Section 5: the footer nav is NOT identical to
+// the header nav — it's one item longer (Organizations, which is deliberately
+// left out of the header — see header.tsx). Set in Arvo, bigger type, with a
+// bymonolog.com-style hover treatment (row fills solid, text inverts, arrow
+// appears) rather than the header's inline underline/color-change pattern.
 const SITEMAP_LINKS = [
   { title: "About", href: "/about-bobby" },
   { title: "Start Here", href: "/#start-here" },
-  { title: "Services", href: "/services" },
+  { title: "Parents", href: "/services" },
+  { title: "Organizations", href: "/services/organizations" },
   { title: "FAQs", href: "/#faq" },
 ];
 
@@ -37,14 +41,15 @@ async function Footer() {
                 <Logo onDark />
               </Link>
               <p className="max-w-sm text-base font-normal text-brand-offwhite/70">{tagline}</p>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col">
                 {SITEMAP_LINKS.map((link) => (
                   <li key={link.title}>
                     <Link
                       href={link.href}
-                      className="text-base font-normal text-brand-offwhite/70 hover:text-brand-offwhite"
+                      className="group/navrow -mx-3 flex items-center justify-between gap-2 rounded-sm px-3 py-2 font-subtitle text-lg text-brand-offwhite/80 transition-colors duration-200 hover:bg-brand-offwhite hover:text-brand-black"
                     >
                       {link.title}
+                      <ArrowUpRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all duration-200 group-hover/navrow:translate-x-0 group-hover/navrow:opacity-100" />
                     </Link>
                   </li>
                 ))}

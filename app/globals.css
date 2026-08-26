@@ -14,7 +14,7 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-libre-franklin);
   --font-title: var(--font-title-placeholder);
-  --font-subtitle: var(--font-subtitle-placeholder);
+  --font-subtitle: var(--font-arvo);
   --font-quote: var(--font-caveat);
   --color-brand-red: var(--brand-red);
   --color-brand-black: var(--brand-black);
@@ -59,9 +59,10 @@
 
 :root {
   /* Raw brand palette (see CLAUDE.md's Brand System table) — referenced directly
-     for the hero gradient/tape-accent treatments, and aliased into every
-     semantic token below so the whole site re-themes from these three values. */
-  --brand-red: #B40000;
+     for the hero's flat black field and the testimonial cards' tape accent,
+     and aliased into every semantic token below so the whole site re-themes
+     from these three values. */
+  --brand-red: #6B0000;
   --brand-black: #111111;
   --brand-offwhite: #F8F8F8;
 
@@ -71,7 +72,7 @@
   --card-foreground: #111111;
   --popover: #FFFFFF;
   --popover-foreground: #111111;
-  --primary: #B40000;
+  --primary: #6B0000;
   --primary-foreground: #F8F8F8;
   --secondary: #111111;
   --secondary-foreground: #F8F8F8;
@@ -82,8 +83,8 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: #DADADA;
   --input: #DADADA;
-  --ring: #B40000;
-  --chart-1: #B40000;
+  --ring: #6B0000;
+  --chart-1: #6B0000;
   --chart-2: #111111;
   --chart-3: #3A8FD4;
   --chart-4: #D4943A;
@@ -91,12 +92,12 @@
   --radius: 0.5rem;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #111111;
-  --sidebar-primary: #B40000;
+  --sidebar-primary: #6B0000;
   --sidebar-primary-foreground: #F8F8F8;
   --sidebar-accent: #F6E2E2;
   --sidebar-accent-foreground: #111111;
   --sidebar-border: #DADADA;
-  --sidebar-ring: #B40000;
+  --sidebar-ring: #6B0000;
 
   /* Fumadocs UI theme tokens — mapped to the same brand palette above. */
   --color-fd-background: #F8F8F8;
@@ -108,20 +109,20 @@
   --color-fd-card: #FFFFFF;
   --color-fd-card-foreground: #111111;
   --color-fd-border: #DADADA;
-  --color-fd-primary: #B40000;
+  --color-fd-primary: #6B0000;
   --color-fd-primary-foreground: #F8F8F8;
   --color-fd-secondary: #111111;
   --color-fd-secondary-foreground: #F8F8F8;
-  --color-fd-accent: rgba(180, 0, 0, 0.08);
+  --color-fd-accent: rgba(107, 0, 0, 0.08);
   --color-fd-accent-foreground: #111111;
-  --color-fd-ring: #B40000;
+  --color-fd-ring: #6B0000;
   --color-fd-overlay: rgba(17, 17, 17, 0.4);
 }
 
 /* This app has one deliberate light brand identity (see brand-style-guide.md)
    — no dark variant is defined, so .dark mirrors :root rather than inverting it. */
 .dark {
-  --brand-red: #B40000;
+  --brand-red: #6B0000;
   --brand-black: #111111;
   --brand-offwhite: #F8F8F8;
 
@@ -131,7 +132,7 @@
   --card-foreground: #111111;
   --popover: #FFFFFF;
   --popover-foreground: #111111;
-  --primary: #B40000;
+  --primary: #6B0000;
   --primary-foreground: #F8F8F8;
   --secondary: #111111;
   --secondary-foreground: #F8F8F8;
@@ -142,20 +143,20 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: #DADADA;
   --input: #DADADA;
-  --ring: #B40000;
-  --chart-1: #B40000;
+  --ring: #6B0000;
+  --chart-1: #6B0000;
   --chart-2: #111111;
   --chart-3: #3A8FD4;
   --chart-4: #D4943A;
   --chart-5: #5A5A5A;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #111111;
-  --sidebar-primary: #B40000;
+  --sidebar-primary: #6B0000;
   --sidebar-primary-foreground: #F8F8F8;
   --sidebar-accent: #F6E2E2;
   --sidebar-accent-foreground: #111111;
   --sidebar-border: #DADADA;
-  --sidebar-ring: #B40000;
+  --sidebar-ring: #6B0000;
 
   /* Fumadocs UI theme tokens — mapped to the same brand palette above. */
   --color-fd-background: #F8F8F8;
@@ -167,13 +168,13 @@
   --color-fd-card: #FFFFFF;
   --color-fd-card-foreground: #111111;
   --color-fd-border: #DADADA;
-  --color-fd-primary: #B40000;
+  --color-fd-primary: #6B0000;
   --color-fd-primary-foreground: #F8F8F8;
   --color-fd-secondary: #111111;
   --color-fd-secondary-foreground: #F8F8F8;
-  --color-fd-accent: rgba(180, 0, 0, 0.08);
+  --color-fd-accent: rgba(107, 0, 0, 0.08);
   --color-fd-accent-foreground: #111111;
-  --color-fd-ring: #B40000;
+  --color-fd-ring: #6B0000;
   --color-fd-overlay: rgba(17, 17, 17, 0.4);
 }
 
@@ -189,8 +190,11 @@
   }
 }
 
-/* Proof Wall hero background (components/marketing/hero.tsx) — brand gradient
-   asset per CLAUDE.md's Brand System table: linear, 180deg, black to red. */
+/* Secondary brand gradient asset per CLAUDE.md's Brand System table: linear,
+   180deg, black to red. NOT used for the Proof Wall hero background, which is
+   flat --brand-black (see components/marketing/proof-wall-hero.tsx) so the
+   header and hero read as one continuous surface. Used by the Logo
+   component's "gradient" color variant during the scroll-linked shrink. */
 .bg-brand-gradient {
   background: linear-gradient(180deg, var(--brand-black) 0%, var(--brand-red) 100%);
 }
@@ -216,6 +220,34 @@
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
+    animation: none;
+  }
+}
+
+/* Start Here — Common Pain Points vertical carousel (components/marketing/start-here.tsx).
+   All items render twice in the DOM for the seamless loop, but since every item is
+   present on load (not fetched on interaction), the homepage still gets full SEO
+   credit for every pain-point search term per homepage-redesign-v3.md Section 2. */
+@keyframes marquee-scroll-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.marquee-track-vertical {
+  animation: marquee-scroll-vertical 32s linear infinite;
+}
+
+.marquee-group-vertical:hover .marquee-track-vertical,
+.marquee-group-vertical:focus-within .marquee-track-vertical {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track-vertical {
     animation: none;
   }
 }

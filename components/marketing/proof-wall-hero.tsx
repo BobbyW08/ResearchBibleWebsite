@@ -1,15 +1,21 @@
 "use client";
 
-import { useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import Link from "next/link";
 import {
   motion,
   useMotionValue,
+  useMotionValueEvent,
   useScroll,
   useSpring,
   useTransform,
 } from "motion/react";
-import Logo from "@/assets/logo/logo";
+import Logo, { type LogoVariant } from "@/assets/logo/logo";
+
+// homepage-redesign-v3.md's Logo Behavior: as the hero logo shrinks into the
+// header on scroll, it cycles through the provided color variants rather than
+// staying static, landing on White against the #111111 field once small.
+const LOGO_CYCLE: LogoVariant[] = ["gradient", "red", "gray", "white"];
 
 export type Testimonial = { quote: string; attribution: string };
 
@@ -55,7 +61,7 @@ function ProofWallCard({
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className={`absolute z-0 hidden w-52 rounded-sm bg-brand-offwhite p-5 shadow-2xl xl:w-56 lg:block ${layout.position}`}
+      className={`absolute z-0 hidden w-64 rounded-none bg-brand-offwhite p-5 shadow-2xl xl:w-72 lg:block ${layout.position}`}
     >
       <TapeAccent />
       <p className="font-quote text-xl leading-snug text-brand-black">
@@ -65,6 +71,48 @@ function ProofWallCard({
         {testimonial.attribution}
       </p>
     </motion.div>
+  );
+}
+
+// Central statement — per homepage-redesign-v3.md Section 1: a big two-tone
+// headline ("sucks" in the accent red), a smaller regular-weight subhead, and
+// the former hero headline demoted to a still-smaller supporting line above
+// the CTA. Shared between the desktop (cards-overlay) and mobile layouts.
+function HeroStatement() {
+  return (
+    <>
+      <motion.h1
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+        className="max-w-2xl text-center font-title text-4xl font-extrabold leading-tight tracking-tight text-brand-offwhite sm:text-5xl md:text-6xl"
+      >
+        Parenting <span className="text-primary">sucks</span> right now.
+        <br />
+        It doesn&apos;t have to.
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
+        className="max-w-xl text-center text-base font-normal leading-relaxed text-brand-offwhite/85 md:text-lg"
+      >
+        You&apos;ve got more parenting advice than you know what to do with. What
+        you&apos;re missing isn&apos;t information — it&apos;s someone to help you
+        actually use it.
+      </motion.p>
+
+      <motion.p
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+        className="max-w-lg text-center font-quote text-lg leading-snug text-brand-offwhite/70 md:text-xl"
+      >
+        I&apos;ve been through hard things. I learned how to build a life
+        through them. Now I help parents do the same.
+      </motion.p>
+    </>
   );
 }
 
@@ -83,6 +131,19 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
   const logoY = useTransform(scrollYProgress, [0, 1], [0, -140]);
   const logoOpacity = useTransform(scrollYProgress, [0, 0.35, 0.55], [1, 1, 0]);
 
+  // Cycles the shrinking logo through the color variants as it scrolls up,
+  // rather than staying a single static color (homepage-redesign-v3.md).
+  const logoCycleStage = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.4, 0.6],
+    [0, 1, 2, 3],
+  );
+  const [logoVariant, setLogoVariant] = useState<LogoVariant>(LOGO_CYCLE[0]);
+  useMotionValueEvent(logoCycleStage, "change", (value) => {
+    const index = Math.min(LOGO_CYCLE.length - 1, Math.max(0, Math.round(value)));
+    setLogoVariant(LOGO_CYCLE[index]);
+  });
+
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
     pointerX.set(((event.clientX - bounds.left) / bounds.width) * 2 - 1);
@@ -97,11 +158,11 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
     <section
       ref={heroRef}
       onPointerMove={handlePointerMove}
-      className="relative overflow-hidden bg-brand-gradient"
+      className="relative overflow-hidden bg-brand-black"
     >
       <div className="relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-6xl flex-col items-center justify-center px-4 py-16 sm:py-20">
         <motion.div style={{ scale: logoScale, y: logoY, opacity: logoOpacity }} className="mb-10 sm:mb-14">
-          <Logo size="lg" onDark />
+          <Logo size="lg" onDark variant={logoVariant} />
         </motion.div>
 
         <div className="relative hidden w-full max-w-4xl lg:block lg:min-h-[560px] xl:min-h-[620px]">
@@ -115,16 +176,8 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
             />
           ))}
 
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4">
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
-              className="max-w-xl text-center font-title text-2xl font-bold leading-snug text-brand-offwhite md:text-4xl"
-            >
-              I&apos;ve been through hard things. I learned how to build a
-              life through them. Now I help parents do the same.
-            </motion.p>
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 px-4">
+            <HeroStatement />
 
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -145,16 +198,8 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
 
         {/* Mobile/tablet: cards move below as a simple stack (see fallback list
             further down), so the statement + CTA render directly, unobstructed. */}
-        <div className="flex w-full max-w-xl flex-col items-center gap-8 py-4 text-center lg:hidden">
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="font-title text-2xl font-bold leading-snug text-brand-offwhite sm:text-3xl"
-          >
-            I&apos;ve been through hard things. I learned how to build a life
-            through them. Now I help parents do the same.
-          </motion.p>
+        <div className="flex w-full max-w-xl flex-col items-center gap-6 py-4 text-center lg:hidden">
+          <HeroStatement />
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -177,7 +222,7 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
           {cards.map(({ testimonial }, index) => (
             <div
               key={index}
-              className={`relative rounded-sm bg-brand-offwhite p-5 shadow-lg ${index % 2 === 0 ? "-rotate-1" : "rotate-1"}`}
+              className={`relative rounded-none bg-brand-offwhite p-5 shadow-lg ${index % 2 === 0 ? "-rotate-1" : "rotate-1"}`}
             >
               <TapeAccent />
               <p className="font-quote text-lg leading-snug text-brand-black">

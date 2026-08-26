@@ -4,8 +4,8 @@ import { buttonVariants } from "@/components/ui/button";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
-import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
 import OfferCard, { type OfferCardData } from "@/components/marketing/services/offer-card";
+import WedgedHeroHeadline from "@/components/marketing/services/wedged-hero-headline";
 
 export const metadata: Metadata = {
   title: "Services for Parents",
@@ -37,6 +37,7 @@ const PHASES = [
 
 const OFFERS: OfferCardData[] = [
   {
+    anchorId: "one-on-one",
     title: "1:1 Sessions",
     availability: "available",
     description:
@@ -45,6 +46,7 @@ const OFFERS: OfferCardData[] = [
     cta: { kind: "link", href: "https://cal.com/bobby-washburn/intro-call", external: true, label: "Book a session" },
   },
   {
+    anchorId: "weekly-group",
     title: "Weekly Group",
     availability: "available",
     description:
@@ -87,14 +89,7 @@ export default function ServicesPage() {
               <p className="text-xs font-semibold uppercase tracking-widest text-primary">
                 For Parents
               </p>
-              <h1 className="font-heading text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
-                We Build{" "}
-                <PlaceholderPhoto
-                  alt="Photo of Bobby Washburn"
-                  className="inline-flex h-10 w-10 translate-y-1.5 rounded-full align-middle sm:h-12 sm:w-12"
-                />{" "}
-                Your Path
-              </h1>
+              <WedgedHeroHeadline />
               <p className="text-base font-normal text-muted-foreground">
                 Most families who find their way to me are lost. I tell them you may feel like
                 you are standing in an enormous, dark forest. Sometimes you can see a path,

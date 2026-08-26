@@ -4,6 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 
 export type OfferCardData = {
+  // Stable anchor ID so other pages (e.g. the homepage Start Here Row 2 panels)
+  // can deep-link straight to this offer — see homepage-redesign-v3.md Section 2.
+  anchorId?: string;
   title: string;
   description: string;
   details: string[];
@@ -17,9 +20,9 @@ export type OfferCardData = {
   );
 };
 
-function OfferCard({ title, description, details, availability, cta }: OfferCardData) {
+function OfferCard({ anchorId, title, description, details, availability, cta }: OfferCardData) {
   return (
-    <Card className="h-full py-8">
+    <Card id={anchorId} className="h-full scroll-mt-24 py-8">
       <CardContent className="flex h-full flex-col gap-4 px-7">
         <div className="flex items-start justify-between gap-3">
           <h3 className="font-heading text-xl font-medium text-foreground">{title}</h3>
