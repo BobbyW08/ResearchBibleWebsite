@@ -17,7 +17,9 @@
   --font-subtitle: var(--font-arvo);
   --font-quote: var(--font-caveat);
   --color-brand-red: var(--brand-red);
+  --color-brand-red-bright: var(--brand-red-bright);
   --color-brand-black: var(--brand-black);
+  --color-brand-charcoal: var(--brand-charcoal);
   --color-brand-offwhite: var(--brand-offwhite);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -65,6 +67,15 @@
   --brand-red: #6B0000;
   --brand-black: #111111;
   --brand-offwhite: #F8F8F8;
+  /* Dark-gray surface for sections that invert the palette (e.g. Services'
+     "Start Walking Your Path"), and a brighter tint of the brand red for
+     text on that surface. The base --brand-red (#6B0000) is a deep, dark
+     maroon — its contrast against any dark-gray background is too low to
+     read as a heading (roughly 1.2:1, nowhere near the ~3:1 WCAG floor for
+     large/bold text), so headers on dark surfaces use this brighter tint of
+     the same hue instead; body copy on those surfaces uses --brand-offwhite. */
+  --brand-charcoal: #262626;
+  --brand-red-bright: #F0342F;
 
   --background: #F8F8F8;
   --foreground: #111111;
@@ -125,6 +136,8 @@
   --brand-red: #6B0000;
   --brand-black: #111111;
   --brand-offwhite: #F8F8F8;
+  --brand-charcoal: #262626;
+  --brand-red-bright: #F0342F;
 
   --background: #F8F8F8;
   --foreground: #111111;

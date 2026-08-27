@@ -63,7 +63,17 @@ function RotatingPathPhoto({ alt, className }: RotatingPathPhotoProps) {
           transition={{ duration: 0.8, ease: "easeInOut" }}
           className="absolute inset-0"
         >
-          <Image src={PATH_PHOTOS[index]} alt={alt} fill sizes="96px" className="object-cover" />
+          {/* The circle this fills now animates from ~2rem up to ~27rem (see
+              wedged-hero-headline.tsx's scroll-converge sizing), so a single
+              small sizes hint would leave the grown state blurry — this
+              spans that real range instead of guessing one fixed size. */}
+          <Image
+            src={PATH_PHOTOS[index]}
+            alt={alt}
+            fill
+            sizes="(max-width: 640px) 20vw, 33vw"
+            className="object-cover"
+          />
         </motion.span>
       </AnimatePresence>
     </span>

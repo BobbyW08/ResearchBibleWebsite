@@ -83,46 +83,58 @@ export default function ServicesPage() {
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <section className="border-b border-border">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-16 sm:px-8 lg:grid-cols-2 lg:items-center lg:py-24">
-            <div className="flex flex-col gap-5">
-              <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-                For Parents
-              </p>
-              <p className="font-heading text-xl font-medium tracking-tight text-foreground sm:text-2xl">
-                Most families who find their way to me are lost.
-              </p>
-              <p className="text-base font-normal text-muted-foreground">
-                Sometimes you can see a path. Sometimes the trees are too dense to see through.
-                Either way, you need a guide.
-              </p>
-              <WedgedHeroHeadline />
-              <p className="text-base font-normal text-muted-foreground">
-                I don&apos;t hand you a map and walk away. We&apos;ll discover the changes you
-                want to make, then build the path with you, one real step at a time. We may take
-                steps forward and one back, or sideways instead of forward — as long as we keep
-                moving in the direction we want to go, that&apos;s progress.
-              </p>
-              <div>
-                <Link
-                  href="https://cal.com/bobby-washburn/intro-call"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={buttonVariants({ size: "lg" })}
-                >
-                  Book an intro call →
-                </Link>
-              </div>
+        <section className="border-b border-border bg-background">
+          <div className="mx-auto max-w-3xl px-4 pt-16 text-center sm:px-8 sm:pt-20 lg:pt-28">
+            <p className="font-subtitle text-sm font-semibold uppercase tracking-[0.25em] text-primary sm:text-base">
+              For Parents
+            </p>
+            <p className="mt-5 font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              By the time most families find their way to me, they&apos;re already lost in the
+              woods.
+            </p>
+            <p className="mx-auto mt-6 max-w-2xl text-lg font-normal leading-relaxed text-muted-foreground sm:text-xl">
+              Some days you can just make out a path through the trees. Other days they&apos;re
+              too dense to see two feet in front of you. Either way, you don&apos;t have to find
+              your own way through it alone.
+            </p>
+          </div>
+
+          {/* Full-bleed — the two halves converge to the actual screen edges as
+              the page scrolls, so this can't be boxed into a max-width column
+              like the copy above and below it. */}
+          <div className="w-full">
+            <WedgedHeroHeadline />
+          </div>
+
+          <div className="mx-auto max-w-3xl px-4 pb-16 text-center sm:px-8 sm:pb-20 lg:pb-28">
+            <p className="mx-auto max-w-2xl text-lg font-normal leading-relaxed text-muted-foreground sm:text-xl">
+              I don&apos;t hand you a map and walk away. We figure out the changes you actually
+              want to make, then build the path together, one real step at a time — forward,
+              sideways, sometimes one step back. As long as we&apos;re still moving in the
+              direction you want to go, that counts as progress.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="https://cal.com/bobby-washburn/intro-call"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonVariants({ size: "lg" })}
+              >
+                Book an intro call →
+              </Link>
             </div>
           </div>
         </section>
 
-        <section className="border-b border-border bg-card">
+        {/* Inverted palette for this section only: dark-gray field, brand red
+            (brightened for contrast — see globals.css) for headers, off-white
+            for body copy. */}
+        <section className="border-b border-border bg-brand-charcoal">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 lg:py-20">
-            <h2 className="font-heading text-2xl font-medium tracking-tight sm:text-3xl">
+            <h2 className="font-heading text-2xl font-medium tracking-tight text-brand-red-bright sm:text-3xl">
               Start Walking Your Path
             </h2>
-            <p className="mt-4 max-w-3xl text-base font-normal text-muted-foreground">
+            <p className="mt-4 max-w-3xl text-base font-normal text-brand-offwhite/80">
               I developed this loose structure because it&apos;s how your nervous system actually
               works, not something I made up: Stabilize, Connect, Structure, Adapt. You
               can&apos;t teach your kid structure if you don&apos;t have stability or connection
@@ -133,11 +145,11 @@ export default function ServicesPage() {
             </p>
             <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {PHASES.map((phase) => (
-                <div key={phase.name} className="flex flex-col gap-2 rounded-lg border border-border bg-background p-5">
-                  <p className="font-heading text-base font-semibold tracking-tight text-primary">
+                <div key={phase.name} className="flex flex-col gap-2 rounded-lg border border-brand-offwhite/15 bg-brand-offwhite/5 p-5">
+                  <p className="font-heading text-base font-semibold tracking-tight text-brand-red-bright">
                     {phase.name}
                   </p>
-                  <p className="text-sm font-normal text-muted-foreground">{phase.body}</p>
+                  <p className="text-sm font-normal text-brand-offwhite/75">{phase.body}</p>
                 </div>
               ))}
             </div>

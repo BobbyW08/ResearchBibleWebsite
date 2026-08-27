@@ -1,6 +1,7 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
@@ -176,6 +177,80 @@ function HeroStatement() {
   );
 }
 
+// Mobile/tablet testimonial carousel — replaces the old static vertical stack
+// (the absolute-tilted desktop layout is lg+ only, see CARD_LAYOUT above).
+// Horizontal, native scroll-snap so it's a real touch swipe with no library,
+// plus a slow auto-advance that steps to the next card every few seconds.
+// Auto-advance always re-derives "current card" from actual scroll position
+// (rather than trusting a stale index) so it resumes from wherever the user
+// last swiped to, and pauses while a finger/pointer is down on the strip.
+function MobileTestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el || testimonials.length <= 1) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const id = setInterval(() => {
+      if (pausedRef.current) return;
+      const cards = Array.from(el.children) as HTMLElement[];
+      if (!cards.length) return;
+      const current = cards.reduce(
+        (closest, card, index) => {
+          const diff = Math.abs(card.offsetLeft - el.scrollLeft);
+          return diff < closest.diff ? { index, diff } : closest;
+        },
+        { index: 0, diff: Infinity },
+      ).index;
+      const next = cards[(current + 1) % cards.length];
+      next.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }, 4000);
+
+    return () => clearInterval(id);
+  }, [testimonials.length]);
+
+  const pause = () => {
+    pausedRef.current = true;
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+  };
+  const scheduleResume = () => {
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => {
+      pausedRef.current = false;
+    }, 3500);
+  };
+
+  return (
+    <div
+      ref={scrollerRef}
+      onPointerDown={pause}
+      onPointerUp={scheduleResume}
+      onPointerCancel={scheduleResume}
+      onTouchStart={pause}
+      onTouchEnd={scheduleResume}
+      className="mt-10 flex w-full snap-x snap-mandatory gap-4 overflow-x-auto px-[9%] pb-2 lg:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
+      {testimonials.map((testimonial, index) => (
+        <div
+          key={index}
+          className={`relative w-[82%] shrink-0 snap-center rounded-none bg-brand-offwhite p-6 shadow-lg ${index % 2 === 0 ? "-rotate-1" : "rotate-1"}`}
+        >
+          <TapeAccent />
+          <p className="text-center font-quote text-xl leading-snug text-brand-black">
+            &ldquo;{testimonial.quote}&rdquo;
+          </p>
+          <p className="mt-3 text-center text-xs font-medium uppercase tracking-wide text-brand-black/80">
+            {testimonial.attribution}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -270,22 +345,7 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
         </div>
 
         {/* Mobile/tablet fallback — the absolute-tilted layout above is lg+ only. */}
-        <div className="mt-10 grid w-full max-w-md gap-4 lg:hidden">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className={`relative rounded-none bg-brand-offwhite p-6 shadow-lg ${index % 2 === 0 ? "-rotate-1" : "rotate-1"}`}
-            >
-              <TapeAccent />
-              <p className="text-center font-quote text-xl leading-snug text-brand-black">
-                &ldquo;{testimonial.quote}&rdquo;
-              </p>
-              <p className="mt-3 text-center text-xs font-medium uppercase tracking-wide text-brand-black/80">
-                {testimonial.attribution}
-              </p>
-            </div>
-          ))}
-        </div>
+        <MobileTestimonialCarousel testimonials={testimonials} />
       </div>
     </section>
   );
