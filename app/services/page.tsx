@@ -83,47 +83,14 @@ export default function ServicesPage() {
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <section className="border-b border-border bg-background">
-          <div className="mx-auto max-w-3xl px-4 pt-16 text-center sm:px-8 sm:pt-20 lg:pt-28">
-            <p className="font-subtitle text-sm font-semibold uppercase tracking-[0.25em] text-primary sm:text-base">
-              For Parents
-            </p>
-            <p className="mt-5 font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              By the time most families find their way to me, they&apos;re already lost in the
-              woods.
-            </p>
-            <p className="mx-auto mt-6 max-w-2xl text-lg font-normal leading-relaxed text-muted-foreground sm:text-xl">
-              Some days you can just make out a path through the trees. Other days they&apos;re
-              too dense to see two feet in front of you. Either way, you don&apos;t have to find
-              your own way through it alone.
-            </p>
-          </div>
-
-          {/* Full-bleed — the two halves converge to the actual screen edges as
-              the page scrolls, so this can't be boxed into a max-width column
-              like the copy above and below it. */}
-          <div className="w-full">
-            <WedgedHeroHeadline />
-          </div>
-
-          <div className="mx-auto max-w-3xl px-4 pb-16 text-center sm:px-8 sm:pb-20 lg:pb-28">
-            <p className="mx-auto max-w-2xl text-lg font-normal leading-relaxed text-muted-foreground sm:text-xl">
-              I don&apos;t hand you a map and walk away. We figure out the changes you actually
-              want to make, then build the path together, one real step at a time — forward,
-              sideways, sometimes one step back. As long as we&apos;re still moving in the
-              direction you want to go, that counts as progress.
-            </p>
-            <div className="mt-8">
-              <Link
-                href="https://cal.com/bobby-washburn/intro-call"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonVariants({ size: "lg" })}
-              >
-                Book an intro call →
-              </Link>
-            </div>
-          </div>
+        {/* Pinned hero — the intro copy, the video, and the "Together" reveal
+            all live inside WedgedHeroHeadline itself (a sticky panel over a
+            tall spacer, both on bg-brand-black), so it renders full-bleed
+            here rather than being boxed into a max-width column. Its own
+            closing paragraph + CTA render right after, on the same dark
+            field, once the pin releases. */}
+        <section className="border-b border-border">
+          <WedgedHeroHeadline />
         </section>
 
         {/* Inverted palette for this section only: dark-gray field, brand red

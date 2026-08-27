@@ -1,7 +1,7 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
@@ -45,11 +45,13 @@ function ProofWallCard({
   layout,
   pointerX,
   pointerY,
+  dimAtRest,
 }: {
   testimonial: Testimonial;
   layout: CardLayout;
   pointerX: ReturnType<typeof useMotionValue<number>>;
   pointerY: ReturnType<typeof useMotionValue<number>>;
+  dimAtRest: boolean;
 }) {
   const parallaxX = useTransform(pointerX, [-1, 1], [-layout.depth, layout.depth]);
   const parallaxY = useTransform(pointerY, [-1, 1], [-layout.depth / 1.5, layout.depth / 1.5]);
@@ -57,12 +59,16 @@ function ProofWallCard({
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.85, x: layout.side === "left" ? 160 : -160 }}
-      whileInView={{ opacity: 1, scale: 1, x: 0 }}
-      whileHover={{ scale: 1.22, rotate: 0 }}
+      // Settling opacity (not just the shadow/z-index) is Motion-controlled
+      // here — Motion sets it as an inline style, which beats any Tailwind
+      // opacity class in the cascade, so the resting "dim" state has to be
+      // this animation's own target rather than a CSS class.
+      whileInView={{ opacity: dimAtRest ? 0.4 : 1, scale: 1, x: 0 }}
+      whileHover={{ scale: 1.22, rotate: 0, opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: "easeOut" }}
       style={{ y: parallaxY, rotate: layout.rotate }}
-      className={`absolute z-0 w-56 cursor-default rounded-none bg-brand-offwhite p-7 shadow-2xl transition-shadow duration-300 hover:z-30 hover:shadow-[0_35px_70px_-15px_rgba(0,0,0,0.6)] xl:w-64 ${ALIGN_CLASS[layout.align]} ${layout.side === "left" ? "left-0" : "right-0"}`}
+      className={`proof-card absolute z-0 w-56 cursor-default rounded-none bg-brand-offwhite p-7 shadow-2xl transition-shadow duration-300 hover:z-50 hover:shadow-[0_35px_70px_-15px_rgba(0,0,0,0.6)] xl:w-64 ${ALIGN_CLASS[layout.align]} ${layout.side === "left" ? "left-0" : "right-0"}`}
     >
       <motion.div style={{ x: parallaxX }}>
         <TapeAccent />
@@ -84,10 +90,12 @@ function TopCenterCard({
   testimonial,
   pointerX,
   pointerY,
+  dimAtRest,
 }: {
   testimonial: Testimonial;
   pointerX: ReturnType<typeof useMotionValue<number>>;
   pointerY: ReturnType<typeof useMotionValue<number>>;
+  dimAtRest: boolean;
 }) {
   const parallaxX = useTransform(pointerX, [-1, 1], [-TOP_CENTER_LAYOUT.depth, TOP_CENTER_LAYOUT.depth]);
   const parallaxY = useTransform(pointerY, [-1, 1], [-TOP_CENTER_LAYOUT.depth / 1.5, TOP_CENTER_LAYOUT.depth / 1.5]);
@@ -95,12 +103,12 @@ function TopCenterCard({
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.85, y: 200 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      whileHover={{ scale: 1.22, rotate: 0 }}
+      whileInView={{ opacity: dimAtRest ? 0.4 : 1, scale: 1, y: 0 }}
+      whileHover={{ scale: 1.22, rotate: 0, opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: "easeOut" }}
       style={{ x: parallaxX, rotate: TOP_CENTER_LAYOUT.rotate }}
-      className="pointer-events-auto w-56 cursor-default rounded-none bg-brand-offwhite p-7 shadow-2xl transition-shadow duration-300 hover:z-30 hover:shadow-[0_35px_70px_-15px_rgba(0,0,0,0.6)] xl:w-64"
+      className="proof-card pointer-events-auto w-56 cursor-default rounded-none bg-brand-offwhite p-7 shadow-2xl transition-shadow duration-300 hover:z-30 hover:shadow-[0_35px_70px_-15px_rgba(0,0,0,0.6)] xl:w-64"
     >
       <motion.div style={{ y: parallaxY }}>
         <TapeAccent />
@@ -136,7 +144,16 @@ function HeroCTA() {
 // CTA. Shared between the desktop (cards-overlay) and mobile layouts. Each
 // headline sentence stays on its own single line (no internal wrap) from
 // lg up, where the widened hero has room for it.
-function HeroStatement() {
+function HeroStatement({ nonInteractive = false }: { nonInteractive?: boolean }) {
+  // On the desktop cards-overlay layout, the headline sits at a HIGHER
+  // z-index than the (dim, at-rest) cards so it stays legible on top of
+  // them — which means it's also the element the mouse actually hits in
+  // any spot where a card visually extends underneath it, and :hover would
+  // never reach the card there. pointer-events-none here lets clicks/hover
+  // pass through the text to whatever's behind it; the mobile stack (no
+  // cards underneath) never sets this, so it stays selectable there.
+  const textClass = nonInteractive ? "pointer-events-none" : "";
+
   return (
     <>
       <motion.h1
@@ -144,7 +161,7 @@ function HeroStatement() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.9, ease: "easeOut" }}
-        className="text-center font-title text-4xl font-extrabold leading-tight tracking-tight text-brand-offwhite sm:text-5xl md:text-6xl lg:whitespace-nowrap lg:text-6xl xl:text-7xl"
+        className={`text-center font-title text-4xl font-extrabold leading-tight tracking-tight text-brand-offwhite sm:text-5xl md:text-6xl lg:whitespace-nowrap lg:text-6xl xl:text-7xl ${textClass}`}
       >
         Parenting is <span className="text-primary">hard</span> for everyone.
         <br />
@@ -156,7 +173,7 @@ function HeroStatement() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-        className="max-w-2xl text-center text-lg font-normal leading-relaxed text-brand-offwhite/85 md:text-xl"
+        className={`max-w-2xl text-center text-lg font-normal leading-relaxed text-brand-offwhite/85 md:text-xl ${textClass}`}
       >
         You&apos;ve got more parenting advice than you know what to do with.
         You don&apos;t need more information. You need someone to help you
@@ -168,7 +185,7 @@ function HeroStatement() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
-        className="max-w-xl text-center font-quote text-xl leading-snug text-brand-offwhite/70 md:text-2xl"
+        className={`max-w-xl text-center font-quote text-xl leading-snug text-brand-offwhite/70 md:text-2xl ${textClass}`}
       >
         Father. Husband. Army veteran. Lived experience on every side of the
         system.
@@ -206,7 +223,11 @@ function MobileTestimonialCarousel({ testimonials }: { testimonials: Testimonial
         { index: 0, diff: Infinity },
       ).index;
       const next = cards[(current + 1) % cards.length];
-      next.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      // scrollIntoView can scroll an ancestor — even the whole document,
+      // vertically — if the carousel happens to be near the edge of the
+      // viewport when this fires. scrollTo on the strip itself only ever
+      // touches this element's own horizontal scroll position.
+      el.scrollTo({ left: next.offsetLeft, behavior: "smooth" });
     }, 4000);
 
     return () => clearInterval(id);
@@ -257,6 +278,21 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
   const smoothPointerX = useSpring(pointerX, { stiffness: 60, damping: 20 });
   const smoothPointerY = useSpring(pointerY, { stiffness: 60, damping: 20 });
 
+  // Below 2xl, the side columns can be narrower than a card (see the grid
+  // comment further down), so cards rest dim/hover-to-illuminate there.
+  // At 2xl+ there's enough room that this never triggers in practice, so
+  // cards just sit at full opacity instead. Defaults to "dim" (matches
+  // every viewport this component actually renders cards at, lg/xl) so
+  // there's no server/client mismatch before the media query resolves.
+  const [dimAtRest, setDimAtRest] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1536px)");
+    const update = () => setDimAtRest(!mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
     pointerX.set(((event.clientX - bounds.left) / bounds.width) * 2 - 1);
@@ -277,19 +313,41 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
             headline text — floats above the grid below rather than living in
             either side column. Sits well clear of the headline below it. */}
         {topCenterTestimonial && (
-          <div className="pointer-events-none absolute inset-x-0 top-8 z-0 hidden justify-center lg:flex xl:top-12">
+          // z-30, not z-0: it overlaps the grid below it vertically, and an
+          // explicit z-index of 0 doesn't actually paint above the grid's
+          // own z-index:auto content the way "0 > auto" intuition suggests
+          // — z-index:0 starts a stacking context that gets ordered among
+          // *other* z-indexed elements, while z-index:auto is composited
+          // earlier, so this needs to clearly outrank the grid (and its own
+          // z-20 scrim) to stay hoverable/visible over it.
+          <div className="pointer-events-none absolute inset-x-0 top-8 z-30 hidden justify-center lg:flex xl:top-12">
             <TopCenterCard
               testimonial={topCenterTestimonial}
               pointerX={smoothPointerX}
               pointerY={smoothPointerY}
+              dimAtRest={dimAtRest}
             />
           </div>
         )}
 
         {/* Cards live in their own grid column on each side of a fixed-width
-            center column, so they can never overlap the headline text at any
-            viewport. */}
-        <div className="relative hidden w-full lg:grid lg:grid-cols-[1fr_minmax(0,68rem)_1fr] lg:items-center lg:gap-6 lg:min-h-[560px] xl:min-h-[620px]">
+            center column — but at lg/xl widths that side column can still be
+            narrower than a card (see CARD_LAYOUT's w-56/xl:w-64 vs. the 1fr
+            track), so a card's edge can bleed into the center column and
+            sit over the headline. Rather than chase exact non-overlap at
+            every width, each card rests at low opacity (headline reads
+            through/around it) and a full-bleed scrim (`group-has-*` below,
+            no JS state needed) darkens the whole area on hover so the one
+            card you're pointing at — raised above the scrim via z-50 — is
+            the thing you're reading, not the headline behind it. At 2xl+
+            there's enough room that this never triggers in practice, so
+            cards sit at full opacity there instead of relying on hover. */}
+        <div className="group relative hidden w-full lg:grid lg:grid-cols-[1fr_minmax(0,68rem)_1fr] lg:items-center lg:gap-6 lg:min-h-[560px] xl:min-h-[620px]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-20 bg-brand-black/85 opacity-0 transition-opacity duration-300 group-has-[.proof-card:hover]:opacity-100 2xl:hidden"
+          />
+
           <div className="relative hidden h-full lg:block">
             {leftCards.map(({ layout, testimonial }, index) => (
               <ProofWallCard
@@ -298,19 +356,27 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
                 layout={layout}
                 pointerX={smoothPointerX}
                 pointerY={smoothPointerY}
+                dimAtRest={dimAtRest}
               />
             ))}
           </div>
 
-          <div className="relative z-10 flex flex-col items-center justify-center gap-4 px-2 pt-20 xl:pt-24">
-            <HeroStatement />
+          {/* pointer-events-none on the wrapper itself, not just the text
+              inside it — a flex container centering content in a
+              lg:min-h-[560px] row has a hit-testable box spanning that
+              whole height even where there's no visible text, which was
+              swallowing hover before it ever reached a card underneath.
+              The CTA gets pointer-events-auto back explicitly since it
+              still needs to be clickable. */}
+          <div className="relative z-10 flex flex-col items-center justify-center gap-4 px-2 pt-20 pointer-events-none xl:pt-24">
+            <HeroStatement nonInteractive />
 
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
-              className="mt-2"
+              className="pointer-events-auto mt-2"
             >
               <HeroCTA />
             </motion.div>
@@ -324,6 +390,7 @@ function ProofWallHero({ testimonials }: { testimonials: Testimonial[] }) {
                 layout={layout}
                 pointerX={smoothPointerX}
                 pointerY={smoothPointerY}
+                dimAtRest={dimAtRest}
               />
             ))}
           </div>

@@ -2,116 +2,175 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import RotatingPathPhoto from "@/components/marketing/services/rotating-path-photo";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
-const TEXT_CLASS = "font-subtitle font-bold";
+const HEADLINE_CLASS = "font-subtitle font-bold";
 
-// --- Desktop / tablet (sm and up) --------------------------------------
+// Full rebuild, per Bobby's own scroll-by-scroll spec (bymonolog.com as the
+// reference for "pin the section, converge over the visual, then release"):
 //
-// Unpinned — the convergence is simply tied to how far down the page you've
-// scrolled (the first 500px), no scroll-jacking. Each two-word half starts
-// flush against its own screen edge and the (still-cycling) path photo
-// starts tiny between them; as you scroll, both halves slide in from the
-// edges while the photo grows, landing as one tight, close-set line on a
-// single row by the time the section is fully in view.
-//
-// "Flush against its own screen edge" is exact, not a guessed offset — it's
-// the standard "break a centered flex child out to the viewport edge" CSS
-// trick: translateX(calc(-50vw + 50%)). -50vw shifts the element's *center*
-// (which sits at the viewport's horizontal center, since this row spans the
-// full viewport width with nothing else beside it) to the viewport's left
-// edge; +50% (a transform percentage is relative to the element's *own* box)
-// then shifts it back right by half its own width, landing its left EDGE
-// exactly on the viewport's left edge — for any word length, font size, or
-// viewport width, with no measurement or per-breakpoint tuning required. The
-// mirrored calc does the same for the right half against the right edge. A
-// fixed pixel offset (an earlier version used ±72px) barely registers on a
-// wide desktop viewport but is a huge fraction of a phone screen, which is
-// part of why this treatment is desktop/tablet-only — see the mobile variant
-// below for the phone-width equivalent.
-function DesktopWedgedHeadline() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-  const progress = useTransform(scrollY, [0, 500], [0, 1]);
+// - The WHOLE hero — eyebrow/headline/paragraph, the video, "We Build" /
+//   "Your Path", and the "Together" reveal — lives inside one pinned
+//   (`sticky`) panel so the page visually never jumps. Instead of the
+//   viewport appearing to scroll up, a tall spacer beneath the sticky panel
+//   is what "moves" — the dark field just keeps extending downward as you
+//   scroll through it, and the actual page content (the closing paragraph +
+//   CTA, rendered by the caller after this component) only appears once the
+//   pin releases at the end.
+// - "We Build" sits fixed at the top of the video frame the entire time —
+//   it never animates. "Your Path" is the one that moves: it starts pulled
+//   up near "We Build" and slides DOWN into its resting spot at the bottom
+//   of the frame as you scroll, so the motion reads as walking forward
+//   down the path (things receding away/below you), not two words sliding
+//   toward each other from a static hold.
+// - Once that's settled, a beat of dead scroll, then "Together" (Caveat,
+//   brand red) fades and scales up from behind the composition. Once it's
+//   at full size the spacer's scroll distance is exhausted and normal
+//   scrolling resumes.
+const PHASES = {
+  convergeEnd: 0.55,
+  togetherStart: 0.7,
+  togetherEnd: 0.88,
+};
 
-  const leftX = useTransform(progress, (p) => `calc(${-50 * (1 - p)}vw + ${50 * (1 - p)}%)`);
-  const rightX = useTransform(progress, (p) => `calc(${50 * (1 - p)}vw - ${50 * (1 - p)}%)`);
-  // Photo starts small (a coin-sized circle) and grows toward roughly a
-  // third of viewport width at full convergence — clamped so it never
-  // dominates a narrow tablet screen or balloons on an ultra-wide monitor.
-  const photoWidth = useTransform(progress, [0, 1], [5, 30]);
-  const photoSize = useTransform(photoWidth, (v) => `clamp(2rem, ${v}vw, 26rem)`);
-
-  return (
-    <div ref={ref} className="hidden w-full overflow-x-clip py-10 sm:block">
-      {/* Not the page's <h1> — see the shared sr-only heading in
-          WedgedHeroHeadline below, which stays in the DOM regardless of
-          which of these two breakpoint-specific visual treatments is
-          showing. */}
-      <div
-        aria-hidden
-        className={`flex flex-row flex-wrap items-center justify-center gap-x-4 text-center leading-tight tracking-tight ${TEXT_CLASS} text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl`}
-      >
-        <motion.span style={{ x: leftX }}>We Build</motion.span>
-        <motion.span style={{ width: photoSize, height: photoSize }} className="inline-block shrink-0">
-          <RotatingPathPhoto alt="A path through nature" className="h-full w-full rounded-full" />
-        </motion.span>
-        <motion.span style={{ x: rightX }}>Your Path</motion.span>
-      </div>
-    </div>
-  );
-}
-
-// --- Mobile (below sm) — pinned scroll-jack ------------------------------
-//
-// Matches bymonolog.com's own mobile behavior rather than shrinking the
-// desktop layout down: the section pins to the screen (sticky + a tall
-// spacer) and "eats" the next stretch of scroll/swipe input to drive the
-// convergence, releasing to normal page scroll once it completes — a real
-// scroll-jack, not just a scroll-linked transform. "We Build" and "Your
-// Path" render as two centered lines (not overlapping each other) with the
-// growing photo between them; both lines start pushed toward the pinned
-// screen's top/bottom edge and slide in together over the photo as the user
-// scrolls, so it reads as one continuous swipe gesture, not three separate
-// stacked rows (the desktop-style horizontal wedge has nowhere to go on a
-// phone-width screen, which is what made a shrunk-down version of it feel
-// cramped and reflow-prone).
-//
-// Progress is derived from the pin container's own scroll position (Motion's
-// `useScroll({ target, offset: ["start start", "end end"] })`), not raw page
-// scrollY — that maps 0→1 across exactly the container's pinned scroll
-// distance (containerHeight − 100dvh, since the sticky child is one viewport
-// tall), regardless of where this section lands on the page.
-function MobilePinnedWedgedHeadline() {
+function PathsHeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: progress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Start well above/below their settled position — close to the pinned
-  // viewport's own top/bottom edge — and animate to 0 (settled, centered)
-  // as the pin plays out.
-  const topLineY = useTransform(progress, [0, 1], ["-38vh", "0vh"]);
-  const bottomLineY = useTransform(progress, [0, 1], ["38vh", "0vh"]);
-  const photoWidth = useTransform(progress, [0, 1], [16, 46]);
-  const photoSize = useTransform(photoWidth, (v) => `clamp(4rem, ${v}vw, 15rem)`);
+  // "Your Path" starts pulled up near "We Build" and settles at the bottom
+  // of the frame by the time convergence completes. Driven as a % of the
+  // video box's OWN height (via `top`, not a vh/px `y` translate) — the box
+  // is now sized purely by available flex space (see below), which varies
+  // a lot by viewport height, and a fixed vh offset that was fine on a
+  // tall phone was larger than a short phone's entire box, pushing the
+  // text out through the top and off-screen entirely.
+  const yourPathTop = useTransform(progress, [0, PHASES.convergeEnd], ["22%", "86%"]);
+  // A small, deliberate shrink once things are settled — "a few sizes,
+  // nothing drastic" — not a shrink back toward the opening size.
+  const videoScale = useTransform(
+    progress,
+    [0, PHASES.convergeEnd, PHASES.togetherStart],
+    [1, 1, 0.88],
+  );
+  const togetherOpacity = useTransform(
+    progress,
+    [PHASES.togetherStart, PHASES.togetherEnd],
+    [0, 1],
+  );
+  const togetherY = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [28, 0]);
+  const togetherScale = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [0.75, 1]);
 
   return (
-    <div ref={containerRef} className="relative h-[220vh] sm:hidden">
-      <div aria-hidden className="sticky top-0 flex h-dvh flex-col items-center justify-center gap-6 overflow-hidden px-6">
-        <motion.p style={{ y: topLineY }} className={`text-center text-4xl leading-tight tracking-tight ${TEXT_CLASS}`}>
-          We Build
-        </motion.p>
-        <motion.span style={{ width: photoSize, height: photoSize }} className="inline-block shrink-0">
-          <RotatingPathPhoto alt="A path through nature" className="h-full w-full rounded-full" />
-        </motion.span>
-        <motion.p
-          style={{ y: bottomLineY }}
-          className={`text-center text-4xl leading-tight tracking-tight ${TEXT_CLASS}`}
+    <div ref={containerRef} className="relative h-[340vh] bg-brand-black">
+      <div className="sticky top-0 flex h-dvh flex-col items-center overflow-hidden px-4 pt-24 pb-6 sm:px-8 sm:pt-28">
+        {/* Stationary intro copy — never animates, stays put and readable
+            the entire time the section below it is converging. */}
+        <div className="mx-auto max-w-2xl shrink-0 text-center">
+          <p className="font-subtitle text-xs font-semibold uppercase tracking-[0.25em] text-brand-red-bright sm:text-sm">
+            For Parents
+          </p>
+          <p className="mt-4 font-heading text-2xl font-semibold tracking-tight text-brand-offwhite sm:text-3xl lg:text-4xl">
+            By the time most families find their way to me, they&apos;re already
+            lost in the woods.
+          </p>
+          <p className="mx-auto mt-4 max-w-xl text-sm font-normal leading-relaxed text-brand-offwhite/75 sm:text-base lg:text-lg">
+            Some days you can just make out a path through the trees. Other
+            days they&apos;re too dense to see two feet in front of you. Either
+            way, you don&apos;t have to find your own way through it alone.
+          </p>
+        </div>
+
+        {/* Video + converging headline — big, vertically rectangular, "We
+            Build" / "Your Path" rendered on top of it rather than beside
+            it. Sized by AVAILABLE HEIGHT (flex-1 + h-full on the box,
+            min-h-0 on this wrapper so it's actually allowed to shrink)
+            rather than a fixed vw/rem size — on a short phone viewport a
+            fixed size pushed "Your Path" below the fold; letting flexbox
+            hand it whatever vertical room is left after the intro copy and
+            the "Together" slot means it always fits, on any screen height.
+            Gradient scrims top/bottom keep the off-white text legible
+            regardless of what the video is showing at that moment. */}
+        <div className="flex w-full min-h-0 flex-1 items-center justify-center py-4">
+          <motion.div
+            aria-hidden
+            style={{ scale: videoScale }}
+            className="relative aspect-[3/4] h-full max-h-[34rem] max-w-[88vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
+          >
+            <video
+              src="/videos/paths-loop.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/60"
+            />
+            <div className="relative h-full p-4 sm:p-6">
+              <p
+                data-role="we-build"
+                className={`absolute inset-x-0 top-[12%] -translate-y-1/2 text-center text-2xl leading-[0.95] tracking-tight text-brand-offwhite drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-3xl md:text-4xl lg:text-5xl ${HEADLINE_CLASS}`}
+              >
+                We Build
+              </p>
+              <motion.p
+                data-role="your-path"
+                style={{ top: yourPathTop }}
+                className={`absolute inset-x-0 -translate-y-1/2 text-center text-2xl leading-[0.95] tracking-tight text-brand-offwhite drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-3xl md:text-4xl lg:text-5xl ${HEADLINE_CLASS}`}
+              >
+                Your Path
+              </motion.p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* "Together" — fades and scales up from behind the composition
+            once "We Build"/"Your Path" have settled. Reserves its own
+            space below the video the whole time so nothing reflows when it
+            appears; only opacity/transform animate. */}
+        <div aria-hidden className="mt-4 flex h-16 shrink-0 items-center justify-center sm:mt-6 sm:h-20 lg:h-24">
+          <motion.p
+            data-role="together"
+            style={{ opacity: togetherOpacity, y: togetherY, scale: togetherScale }}
+            className="font-quote text-5xl text-brand-red-bright sm:text-6xl lg:text-7xl"
+          >
+            Together
+          </motion.p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Closing paragraph + CTA — rendered by the caller once the pin above
+// releases, still on the same dark field (the field is one continuous
+// bg-brand-black across both this component and PathsHeroSection, so it
+// reads as one section, not two stacked ones).
+function PathsHeroClosing() {
+  return (
+    <div className="bg-brand-black px-4 pb-16 pt-4 text-center sm:px-8 sm:pb-20 lg:pb-28">
+      <p className="mx-auto max-w-2xl text-lg font-normal leading-relaxed text-brand-offwhite/80 sm:text-xl">
+        I don&apos;t hand you a map and walk away. We figure out the changes you
+        actually want to make, then build the path together, one real step at
+        a time — forward, sideways, sometimes one step back. As long as
+        we&apos;re still moving in the direction you want to go, that counts as
+        progress.
+      </p>
+      <div className="mt-8">
+        <Link
+          href="https://cal.com/bobby-washburn/intro-call"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({ size: "lg" })}
         >
-          Your Path
-        </motion.p>
+          Book an intro call →
+        </Link>
       </div>
     </div>
   );
@@ -120,13 +179,12 @@ function MobilePinnedWedgedHeadline() {
 function WedgedHeroHeadline() {
   return (
     <>
-      {/* The real page heading — present once regardless of breakpoint. Both
-          variants below are purely visual/animated (aria-hidden), since
-          neither is a plain static string a screen reader should read
-          mid-animation. */}
-      <h1 className="sr-only">We Build Your Path</h1>
-      <MobilePinnedWedgedHeadline />
-      <DesktopWedgedHeadline />
+      {/* The real page heading — present once, regardless of scroll
+          position. "We Build" / "Your Path" / "Together" above are purely
+          visual (see PathsHeroSection's own aria-hidden usage). */}
+      <h1 className="sr-only">We Build Your Path Together</h1>
+      <PathsHeroSection />
+      <PathsHeroClosing />
     </>
   );
 }
