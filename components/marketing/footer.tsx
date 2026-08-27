@@ -33,7 +33,7 @@ async function Footer() {
 
   return (
     <footer className="border-t border-border bg-brand-black text-brand-offwhite">
-      <div className="max-w-7xl xl:px-16 lg:px-8 px-4 mx-auto">
+      <div className="max-w-[110rem] xl:px-16 lg:px-8 px-4 mx-auto">
         <div className="flex flex-col gap-6 sm:gap-12">
           <div className="grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 sm:gap-8">
             <div className="flex flex-col gap-6">

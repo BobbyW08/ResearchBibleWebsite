@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Logo from "@/assets/logo/logo";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
@@ -63,13 +63,10 @@ const BookACallButton = ({ className }: { className?: string }) => (
 
 type HeaderProps = {
   /**
-   * True only on the homepage, where the Proof Wall hero renders its own large
-   * wordmark that shrinks into this slot as the user scrolls (see hero.tsx).
-   * The header's own logo starts invisible and crossfades in over the same
-   * scroll range the hero logo shrinks and fades out over, so the whole thing
-   * reads as one continuous motion rather than a jump cut. Every other page
-   * has no big hero logo to hand off from, so the header logo is just always
-   * visible there.
+   * True only on the homepage, where the header sits over the dark Proof
+   * Wall hero field and renders light-on-dark until the user scrolls past
+   * it. Every other page has no hero to blend with, so it's always
+   * dark-on-light there.
    */
   logoAnimatesIn?: boolean;
 };
@@ -77,8 +74,6 @@ type HeaderProps = {
 const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
   const [sticky, setSticky] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { scrollY } = useScroll();
-  const animatedLogoOpacity = useTransform(scrollY, [40, 220], [0, 1]);
   // Per homepage-redesign-v3.md: header and hero are one continuous flat
   // #111111 surface — while the header is still transparent over the hero
   // (not yet sticky), its logo/nav render light-on-dark to match; once
@@ -117,7 +112,7 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
     >
       <div
         className={cn(
-          "w-full max-w-6xl flex items-center h-fit justify-between gap-3.5 lg:gap-6 transition-all duration-500",
+          "w-full max-w-[110rem] flex items-center h-fit justify-between gap-3.5 lg:gap-6 transition-all duration-500",
           sticky
             ? "p-2.5 bg-background/60 backdrop-blur-lg border border-border/40 shadow-2xl shadow-primary/5 rounded-full"
             : "bg-transparent border-transparent",
@@ -125,9 +120,7 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
       >
         <div>
           <Link href="/" aria-label="Bobby Washburn Parenting Support">
-            <motion.div style={logoAnimatesIn ? { opacity: animatedLogoOpacity } : undefined}>
-              <Logo onDark={onHeroField} />
-            </motion.div>
+            <Logo onDark={onHeroField} />
           </Link>
         </div>
 

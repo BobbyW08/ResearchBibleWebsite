@@ -51,19 +51,21 @@ export const metadata: Metadata = {
   },
 };
 
-const introCallCta = (
-  <div className="flex flex-col items-center gap-2">
-    <Link
-      href="https://cal.com/bobby-washburn/intro-call"
-      target="_blank"
-      rel="noopener noreferrer"
-      className={buttonVariants({ size: "lg" })}
-    >
-      Book an intro call →
-    </Link>
-    <p className="text-sm font-normal text-muted-foreground">Free 30-min call. No pitch.</p>
-  </div>
-);
+function IntroCallCta({ align = "center" }: { align?: "center" | "start" }) {
+  return (
+    <div className={`flex flex-col gap-2 ${align === "start" ? "items-start" : "items-center"}`}>
+      <Link
+        href="https://cal.com/bobby-washburn/intro-call"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={buttonVariants({ size: "lg" })}
+      >
+        Book an intro call →
+      </Link>
+      <p className="text-sm font-normal text-muted-foreground">Free 30-min call. No pitch.</p>
+    </div>
+  );
+}
 
 export default async function AboutBobbyPage() {
   const about = await reader.singletons.about.read();
@@ -86,32 +88,36 @@ export default async function AboutBobbyPage() {
       />
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-8 lg:py-16">
-          <div className="flex flex-col items-center gap-6 text-center">
-            {about.photo ? (
-              <Image
-                src={`/images/about/${about.photo}`}
-                alt="Photo of Bobby Washburn"
-                width={128}
-                height={128}
-                className="h-32 w-32 rounded-full object-cover"
-              />
-            ) : (
-              <PlaceholderPhoto
-                alt="Photo of Bobby Washburn"
-                className="h-32 w-32 rounded-full"
-              />
-            )}
-            <h1 className="font-heading text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
-              About Bobby
-            </h1>
-            <p className="max-w-xl text-base font-normal text-muted-foreground">
-              {about.heroSubhead}
-            </p>
-            <p className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
-              {about.credentialBadge}
-            </p>
-            {introCallCta}
+        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-8 lg:max-w-5xl lg:py-16">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
+              <h1 className="font-heading text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
+                About Bobby
+              </h1>
+              <p className="max-w-xl text-base font-normal text-muted-foreground">
+                {about.heroSubhead}
+              </p>
+              <p className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+                {about.credentialBadge}
+              </p>
+              <IntroCallCta align="start" />
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              {about.photo ? (
+                <Image
+                  src={`/images/about/${about.photo}`}
+                  alt="Photo of Bobby Washburn"
+                  width={320}
+                  height={320}
+                  className="h-64 w-64 rounded-full object-cover sm:h-72 sm:w-72 lg:h-80 lg:w-80"
+                />
+              ) : (
+                <PlaceholderPhoto
+                  alt="Photo of Bobby Washburn"
+                  className="h-64 w-64 rounded-full sm:h-72 sm:w-72 lg:h-80 lg:w-80"
+                />
+              )}
+            </div>
           </div>
 
           <div className="mt-12 flex flex-col gap-12">
@@ -121,7 +127,9 @@ export default async function AboutBobbyPage() {
                   {paragraph}
                 </p>
               ))}
-              <div className="flex justify-center pt-2">{introCallCta}</div>
+              <div className="flex justify-center pt-2">
+                <IntroCallCta />
+              </div>
             </section>
 
             <section className="flex flex-col gap-4 border-t border-border pt-10">

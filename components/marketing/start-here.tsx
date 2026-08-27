@@ -1,18 +1,34 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import FadeInView from "@/components/marketing/fade-in-view";
-import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
 import { getAllPainPoints } from "@/lib/pain-points-reader";
 
 // Row 2 panels — per homepage-redesign-v3.md Section 2: Parents and Groups
 // both land on /services, deep-linked to the #one-on-one and #weekly-group
 // anchors (see app/services/page.tsx); Organizations goes to its own page.
-// Real photos aren't ready yet (parent using the tool, group session, org
-// office) — PlaceholderPhoto stands in until Bobby supplies them.
+// Real photos of Bobby's own parents/groups/office aren't ready yet — these
+// are warm-toned Unsplash stock placeholders standing in until he supplies
+// real ones.
 const ROW_TWO_PANELS = [
-  { label: "Parents.", alt: "Photo of a parent", href: "/services#one-on-one" },
-  { label: "Groups.", alt: "Photo of a group session", href: "/services#weekly-group" },
-  { label: "Organizations.", alt: "Photo of an organization office", href: "/services/organizations" },
+  {
+    label: "Parents.",
+    alt: "A parent with a toddler and baby at home",
+    href: "/services#one-on-one",
+    image: "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=800&q=70&auto=format&fit=crop",
+  },
+  {
+    label: "Groups.",
+    alt: "A small group of people talking around a table",
+    href: "/services#weekly-group",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=70&auto=format&fit=crop",
+  },
+  {
+    label: "Organizations.",
+    alt: "Two office professionals working together",
+    href: "/services/organizations",
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=70&auto=format&fit=crop",
+  },
 ];
 
 async function StartHere() {
@@ -20,10 +36,10 @@ async function StartHere() {
 
   return (
     <section id="start-here" className="scroll-mt-24 border-t border-border">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 lg:py-24">
-        <FadeInView className="mx-auto flex max-w-lg flex-col items-center justify-center gap-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">Start Here</p>
-          <h2 className="font-heading text-3xl font-medium tracking-tight md:text-4xl">
+      <div className="mx-auto max-w-[110rem] px-4 py-16 sm:px-8 lg:py-24">
+        <FadeInView className="mx-auto flex max-w-lg flex-col items-center justify-center gap-4 text-center md:max-w-none">
+          <p className="font-subtitle text-sm font-semibold uppercase tracking-widest text-primary">Start Here</p>
+          <h2 className="font-heading text-3xl font-medium tracking-tight md:whitespace-nowrap md:text-4xl">
             Where can you use support today?
           </h2>
         </FadeInView>
@@ -92,7 +108,13 @@ async function StartHere() {
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3">
           {ROW_TWO_PANELS.map((panel) => (
             <Link key={panel.label} href={panel.href} className="group relative flex flex-col overflow-hidden">
-              <PlaceholderPhoto alt={panel.alt} className="aspect-4/3 w-full" />
+              <Image
+                src={panel.image}
+                alt={panel.alt}
+                width={800}
+                height={600}
+                className="aspect-4/3 w-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-brand-black/5 to-transparent" />
               <p className="absolute bottom-5 left-5 font-title text-2xl font-bold text-brand-offwhite">
                 {panel.label}

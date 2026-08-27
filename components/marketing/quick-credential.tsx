@@ -17,7 +17,7 @@ const CREDENTIAL_BULLETS: string[] = [
 function QuickCredential() {
   return (
     <section className="lg:py-20 sm:py-16 py-8">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-16">
+      <div className="mx-auto max-w-[110rem] px-4 sm:px-6 lg:px-16">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -28,7 +28,7 @@ function QuickCredential() {
             <Image
               src={bobbyPhoto}
               alt="Photo of Bobby Washburn"
-              className="aspect-4/3 w-full rounded-lg object-cover"
+              className="aspect-4/3 w-full rounded-lg object-cover object-top"
             />
           </motion.div>
 
