@@ -53,3 +53,8 @@ next-env.d.ts
 
 # committed zip export artifact — removed, keep it out going forward
 files.zip
+
+# large local-only handoff artifacts retired to graveyard/ — never commit these
+graveyard/*.patch
+graveyard/*.zip
+graveyard/HANDOFF-round2.md
