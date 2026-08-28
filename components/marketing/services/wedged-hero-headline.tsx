@@ -41,14 +41,15 @@ function PathsHeroSection() {
     offset: ["start start", "end end"],
   });
 
-  // "Your Path" starts pulled up near "We Build" and settles at the bottom
-  // of the frame by the time convergence completes. Driven as a % of the
-  // video box's OWN height (via `top`, not a vh/px `y` translate) — the box
-  // is now sized purely by available flex space (see below), which varies
-  // a lot by viewport height, and a fixed vh offset that was fine on a
-  // tall phone was larger than a short phone's entire box, pushing the
-  // text out through the top and off-screen entirely.
-  const yourPathTop = useTransform(progress, [0, PHASES.convergeEnd], ["22%", "86%"]);
+  // "We Build" slides in from the left, "Your Path" from the right, on the
+  // same progress range so they meet at the horizontal center at the same
+  // moment. Neither ever moves vertically. Percentages are relative to
+  // each span's own width, so the entrance distance scales with the text
+  // itself rather than a fixed px/vw amount, and the overlay row's own
+  // `overflow-hidden` (below) clips the off-position starting point so it
+  // never introduces horizontal page overflow.
+  const weBuildX = useTransform(progress, [0, PHASES.convergeEnd], ["-140%", "0%"]);
+  const yourPathX = useTransform(progress, [0, PHASES.convergeEnd], ["140%", "0%"]);
   // A small, deliberate shrink once things are settled — "a few sizes,
   // nothing drastic" — not a shrink back toward the opening size.
   const videoScale = useTransform(
@@ -84,50 +85,61 @@ function PathsHeroSection() {
           </p>
         </div>
 
-        {/* Video + converging headline — big, vertically rectangular, "We
-            Build" / "Your Path" rendered on top of it rather than beside
-            it. Sized by AVAILABLE HEIGHT (flex-1 + h-full on the box,
-            min-h-0 on this wrapper so it's actually allowed to shrink)
-            rather than a fixed vw/rem size — on a short phone viewport a
-            fixed size pushed "Your Path" below the fold; letting flexbox
-            hand it whatever vertical room is left after the intro copy and
-            the "Together" slot means it always fits, on any screen height.
-            Gradient scrims top/bottom keep the off-white text legible
-            regardless of what the video is showing at that moment. */}
+        {/* Video + converging headline. Sized by AVAILABLE HEIGHT (flex-1 +
+            h-full on the box, min-h-0 on this wrapper so it's actually
+            allowed to shrink) rather than a fixed vw/rem size — on a short
+            phone viewport a fixed size pushed content below the fold;
+            letting flexbox hand it whatever vertical room is left after the
+            intro copy and the "Together" slot means it always fits, on any
+            screen height. The caps are generous (44rem / 94vw) so the frame
+            reads as genuinely large on real screens, not just filling
+            leftover space. Gradient scrims top/bottom keep the off-white
+            text legible regardless of what the video is showing. The
+            headline overlay is a sibling of the video box, not a child of
+            it, so its horizontal slide-in isn't clipped by the video's own
+            rounded-corner `overflow-hidden` — it travels (and visually
+            overlaps) across the wider shared wrapper instead. */}
         <div className="flex w-full min-h-0 flex-1 items-center justify-center py-4">
-          <motion.div
-            aria-hidden
-            style={{ scale: videoScale }}
-            className="relative aspect-[3/4] h-full max-h-[34rem] max-w-[88vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
-          >
-            <video
-              src="/videos/paths-loop.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+          <div className="relative flex h-full w-full max-w-4xl items-center justify-center">
+            <motion.div
+              aria-hidden
+              style={{ scale: videoScale }}
+              className="relative aspect-[3/4] h-full max-h-[44rem] max-w-[94vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
+            >
+              <video
+                src="/videos/paths-loop.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/60"
+              />
+            </motion.div>
+
             <div
               aria-hidden
-              className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/60"
-            />
-            <div className="relative h-full p-4 sm:p-6">
-              <p
+              className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center overflow-hidden px-2"
+            >
+              <motion.span
                 data-role="we-build"
-                className={`absolute inset-x-0 top-[12%] -translate-y-1/2 text-center text-2xl leading-[0.95] tracking-tight text-brand-offwhite drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-3xl md:text-4xl lg:text-5xl ${HEADLINE_CLASS}`}
+                style={{ x: weBuildX }}
+                className={`whitespace-nowrap pr-[0.2em] text-right text-2xl leading-[0.95] tracking-tight text-brand-offwhite drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-3xl md:text-4xl lg:text-5xl ${HEADLINE_CLASS}`}
               >
                 We Build
-              </p>
-              <motion.p
+              </motion.span>
+              <motion.span
                 data-role="your-path"
-                style={{ top: yourPathTop }}
-                className={`absolute inset-x-0 -translate-y-1/2 text-center text-2xl leading-[0.95] tracking-tight text-brand-offwhite drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-3xl md:text-4xl lg:text-5xl ${HEADLINE_CLASS}`}
+                style={{ x: yourPathX }}
+                className={`whitespace-nowrap pl-[0.2em] text-left text-2xl leading-[0.95] tracking-tight text-brand-offwhite drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-3xl md:text-4xl lg:text-5xl ${HEADLINE_CLASS}`}
               >
                 Your Path
-              </motion.p>
+              </motion.span>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* "Together" — fades and scales up from behind the composition
