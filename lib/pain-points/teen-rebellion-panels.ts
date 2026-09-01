@@ -1,31 +1,33 @@
-// Hardcoded, typed panel content for the teen page's route-ball/newspaper-grid
-// rebuild (see claude-code-handoff-v8.md Part B). Not CMS-managed — this page's
-// panel copy is authored directly here, distinct from content/pain-points/teen.yaml
-// (which still owns only the deepDive/related LinkRef data via getHelpEntry('teen')).
+// Hardcoded, typed panel content for the teen page's newspaper-mosaic
+// rebuild (see claude/pain-point-newspaper-layout-v9.md). Not CMS-managed —
+// this page's panel copy is authored directly here, distinct from
+// content/pain-points/teen.yaml (which still owns only the deepDive/related
+// LinkRef data via getHelpEntry('teen')).
 //
 // 8 panels, not 9 — the standalone "not-alone" stat panel from the earlier
 // 9-panel plan is cut; its one load-bearing stat is folded into the hook panel
 // as a reassurance line instead.
+//
+// v9 dropped the route-ball wayfinding system entirely (shelved, not
+// deleted from history — see v4-v8 for the spec if it comes back). What's
+// left here is just each panel's grid-mosaic size token and, where it has
+// one, its one-time mount-in reveal key (`panelMotion`) — no more
+// ballEntry/ballExit/anchor fields.
 
-export type PanelLayout = "hero-wide" | "wide" | "full-width";
+export type PanelSize = "feature" | "tall" | "wide" | "standard" | "banner";
 export type PanelEmphasis = "important" | "standard" | "caution";
 
 export type Callout = { label: string; text: string };
 
 // Shared by every panel except `support-signals`, which is structurally
-// exempt from motion/route-ball participation — see SupportSignalsPanel below.
+// exempt from motion entirely — see SupportSignalsPanel below.
 type PanelMotionFields = {
   panelMotion: string;
-  ballEntry: string;
-  ballExit: string;
-  entryAnchor: string;
-  activeAnchor: string;
-  exitAnchor: string;
 };
 
 type PanelBase = {
   id: string;
-  layout: PanelLayout;
+  size: PanelSize;
   emphasis: PanelEmphasis;
   deck: string;
 };
@@ -67,10 +69,9 @@ export type ActivityPickerPanel = PanelBase &
     items: { title: string; body: string }[];
   };
 
-// No `panelMotion` field, no `ball` fields at all — a compile-time guarantee
-// this panel can never be wired into the motion/route-ball systems, not a
-// null placeholder. Zero entrance animation, zero route-ball participation,
-// no exceptions.
+// No `panelMotion` field at all — a compile-time guarantee this panel can
+// never be wired into the motion system, not a null placeholder. Zero
+// entrance animation, zero click interaction, no exceptions.
 export type SupportSignalsPanel = PanelBase & {
   type: "support-signals";
   lanes: { label: string; body: string; critical?: boolean }[];
@@ -95,23 +96,18 @@ export const TEEN_PANELS: TeenPanel[] = [
   {
     id: "teen-hates-me-hook",
     type: "feature",
-    layout: "hero-wide",
+    size: "feature",
     emphasis: "important",
     deck: "My teenager hates me (or at least acts like it)",
     body: "They roll their eyes at everything you say. They used to tell you things; now you get one-word answers. They're questioning your values, pushing back on your rules, and acting like they've never needed you. You're watching a child you know deeply become a stranger — and you're wondering if you did something wrong, or if you're losing them. You're not — and you're not as alone in this as it feels: only 48% of parents call the relationship with a teen \"excellent,\" vs. 80% with a toddler. This is what it looks like when it's working.",
     pullQuote: "You're not losing them. This is what it looks like when it's working.",
     source: "Gallup 2024",
     panelMotion: "feature-reframe-redaction-tilt",
-    ballEntry: "arrive-corner-ready",
-    ballExit: "exit-slide-along-gutter",
-    entryAnchor: "top-left",
-    activeAnchor: "headline",
-    exitAnchor: "bottom-right",
   },
   {
     id: "whats-happening",
     type: "explanation",
-    layout: "wide",
+    size: "tall",
     emphasis: "important",
     deck: "What's happening",
     paragraphs: [
@@ -119,21 +115,11 @@ export const TEEN_PANELS: TeenPanel[] = [
       "Your teenager's brain is also under active construction. The reward-seeking, sensation-seeking part (the limbic system) develops around puberty. The impulse-control, future-planning part (the prefrontal cortex) doesn't fully come online until the mid-20s. This mismatch is why your teenager wants adult-level independence while still demonstrating very un-adult-level judgment. It's not stubbornness. It's neurology.",
     ],
     panelMotion: "explanation-expand-vertical",
-    ballEntry: "arrive-border-notch-ready",
-    // Flagged for Bobby's sign-off: the delivered doc's value here
-    // (exit-backup-then-hop-route-change) assumed this panel was followed by
-    // why-it-backfires. It's now followed by the-real-distinction, a calm
-    // continuation rather than a reframe, so this uses the gutter-slide exit
-    // instead — best-guess, not confirmed.
-    ballExit: "exit-slide-along-gutter",
-    entryAnchor: "top-left",
-    activeAnchor: "center",
-    exitAnchor: "bottom-right",
   },
   {
     id: "the-real-distinction",
     type: "comparison",
-    layout: "full-width",
+    size: "banner",
     emphasis: "important",
     deck: "The tool — behavioral limits vs. psychological control",
     body: "The harder your teenager pushes for autonomy, the more effective approaches shift. Control that worked in childhood starts backfiring. What actually works now is the combination of two things: maintaining clear behavioral limits (curfews, expectations, monitoring) while releasing psychological control — giving up the drive to control who they are, how they feel, what they think. Those are very different things.",
@@ -155,16 +141,11 @@ export const TEEN_PANELS: TeenPanel[] = [
       text: "Psychological control is one of the most consistently replicated findings in adolescent research — it's linked to higher rates of depression and anxiety in teenagers, not better behavior.",
     },
     panelMotion: "comparison-split-two-lanes",
-    ballEntry: "arrive-underline-headline-ready",
-    ballExit: "exit-arc-jump-adjacent-panel",
-    entryAnchor: "headline",
-    activeAnchor: "divider",
-    exitAnchor: "bottom-right",
   },
   {
     id: "why-it-backfires",
     type: "explanation",
-    layout: "wide",
+    size: "wide",
     emphasis: "standard",
     deck: "Why this usually makes it worse",
     paragraphs: [
@@ -177,20 +158,11 @@ export const TEEN_PANELS: TeenPanel[] = [
       text: "When researchers separated 'parents asking questions' from 'teens choosing to share,' the sharing mattered far more than the asking. Teens who trust the relationship volunteer information. Teens who feel surveilled get better at hiding things.",
     },
     panelMotion: "friction-subtle-shake",
-    ballEntry: "arrive-border-notch-ready",
-    // Flagged for Bobby's sign-off, same reasoning as whats-happening above:
-    // the-real-distinction now precedes this panel instead of following it,
-    // so this exits with a calm roll into say-this-instead rather than the
-    // doc's original feedback-slow-roll-caution value — best-guess, not confirmed.
-    ballExit: "exit-roll-down-tilted-panel",
-    entryAnchor: "top-left",
-    activeAnchor: "center-left",
-    exitAnchor: "bottom-right",
   },
   {
     id: "say-this-instead",
     type: "script-quiz",
-    layout: "wide",
+    size: "wide",
     emphasis: "standard",
     deck: "Same concern, different words",
     items: [
@@ -209,16 +181,11 @@ export const TEEN_PANELS: TeenPanel[] = [
       text: "Questions that invite their reasoning keep the conversation open. Direct interrogation — even well-meant — reads as surveillance, and surveillance is exactly what teenagers get better at working around.",
     },
     panelMotion: "script-strike-and-replace",
-    ballEntry: "arrive-corner-ready",
-    ballExit: "exit-roll-down-tilted-panel",
-    entryAnchor: "top-left",
-    activeAnchor: "center",
-    exitAnchor: "bottom-left",
   },
   {
     id: "try-this-week",
     type: "activity-picker",
-    layout: "wide",
+    size: "feature",
     emphasis: "standard",
     deck: "Try this week",
     items: [
@@ -236,16 +203,11 @@ export const TEEN_PANELS: TeenPanel[] = [
       },
     ],
     panelMotion: "action-checklist-commitment",
-    ballEntry: "arrive-border-notch-ready",
-    ballExit: "exit-slide-along-gutter",
-    entryAnchor: "top-left",
-    activeAnchor: "center",
-    exitAnchor: "bottom-right",
   },
   {
     id: "when-to-get-support",
     type: "support-signals",
-    layout: "full-width",
+    size: "banner",
     emphasis: "caution",
     deck: "Normal pushing away, or something more?",
     lanes: [
@@ -267,22 +229,10 @@ export const TEEN_PANELS: TeenPanel[] = [
   {
     id: "pick-one-thing",
     type: "cta",
-    layout: "wide",
+    size: "wide",
     emphasis: "standard",
     deck: "Pick one thing. Not all of them.",
     body: "You don't need to overhaul how you parent this week. Pick one behavioral limit to hold steady, one piece of psychological control to let go of, and one low-pressure block of time to add. That's enough to start shifting the pattern.\n\nAnd the long view is on your side: most parent-teen relationships that go through a rocky stretch come back around — closeness with parents typically grows again through the college years and into the mid-20s. This distance is a phase of the relationship, not the end of it.",
     panelMotion: "close-next-step-anchor",
-    ballEntry: "arrive-underline-headline-ready",
-    ballExit: "resolve-final-settle",
-    entryAnchor: "headline",
-    activeAnchor: "checkbox",
-    exitAnchor: "bottom-right",
   },
 ];
-
-// The route ball's path — skips `when-to-get-support` entirely, per the
-// absolute no-motion rule for that panel. Resolves directly from
-// try-this-week's exit to pick-one-thing's entry, no stop, no loop-back.
-export const ROUTE_BALL_SEQUENCE: string[] = TEEN_PANELS.filter(
-  (panel) => panel.type !== "support-signals",
-).map((panel) => panel.id);

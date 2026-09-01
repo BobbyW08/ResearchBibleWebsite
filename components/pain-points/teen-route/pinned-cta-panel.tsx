@@ -8,7 +8,6 @@ import { DeeperLinks } from "@/components/marketing/pain-point-content";
 import type { LinkRef } from "@/lib/pain-points";
 import CalBookingTrigger from "./cal-booking-trigger";
 import JoinGroupWidget from "./join-group-widget";
-import { useRouteBall } from "./route-ball/route-ball-provider";
 
 // Modeled and named separately from the panel-08 `cta`-typed RouteCtaPanel —
 // this is the pinned conversion element (Book a Session / Newsletter / Join
@@ -22,7 +21,6 @@ function PinnedCtaPanel({ deepDive, related }: { deepDive?: LinkRef; related: Li
   const [expanded, setExpanded] = useState(true);
   const [badgeOpen, setBadgeOpen] = useState(false);
   const [pdfState, setPdfState] = useState<"idle" | "coming-soon">("idle");
-  const { hoveredPanelId } = useRouteBall();
 
   useEffect(() => {
     const el = sentinelRef.current;
@@ -39,11 +37,6 @@ function PinnedCtaPanel({ deepDive, related }: { deepDive?: LinkRef; related: Li
     const timeout = setTimeout(() => setPdfState("idle"), 2000);
     return () => clearTimeout(timeout);
   }, [pdfState]);
-
-  // Fades near-transparent when the reader is hovering a panel that shares
-  // visual space with the collapsed badge; returns to full opacity on
-  // move-off or when the badge itself is hovered/open.
-  const dimmed = !expanded && !badgeOpen && Boolean(hoveredPanelId);
 
   const menuContent = (
     <>
@@ -97,7 +90,7 @@ function PinnedCtaPanel({ deepDive, related }: { deepDive?: LinkRef; related: Li
         {!expanded && (
           <motion.div
             initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: dimmed ? 0.15 : 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.7 }}
             transition={{ duration: 0.25 }}
             onHoverStart={() => setBadgeOpen(true)}

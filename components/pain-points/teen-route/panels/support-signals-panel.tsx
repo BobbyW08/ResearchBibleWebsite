@@ -3,14 +3,14 @@ import PanelShell from "../panel-shell";
 import type { SupportSignalsPanel as SupportSignalsPanelData } from "@/lib/pain-points/teen-rebellion-panels";
 
 // The safety panel. Bobby's standing rule: "constant, clean, clear and
-// highly legible, no animations, no ball movement, it's serious." PanelShell
-// is given noMotion so it renders immediately with zero entrance animation
-// and never registers with the route-ball system — see SupportSignalsPanel's
-// type in lib/pain-points/teen-rebellion-panels.ts for the compile-time half
-// of this guarantee.
+// highly legible, no animations, it's serious." PanelShell is given
+// noMotion so it renders immediately with zero entrance animation and has
+// no click interaction — see SupportSignalsPanel's type in
+// lib/pain-points/teen-rebellion-panels.ts for the compile-time half of
+// this guarantee (it has no `panelMotion` field at all).
 function SupportSignalsPanel({ panel }: { panel: SupportSignalsPanelData }) {
   return (
-    <PanelShell id={panel.id} layout={panel.layout} emphasis={panel.emphasis} noMotion>
+    <PanelShell id={panel.id} size={panel.size} emphasis={panel.emphasis} noMotion>
       <div className="mb-6 flex items-center gap-2">
         <AlertTriangle className="h-5 w-5 text-amber-700" />
         <h2 className="font-heading text-2xl font-bold text-brand-black sm:text-3xl">{panel.deck}</h2>

@@ -2,14 +2,21 @@
 
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import PanelShell from "../panel-shell";
 import type { ScriptQuizPanel as ScriptQuizPanelData } from "@/lib/pain-points/teen-rebellion-panels";
 
+// Keeps its own dedicated tap-to-reveal interaction, unaffected by the
+// Expand/Rock pass — see claude/pain-point-newspaper-layout-v9.md Part 2. A
+// small rotation "rock" is layered onto each line as it reveals so the tap
+// doesn't read as inert; reduced motion drops the rotation and keeps just
+// the fade.
 function ScriptQuizPanel({ panel }: { panel: ScriptQuizPanelData }) {
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
+  const reduceMotion = useReducedMotion();
 
   return (
-    <PanelShell id={panel.id} layout={panel.layout} emphasis={panel.emphasis} panelMotion={panel.panelMotion}>
+    <PanelShell id={panel.id} size={panel.size} emphasis={panel.emphasis} panelMotion={panel.panelMotion}>
       <h2 className="font-heading text-2xl font-bold text-brand-black sm:text-3xl">{panel.deck}</h2>
       <p className="mt-2 text-sm text-brand-black/60">Tap each line to see what to say instead.</p>
 
@@ -31,10 +38,15 @@ function ScriptQuizPanel({ panel }: { panel: ScriptQuizPanelData }) {
             >
               <span className="text-base text-brand-black/40 line-through decoration-2">{item.strike}</span>
               {isRevealed && (
-                <span className="flex items-center gap-2 text-base font-medium text-primary">
+                <motion.span
+                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: -2 }}
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: 1, rotate: 0 }}
+                  transition={{ duration: 0.35, ease: "easeInOut" }}
+                  className="flex items-center gap-2 text-base font-medium text-primary"
+                >
                   <ArrowRight className="h-4 w-4 shrink-0" />
                   {item.replace}
-                </span>
+                </motion.span>
               )}
             </button>
           );
