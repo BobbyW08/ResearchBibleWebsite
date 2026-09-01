@@ -11,15 +11,8 @@ headline: >-
   Bedtime battles — why your kid won't sleep (and what actually helps)
 intro: >-
   Bedtime is supposed to be peaceful. In your house, it's a negotiation marathon: five more minutes, one more hug, a glass of water, a question that could definitely wait until morning. An hour later, you're somehow still in the room, your evening is gone, and they're still awake.
-defaultAge: "6-9"
-ageScenario25: >-
-  It takes 90 minutes to get your 3-year-old down. You've done the routine. You've done the second routine. They need water, another hug, something very important to tell you about a bug they saw.
-ageScenario69: >-
-  Your 8-year-old is in bed at 8:30 but awake until 10. They're not playing — they genuinely can't fall asleep. Their brain isn't receiving a clear signal that it's time to wind down.
-ageScenario1012: >-
-  Your 11-year-old has a 9 PM bedtime but is on their phone until 11. By morning they're impossible to wake. The device in the room is working directly against the sleep signal.
-ageScenario13plus: >-
-  Your 16-year-old can't fall asleep before midnight no matter what. This isn't defiance — it's delayed sleep phase, which is biologically more common in adolescents.
+exampleScenario: >-
+  Maybe it's ninety minutes of hugs and water requests before a toddler finally settles, wide-awake staring at the ceiling long after lights-out, a phone still lit up well past bedtime, or a body that genuinely can't fall asleep before midnight no matter what you try. The details change as kids get older, but the underlying signal — or lack of one — is the same problem at every age, and it responds to the same fix.
 whatHappening:
   - discriminant: p
     value: >-

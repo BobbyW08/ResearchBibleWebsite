@@ -11,15 +11,8 @@ headline: >-
   My kid won't listen
 intro: >-
   You've asked three times. Your voice is rising. They're still doing the exact thing you asked them not to do — or nowhere near the thing you asked them to do. And you're starting to wonder if they simply don't care what you say, or if there's something fundamentally off.
-defaultAge: "6-9"
-ageScenario25: >-
-  You ask your 4-year-old to put shoes on. Nothing. Again. Nothing. Louder. Now it's a meltdown. The ask became a power struggle without you meaning for it to.
-ageScenario69: >-
-  Your 7-year-old pretends not to hear you until your voice gets sharp. Quiet requests disappear. You've accidentally trained them to respond to your yell.
-ageScenario1012: >-
-  Your 10-year-old responds to every request with "why do I have to?" Every instruction becomes a negotiation and you're exhausted by 8 PM.
-ageScenario13plus: >-
-  Your 14-year-old isn't defiant exactly — they're just absent. Not doing what you ask, not arguing. Just not doing it. Passive non-compliance is harder to address than open defiance.
+exampleScenario: >-
+  Maybe it's shoes that never get put on no matter how many times you ask, a request that gets ignored until your voice gets sharp, a "why do I have to?" to every instruction, or simply nothing happening at all — quiet non-response instead of an argument. The way it shows up shifts as kids get older, from open defiance to passive avoidance, but underneath it's the same thing: a request that isn't landing the way you meant it to, at whatever age your child is right now.
 whatHappening:
   - discriminant: p
     value: >-

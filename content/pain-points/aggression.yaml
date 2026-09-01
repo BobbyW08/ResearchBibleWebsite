@@ -11,15 +11,8 @@ headline: >-
   My kid hits, bites, or throws things
 intro: >-
   It's frightening and exhausting. You're managing the injury, keeping siblings safe, trying to stay calm while something in you is panicking. And the question underneath all of it: is this normal? Is something wrong? Am I doing something wrong?
-defaultAge: "6-9"
-ageScenario25: >-
-  Your 3-year-old bites their sibling when frustrated or throws toys when things don't go their way. This is extremely common at this age — the regulatory skills literally don't exist yet. They're not bad; they're 3.
-ageScenario69: >-
-  Your 7-year-old hits when frustrated and can't say why. They look surprised afterward, like they didn't choose it. That's reactive aggression: the brain fired before thinking was involved.
-ageScenario1012: >-
-  Your 11-year-old slams doors, throws things, occasionally gets physical when cornered. The outbursts feel bigger than they used to because their body is bigger but their regulation hasn't caught up.
-ageScenario13plus: >-
-  Your 15-year-old doesn't throw things, but they're verbally aggressive in ways that feel frightening — threatening, intimidating, explosive. Big-body aggression in teens needs the same response principles, with safety planning added.
+exampleScenario: >-
+  Maybe it's a bite or a thrown toy when things don't go their way, a hit that seems to come out of nowhere and surprises even them, slammed doors and shoving when they're cornered, or words that feel frightening and explosive even without a hand ever being raised. The form changes as kids get bigger, but the underlying mechanism — a nervous system that fired before thinking caught up — is the same at every age, and it calls for the same response.
 whatHappening:
   - discriminant: p
     value: >-

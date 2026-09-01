@@ -11,15 +11,8 @@ headline: >-
   The homework war — why it turns into a battle every night
 intro: >-
   You've asked them to start. You've reminded them three times. Now it's a standoff — they're arguing that homework is stupid, you're arguing that it matters, and somehow an hour has passed and nothing is written down. Every evening ends with everyone frustrated, and you're starting to dread 3 PM.
-defaultAge: "6-9"
-ageScenario25: >-
-  At this age, formal homework is rare — but if your young child refuses reading practice or simple activities, the same principles apply: decompression first, then low-demand asks.
-ageScenario69: >-
-  Your 7-year-old was fine at school all day, but the moment you mention homework, the shutdown starts. They've used up their regulation capacity. There's nothing left for hard things.
-ageScenario1012: >-
-  Your 10-year-old sits at the desk for an hour and barely writes a sentence. They're not being lazy — they're stuck. Starting tasks is a genuine challenge, especially for kids with ADHD.
-ageScenario13plus: >-
-  Your 14-year-old swears they did the homework at school but you get emails from teachers saying it wasn't turned in. The avoidance has moved into deception because the pressure feels too high.
+exampleScenario: >-
+  Maybe it's shutting down the moment you mention reading practice, staring at a blank page for an hour without writing a sentence, or insisting the work got done at school when the teacher says otherwise. However it shows up at your house, it's rarely about laziness — it's a depleted, overwhelmed, or genuinely stuck brain doing what depleted, overwhelmed, or stuck brains do, at any age.
 whatHappening:
   - discriminant: p
     value: >-

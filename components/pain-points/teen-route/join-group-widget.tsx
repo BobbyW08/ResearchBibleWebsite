@@ -5,7 +5,6 @@ import { Check } from "lucide-react";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SOURCE = "teen_weekly_group";
-const MIN_TO_CONFIRM = 3;
 
 function storageKey() {
   return `bwps-interest-signup:${SOURCE}`;
@@ -22,14 +21,12 @@ function getServerSnapshot() {
 type WidgetState = "idle" | "open" | "submitting";
 
 // Reuses InterestSignupWidget's pill → email reveal → submit → persisted
-// checkmark pattern (components/marketing/services/interest-signup-widget.tsx),
-// plus a real, never-fabricated signup count. `initialCount` is fetched
-// server-side (see app/common-pain-points/teen/page.tsx) so the widget never
-// needs a mount-time effect just to show a number; it only refetches
-// GET /api/interest-signups after a real submission. Per
-// claude-code-handoff-v8.md Part B6: the v6 layout doc's original spec
-// wanted a fake "4 of 8" headcount for false urgency — that's not built here.
-function JoinGroupWidget({ initialCount }: { initialCount: number }) {
+// checkmark pattern (components/marketing/services/interest-signup-widget.tsx).
+// No live signup count — static "8 parents needed to start a group" copy
+// instead, per Bobby's call. (A live-count version briefly existed here but
+// required a per-request DB read from this page, which turned out to be the
+// source of an intermittent 404 on this route — removed along with the count.)
+function JoinGroupWidget() {
   const alreadySignedUp = useSyncExternalStore(
     subscribe,
     () => {
@@ -42,22 +39,10 @@ function JoinGroupWidget({ initialCount }: { initialCount: number }) {
     getServerSnapshot,
   );
 
-  const [count, setCount] = useState<number>(initialCount);
   const [state, setState] = useState<WidgetState>("idle");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [justSubmitted, setJustSubmitted] = useState(false);
-
-  const refreshCount = async () => {
-    try {
-      const response = await fetch(`/api/interest-signups?source=${SOURCE}`);
-      if (!response.ok) return;
-      const data = (await response.json()) as { count: number };
-      setCount(data.count);
-    } catch {
-      // Non-fatal — the count just won't reflect this submission until reload.
-    }
-  };
 
   const isValidEmail = EMAIL_RE.test(email);
   const boxOpen = state === "open" || state === "submitting";
@@ -84,28 +69,17 @@ function JoinGroupWidget({ initialCount }: { initialCount: number }) {
         // Non-fatal — the checkmark just won't survive a refresh.
       }
       setJustSubmitted(true);
-      void refreshCount();
     } catch {
       setError("Something went wrong. Try again?");
       setState("open");
     }
   };
 
-  const confirmed = count >= MIN_TO_CONFIRM;
-
   return (
     <div className="border border-brand-black/10 bg-white px-5 py-5">
       <p className="text-sm font-bold uppercase tracking-wide text-brand-black">Join the group</p>
       <p className="mt-1 text-xs text-brand-black/60">Tuesdays, 7:30pm EST, flexible.</p>
-
-      <p className="mt-3 text-sm text-brand-black/80">
-        {confirmed
-          ? /* Placeholder copy, pending Bobby's sign-off — see claude-code-handoff-v8.md's "What's intentionally left open." */
-            "Cohort confirmed — see you Tuesday."
-          : `Currently forming — need ${Math.max(0, MIN_TO_CONFIRM - count)} more ${
-              MIN_TO_CONFIRM - count === 1 ? "parent" : "parents"
-            } to confirm this cohort.`}
-      </p>
+      <p className="mt-3 text-sm text-brand-black/80">8 parents needed to start a group.</p>
 
       {signedUp ? (
         <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-green-700">

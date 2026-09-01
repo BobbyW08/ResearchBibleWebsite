@@ -11,15 +11,8 @@ headline: >-
   Why your kid loses it over small things (and what to do when it happens)
 intro: >-
   The sock has a wrinkle. The juice is in the wrong cup. You said "no" to five more minutes. And now your child is on the floor, screaming, completely unreachable. You're standing there wondering how this happened — and what on earth you're supposed to do.
-defaultAge: "6-9"
-ageScenario25: >-
-  Your 3-year-old collapses into a full meltdown because you gave them the wrong cup. It looks absurd, but their prefrontal cortex is still basically a toddler too — they have almost no capacity to manage this kind of frustration yet.
-ageScenario69: >-
-  Your 7-year-old is completely fine one moment, then screaming because you turned the TV off. They're on the floor, not hearing you, not reachable by reason. They would stop if they could.
-ageScenario1012: >-
-  Your 10-year-old loses it over a homework comment you made. The words coming back at you don't match the size of the situation. Their brain is developing fast but the regulatory systems haven't caught up.
-ageScenario13plus: >-
-  Your 14-year-old goes from zero to full shutdown over something in a text thread. Teenagers' brains are actually more emotionally reactive than kids' — the emotional system is fully online while the brakes aren't.
+exampleScenario: >-
+  Maybe it's the wrong cup, a "no" to five more minutes, an offhand comment about homework, or something in a group chat — the trigger looks different at every age, but the pattern is the same. One moment your child is fine; the next they're on the floor, or slamming a door, and completely unreachable. Younger kids show it with their whole bodies; older kids and teens are just as overwhelmed, even when it looks more like shutdown or explosive words than a floor meltdown.
 whatHappening:
   - discriminant: p
     value: >-

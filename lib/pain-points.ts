@@ -1,9 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 
-export type AgeBand = "2-5" | "6-9" | "10-12" | "13+";
-export const AGE_BANDS: AgeBand[] = ["2-5", "6-9", "10-12", "13+"];
-export type AgeScenarios = Partial<Record<AgeBand, string>>;
-
 export type ContentBlock =
   | { kind: "p"; html: string }
   | { kind: "stat"; html: string }
@@ -25,8 +21,7 @@ type BaseEntry = {
 export type PainPointTopic = BaseEntry & {
   kind: "pain-point";
   featured?: boolean;
-  ageScenarios: AgeScenarios;
-  defaultAge: AgeBand;
+  exampleScenario?: string;
   whatHappening: ContentBlock[];
   backfires: ListItem[];
   tries: ListItem[];

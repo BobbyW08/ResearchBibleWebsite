@@ -14,19 +14,11 @@ import ActivityPickerPanel from "./panels/activity-picker-panel";
 import SupportSignalsPanel from "./panels/support-signals-panel";
 import RouteCtaPanel from "./panels/route-cta-panel";
 
-function TeenRebellionRoute({
-  deepDive,
-  related,
-  initialGroupCount,
-}: {
-  deepDive?: LinkRef;
-  related: LinkRef[];
-  initialGroupCount: number;
-}) {
+function TeenRebellionRoute({ deepDive, related }: { deepDive?: LinkRef; related: LinkRef[] }) {
   return (
     <RouteBallProvider>
       <div className="relative">
-        <PinnedCtaPanel deepDive={deepDive} related={related} initialGroupCount={initialGroupCount} />
+        <PinnedCtaPanel deepDive={deepDive} related={related} />
         <PanelGrid>
           {TEEN_PANELS.map((panel) => {
             switch (panel.type) {

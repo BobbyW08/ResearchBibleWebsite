@@ -11,15 +11,8 @@ headline: >-
   My teenager hates me (or at least acts like it)
 intro: >-
   They roll their eyes at everything you say. They used to tell you things; now you get one-word answers. They're questioning your values, pushing back on your rules, and acting like they've never needed you. You're watching a child you know deeply become a stranger — and wondering if you did something wrong, or if you're losing them.
-defaultAge: "13+"
-ageScenario25: >-
-  This page is for parents of teenagers. If your younger child is showing strong-willed behavior, see "My kid won't listen."
-ageScenario69: >-
-  This page is for parents of teenagers. If your elementary-age child is showing defiance, see "My kid won't listen."
-ageScenario1012: >-
-  Your 12-year-old is in the early stages — the eye-rolls have started, they're embarrassed by you in public, they want more say in everything. This is the very beginning of the process.
-ageScenario13plus: >-
-  Your 15-year-old seems to have decided you don't know anything useful. They question every rule, minimize every conversation, and act like existing in your house is a minor inconvenience.
+exampleScenario: >-
+  Maybe it started with eye-rolls and being embarrassed by you in public, and it's grown into one-word answers and a closed door. Whatever stage of pulling away you're seeing, it's part of the same push toward becoming a separate, self-governing person — the same process, just further along or just beginning.
 whatHappening:
   - discriminant: p
     value: >-

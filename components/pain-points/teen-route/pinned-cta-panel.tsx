@@ -17,15 +17,7 @@ import { useRouteBall } from "./route-ball/route-ball-provider";
 // once its sentinel scrolls out of view; toggles freely with scroll
 // direction rather than locking permanently (unlike the Services page's
 // "Together" section — see claude-code-handoff-v8.md Part B6).
-function PinnedCtaPanel({
-  deepDive,
-  related,
-  initialGroupCount,
-}: {
-  deepDive?: LinkRef;
-  related: LinkRef[];
-  initialGroupCount: number;
-}) {
+function PinnedCtaPanel({ deepDive, related }: { deepDive?: LinkRef; related: LinkRef[] }) {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [expanded, setExpanded] = useState(true);
   const [badgeOpen, setBadgeOpen] = useState(false);
@@ -65,7 +57,7 @@ function PinnedCtaPanel({
         Join the newsletter
       </NewsletterDialog>
 
-      <JoinGroupWidget initialCount={initialGroupCount} />
+      <JoinGroupWidget />
 
       <button
         type="button"

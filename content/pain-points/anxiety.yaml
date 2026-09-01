@@ -11,15 +11,8 @@ headline: >-
   My kid is always anxious or worried — and won't go to school
 intro: >-
   Sunday nights are dread. Monday mornings are tears, stomachaches, or shutdowns. You've tried everything — calm reassurance, firm insistence, bribing, letting them stay home. Nothing works, or it works once and then stops. You're exhausted, worried, and starting to wonder if there's something seriously wrong.
-defaultAge: "6-9"
-ageScenario25: >-
-  Your 4-year-old cries every morning at school drop-off. It's been weeks. The teacher says they're fine within minutes, but that doesn't make separation easier for either of you.
-ageScenario69: >-
-  Your 7-year-old has stomachaches every Sunday night. They're not sick — their body is manifesting the dread of Monday. School feels like a threat their body is already preparing for.
-ageScenario1012: >-
-  Your 11-year-old has started refusing to go to school. It began with occasional avoidance. Now it's most days. They're not being defiant — they're genuinely scared of something there.
-ageScenario13plus: >-
-  Your 15-year-old has quietly stopped doing things. No longer hanging out with friends, skipping activities they used to love, spending most of their time alone. The worry has expanded into everything.
+exampleScenario: >-
+  Maybe it's tears at drop-off, a stomachache every Sunday night, a sudden refusal to walk through the school doors, or a slow retreat from friends and activities that used to matter. The way anxiety shows up changes with age — from visible distress in younger kids to quiet withdrawal in older kids and teens — but the underlying avoidance cycle runs the same way at every stage, and it responds to the same approach.
 whatHappening:
   - discriminant: p
     value: >-

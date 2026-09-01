@@ -11,15 +11,8 @@ headline: >-
   What do I do about screens?
 intro: >-
   You set the limit. You enforced it. You took the device away — and what came back was a reaction that felt wildly out of proportion. Meltdown. Rage. Panic. And now you're wondering: is this normal? Is something actually wrong? And why does nothing you try seem to stick?
-defaultAge: "6-9"
-ageScenario25: >-
-  Your 4-year-old loses it completely when the show ends — crying, throwing themselves down. Screen time has become something their brain expects and demands, not something that's just enjoyable.
-ageScenario69: >-
-  Your 8-year-old has started sneaking the iPad and lying about it. They knew the rule. The pull to get back online is stronger than their fear of consequences.
-ageScenario1012: >-
-  Your 11-year-old's whole social world lives in a group chat. Cutting off their phone doesn't feel like a limit — it feels like being cut off from everyone.
-ageScenario13plus: >-
-  Your 15-year-old can't get through dinner without checking their phone. When you ask about it, they explode. Their mood, social status, and self-image all run through what happens on that screen.
+exampleScenario: >-
+  Maybe it's the show ending, the tablet getting taken away, a phone confiscated at dinner, or a group chat gone quiet without them — the specific trigger changes as kids get older, but the reaction underneath doesn't. What starts as tears and throwing themselves down in early childhood can become sneaking around the rules, exploding at the mention of limits, or genuine panic at being cut off from friends by the teen years. At every age, it's the same pull working against the same still-developing brakes.
 whatHappening:
   - discriminant: p
     value: >-

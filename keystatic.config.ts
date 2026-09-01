@@ -16,13 +16,6 @@ const PAIN_POINT_ICON_OPTIONS = [
   { label: "Trending up", value: "TrendingUp" },
 ] as const;
 
-const AGE_BAND_OPTIONS = [
-  { label: "2-5", value: "2-5" },
-  { label: "6-9", value: "6-9" },
-  { label: "10-12", value: "10-12" },
-  { label: "13+", value: "13+" },
-] as const;
-
 const contentBlockField = fields.conditional(
   fields.select({
     label: "Block type",
@@ -121,15 +114,11 @@ export default config({
         }),
         headline: fields.text({ label: "Page headline", validation: { isRequired: true } }),
         intro: fields.text({ label: "Intro paragraph", multiline: true, validation: { isRequired: true } }),
-        defaultAge: fields.select({
-          label: "Default age band shown",
-          options: AGE_BAND_OPTIONS,
-          defaultValue: "6-9",
+        exampleScenario: fields.text({
+          label: "What this might look like",
+          description: "One example illustrating the pattern, applicable across ages — not tied to a specific age band.",
+          multiline: true,
         }),
-        ageScenario25: fields.text({ label: "Age scenario: 2-5", multiline: true }),
-        ageScenario69: fields.text({ label: "Age scenario: 6-9", multiline: true }),
-        ageScenario1012: fields.text({ label: "Age scenario: 10-12", multiline: true }),
-        ageScenario13plus: fields.text({ label: "Age scenario: 13+", multiline: true }),
         whatHappening: fields.array(contentBlockField, {
           label: "What's happening",
           itemLabel: (props) => props.discriminant,

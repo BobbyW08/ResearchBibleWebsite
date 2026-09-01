@@ -2,11 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Brain, CalendarClock, CheckCircle2, ChevronLeft, ChevronRight, MapPin, Users } from "lucide-react";
+import { AlertTriangle, Brain, CalendarClock, CheckCircle2, ChevronLeft, ChevronRight, MapPin, UserCircle, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { PainPointTopic } from "@/lib/pain-points";
-import AgeScenarioTabs from "@/components/marketing/pain-point-age-tabs";
 import SupportCallout from "@/components/marketing/pain-point-support-callout";
 import { BackfireList, ContentBlocks, DeeperLinks, SectionHead } from "@/components/marketing/pain-point-content";
 
@@ -94,11 +93,15 @@ function PainPointSidebarLayout({ topic }: { topic: SidebarLayoutTopic }) {
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8">
         <p className="max-w-3xl text-base leading-relaxed text-muted-foreground">{topic.intro}</p>
 
-        {/* Age scenarios don't have an obvious home in the new layout's four
-            named sections — kept, not dropped, right under the intro. */}
-        <div className="mt-6 max-w-3xl">
-          <AgeScenarioTabs scenarios={topic.ageScenarios} defaultAge={topic.defaultAge} />
-        </div>
+        {topic.exampleScenario && (
+          <div className="mt-6 max-w-3xl rounded-lg border border-l-[3px] border-border border-l-secondary bg-card px-4 py-3">
+            <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <UserCircle className="h-3.5 w-3.5" />
+              What this might look like
+            </p>
+            <p className="text-sm italic leading-relaxed text-muted-foreground">{topic.exampleScenario}</p>
+          </div>
+        )}
 
         <div className="mt-4 grid gap-8 lg:grid-cols-[16rem_1fr]">
           <aside className="lg:sticky lg:top-40 lg:h-fit">

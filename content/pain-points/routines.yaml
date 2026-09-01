@@ -11,15 +11,8 @@ headline: >-
   Morning chaos — why your mornings fall apart (and how routines actually fix it)
 intro: >-
   You've said "get dressed" four times. Shoes are missing. Someone is still in bed. The clock is running, your voice is getting sharper, and you're leaving 12 minutes late again. By the time you get in the car, everyone is dysregulated and the day hasn't even started.
-defaultAge: "6-9"
-ageScenario25: >-
-  Morning with a toddler is chaos with shoes. Predictability is even more critical at this age — young children's brains have almost no internal sequence. Everything depends on the external routine.
-ageScenario69: >-
-  Your 8-year-old knows the routine but still won't follow it without prompting. You're saying "get dressed" for the fourth time and they're standing in the kitchen looking at nothing.
-ageScenario1012: >-
-  Your 11-year-old used to manage the morning. Now they're barely functional before school. Something shifted. They need more explicit structure, not more parental nagging.
-ageScenario13plus: >-
-  Your 15-year-old won't get up. The alarm goes off six times. You're late every morning. At this age, the routine conversation has to shift — you're transferring ownership of the sequence to them, not managing it for them.
+exampleScenario: >-
+  Maybe it's chaos with shoes and a young child who needs everything spelled out, a "get dressed" repeated for the fourth time to a kid who's just standing there, a sequence that used to run itself and suddenly doesn't, or an alarm that goes off six times while you're stuck negotiating who owns the morning. The specifics shift as kids get older, but the fix is the same at every stage: a predictable structure that does the work your voice has been doing.
 whatHappening:
   - discriminant: p
     value: >-

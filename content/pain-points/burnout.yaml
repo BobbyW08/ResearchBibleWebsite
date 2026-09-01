@@ -11,15 +11,8 @@ headline: >-
   I'm burnt out — and I don't know how to keep going
 intro: >-
   You're snapping at your kids more than you'd like. You're going through the motions but not really there. The moments that used to feel meaningful aren't landing the way they used to. You feel like a worse version of yourself, and you're starting to wonder if this is just who you are now. It isn't.
-defaultAge: "6-9"
-ageScenario25: >-
-  You have a toddler and you're running on no sleep, constant demands, and the exhaustion of being needed every moment of every day. Parent burnout at this stage is extremely common and extremely invisible.
-ageScenario69: >-
-  Your kids are old enough to be in school, but somehow you're still depleted. The morning routine, the homework battles, the emotional labor — you expected it to get easier. It got different.
-ageScenario1012: >-
-  You're parenting a kid whose emotions are bigger but who doesn't want your help the way they used to. The middle years are emotionally demanding in ways nobody prepares you for.
-ageScenario13plus: >-
-  You're parenting a teenager who seems to need you less but actually needs you more, in harder ways. The chronic stress of teen parenting — plus everything else — adds up.
+exampleScenario: >-
+  Maybe it's the newborn-and-toddler stretch of no sleep and constant demands, the school-age years where the logistics multiply even as the kids get more independent, the middle years of bigger emotions and less help than before, or the teenage years where they need you less visibly but more in ways that are harder to see. Burnout doesn't have an age range — it accumulates whenever demands outpace recovery, at whatever stage you're in.
 whatHappening:
   - discriminant: p
     value: >-

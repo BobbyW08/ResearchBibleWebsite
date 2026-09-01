@@ -1,7 +1,6 @@
 import { reader } from "@/lib/keystatic-reader";
 import { resolvePainPointIcon } from "@/lib/pain-point-icons";
 import type {
-  AgeBand,
   AwarenessModule,
   ContentBlock,
   HelpEntry,
@@ -36,13 +35,7 @@ function transformPainPoint(slug: string, entry: NonNullable<PainPointEntry>): P
     headline: entry.headline,
     intro: entry.intro,
     featured: entry.featured,
-    defaultAge: entry.defaultAge as AgeBand,
-    ageScenarios: {
-      "2-5": entry.ageScenario25 || undefined,
-      "6-9": entry.ageScenario69 || undefined,
-      "10-12": entry.ageScenario1012 || undefined,
-      "13+": entry.ageScenario13plus || undefined,
-    },
+    exampleScenario: entry.exampleScenario || undefined,
     whatHappening: transformContentBlocks(entry.whatHappening),
     backfires: entry.backfires.map((item) => ({ title: item.title, body: item.body })),
     tries: entry.tries.map((item) => ({ title: item.title, body: item.body })),
