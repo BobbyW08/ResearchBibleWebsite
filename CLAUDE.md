@@ -41,12 +41,12 @@ Content philosophy: research bibles are internal practitioner documents. Parent-
 | Subtitle | **Arvo** — real, final (free Google Font, no licensing issue). `arvo` font component and `--font-arvo` variable in `app/layout.tsx`, aliased to `--font-subtitle` / `font-subtitle` in `app/globals.css`. Used for the footer nav (see Homepage Structure) |
 | Heading / Subheading / Body | Libre Franklin (real, final — `app/layout.tsx`'s `libreFranklin`, mapped to both `--font-heading` and `--font-sans`) |
 | Quotes / testimonial text | Caveat (real, final — `font-quote` utility) |
-| Red (primary accent) | `#6B0000` (`--primary` / `bg-primary` / `text-primary`) |
+| Red (primary accent) | `#9F0000` (`--primary` / `bg-primary` / `text-primary`) — confirmed from Bobby's Canva brand guideline as the real logo red, no longer template-scoped (corrected from the earlier `#6B0000`) |
 | Near-black | `#111111` (`--foreground`, `--secondary`; also `--brand-black` / `bg-brand-black` for the literal near-black field, e.g. the footer and the Proof Wall hero) |
 | Off-white | `#F8F8F8` (`--background`; also `--brand-offwhite` / `bg-brand-offwhite` for literal off-white surfaces, e.g. the Proof Wall's paper testimonial cards) |
-| Gradient | Linear, 180°, `#111111` → `#6B0000` — `.bg-brand-gradient` utility class (`app/globals.css`). Secondary brand asset only — not used as the Proof Wall hero background, which is flat `--brand-black` so the header and hero read as one continuous surface (see Homepage Structure) |
+| Gradient | Linear, 180°, `#111111` → `#9F0000` — `.bg-brand-gradient` utility class (`app/globals.css`). Secondary brand asset only — not used as the Proof Wall hero background, which is flat `--brand-black` so the header and hero read as one continuous surface (see Homepage Structure) |
 | Dark-gray surface (inverted sections) | `#262626` (`--brand-charcoal` / `bg-brand-charcoal`) — used for sections that flip to a dark field, e.g. Services' "Start Walking Your Path" |
-| Bright red (headers on dark surfaces) | `#F0342F` (`--brand-red-bright` / `text-brand-red-bright`) — a brighter tint of the same hue as the primary red, used *only* for heading text on `bg-brand-charcoal`-style surfaces. The base `--brand-red` (#6B0000) is a deep, dark maroon whose contrast against any dark-gray background is too low to read (~1.2:1, nowhere near the ~3:1 WCAG floor for large/bold text) — body copy on those surfaces uses `--brand-offwhite` instead, which already contrasts fine |
+| Bright red (headers on dark surfaces) | `#F0342F` (`--brand-red-bright` / `text-brand-red-bright`) — a brighter tint of the same hue as the primary red, used *only* for heading text on `bg-brand-charcoal`-style surfaces. The base `--brand-red` (`#9F0000`) still doesn't clear the ~3:1 WCAG floor for large/bold text against a dark-gray background — body copy on those surfaces uses `--brand-offwhite` instead, which already contrasts fine |
 
 All of the above are CSS custom properties in `app/globals.css` (`:root`/`.dark`, which mirror each other — one deliberate light identity, no dark mode). Because nearly every component uses the semantic Tailwind tokens (`bg-primary`, `text-foreground`, `bg-background`, etc.) rather than hardcoded colors, this palette applies site-wide — Fumadocs `/docs` pages, the dashboard, and `/common-pain-points` all re-theme from the same variables, not just the marketing pages.
 
@@ -81,7 +81,8 @@ Do NOT use: Framer, Rubix Documents, Aceternity UI, Magic UI Pro (paid), Supabas
 | `/services` | Services for Parents | Live, static content (not CMS-managed). Hero — one pinned section built around a looping path-walk video, "We Build"/"Your Path" converging over it (see Services Pages) — → "Start Walking Your Path" (Stabilize/Connect/Structure/Adapt phases) → "What I Offer" (1:1 Sessions, Weekly Group, Live Q&As, Cohorts) → closing CTA |
 | `/services/organizations` | Services for Organizations & Nonprofits | Live, static content. Hero → "What I Offer" (Staff Training, Case Consultation, Parent Education Workshops, Reintegration Aftercare) → CTA. The CTA is a plain `mailto:` link, not the Cal.com intro-call flow used elsewhere — the org sales cycle is longer/more relationship-driven and there's no dedicated contact form or scheduling link yet |
 | `/common-pain-points` | Pain Point index | Live — "Common situations" (10 pain-point cards) + "Big picture" (2 awareness-module cards). `/help` 301s here |
-| `/common-pain-points/[slug]` | Pain Point pages | Live for 10 slugs (see Pain Point Pages table) + 2 awareness modules (`modern`, `mentalhealth`). `/help/[slug]` 301s here |
+| `/common-pain-points/teen` | Teen pain-point page | Live — static route, the route-ball/newspaper-grid rebuild (8 panels). Takes precedence over the sibling `[slug]` route for this exact path; excluded from `[slug]`'s `generateStaticParams`. Still reads `content/pain-points/teen.yaml` via `getHelpEntry('teen')` for its `deepDive`/`related` links only — the panel copy itself is hardcoded in `lib/pain-points/teen-rebellion-panels.ts` |
+| `/common-pain-points/[slug]` | Pain Point pages | Live for the other 9 slugs (see Pain Point Pages table) + 2 awareness modules (`modern`, `mentalhealth`), sidebar/card layout (`PainPointSidebarLayout`). `/help/[slug]` 301s here |
 | `/docs` | 36-topic categorized gallery (Stabilize / Connect / Structure / Adapt) | Live — all topic pages resolve |
 | `/docs/adhd` | ADHD Deep Dive — flagship, full interactive components | Live |
 | `/docs/[topic]` | 35 remaining deep dives — prose complete at webpage copy tier | Live as prose — no dashboard JSON yet |
@@ -164,7 +165,31 @@ Custom layout — NOT Fumadocs. CMS-managed via Keystatic: `painPoints` collecti
 | `modern` (module) | Why modern parenting is so hard | — |
 | `mentalhealth` (module) | Children's mental health in the U.S. | — |
 
-Each pain-point page: tag/eyebrow, headline, intro, an interactive age-band scenario switcher (2-5 / 6-9 / 10-12 / 13+), "What's happening" (mechanism), "Why this usually makes it worse" (backfires list), "Try this week" (accordion), "When to get more support" (988/Crisis Text Line/211 on `burnout` and `mentalhealth`), and "Go deeper" links. Components: `pain-point-detail.tsx`, `awareness-module-detail.tsx`, `pain-point-age-tabs.tsx`, `pain-point-accordion.tsx`, `pain-point-support-callout.tsx`, `pain-point-content.tsx`, `pain-point-card.tsx`.
+**The other 9 slugs** (everything but `teen`) render through `PainPointSidebarLayout` (`components/marketing/pain-point-sidebar-layout.tsx`) — a sticky tag/headline header, intro paragraph, an interactive age-band scenario switcher (2-5 / 6-9 / 10-12 / 13+), then a two-column body: a sticky left sidebar (on-page section nav highlighted via `IntersectionObserver`, a collapse toggle, a "Book a session"/"Join a parent group" CTA card, and "Go deeper" links) and a main column of off-white, rounded, soft-shadow section cards — "What's happening" (mechanism), "Why this usually makes it worse" (X-badge backfires list), "Try this week" (native `<details>` accordion), "When to get more support" (988/Crisis Text Line/211 on `burnout` and `mentalhealth`). This is an interim visual upgrade only — same YAML content as always, no route ball, no newspaper grid; a future pass gives these pages the teen page's full treatment once Bobby authors new panel content per page. Components: `pain-point-sidebar-layout.tsx`, `awareness-module-detail.tsx`, `pain-point-age-tabs.tsx`, `pain-point-support-callout.tsx`, `pain-point-content.tsx`, `pain-point-card.tsx`. (`pain-point-detail.tsx` and `pain-point-accordion.tsx` — the prior flat single-column layout — are retired to `graveyard/components-marketing/`, superseded by the sidebar layout.)
+
+**`teen` is the one exception** — it does not use `PainPointSidebarLayout` at all. `/common-pain-points/teen` is a static route (`app/common-pain-points/teen/page.tsx`) rendering the route-ball/newspaper-grid rebuild described in the Teen Page section below; it still sources `deepDive`/`related` from `content/pain-points/teen.yaml` via `getHelpEntry('teen')`, but every other field on that YAML file (intro, age scenarios, `whatHappening`, `backfires`, `tries`, `support`) is unused by the live page — the panel copy is hardcoded separately in `lib/pain-points/teen-rebellion-panels.ts`. The YAML file still backs the `/common-pain-points` index card.
+
+---
+
+## Teen Page — Route-Ball Newspaper Grid (`/common-pain-points/teen`)
+
+The one page on the site with a dark, editorial "newspaper grid" treatment — deliberately distinct from every other page's off-white identity. Not CMS-managed; not Fumadocs. Content lives in `lib/pain-points/teen-rebellion-panels.ts` as a hardcoded, typed discriminated union (`TeenPanel` — `feature | explanation | comparison | script-quiz | activity-picker | support-signals | cta`), not in Keystatic.
+
+**8 panels, route order:** `teen-hates-me-hook` → `whats-happening` → `the-real-distinction` → `why-it-backfires` → `say-this-instead` → `try-this-week` → `when-to-get-support` → `pick-one-thing`. `ROUTE_BALL_SEQUENCE` (same file) is the 7-panel subset the animated route ball actually visits — `when-to-get-support` is never in it.
+
+**The safety panel rule, absolute:** `when-to-get-support` (the normal/caution/critical triage panel) has no `panelMotion` field and no ball fields at all on its `SupportSignalsPanel` type — a compile-time guarantee, not a null placeholder. Its renderer (`components/pain-points/teen-route/panels/support-signals-panel.tsx`) passes `noMotion` to `PanelShell`, which skips both the `whileInView` entrance animation and route-ball registration entirely. The route ball's path resolves directly from `try-this-week`'s exit to `pick-one-thing`'s entry with no stop, no exception, ever.
+
+**Architecture** (`components/pain-points/teen-route/`):
+- `teen-rebellion-route.tsx` — orchestrator, wraps everything in `RouteBallProvider`, renders `PinnedCtaPanel` + `PanelGrid` (switches on panel `type` to the matching renderer in `panels/`) + `RouteBall`.
+- `panel-shell.tsx` — shared per-panel wrapper: registers the panel's root with the route-ball provider (unless `noMotion`), does the one-time `whileInView` reveal keyed by `panelMotion` (`panel-motion-variants.ts`), applies layout (`hero-wide` / `wide` / `full-width`) and emphasis (`important` / `standard` / `caution`) classes.
+- `panel-grid.tsx` — the `bg-brand-black` ground; the gap between panel surfaces *is* the thick black gutter (no per-panel border/shadow needed). Hard rectangular edges everywhere, no rounded corners.
+- `route-ball/route-ball-provider.tsx` — anchor registry (panel roots + optional specific inline anchor elements), active-panel detection via `IntersectionObserver` (scroll-driven) with a hover-intent/leave-debounce override (mouse-driven), `hasBeenVisited` set (abbreviates repeat-visit transitions), `transitionNonce` (cancels stale in-flight animations), "Guided motion" (System/On/Reduced) state.
+- `route-ball/presets.ts` — named entry/exit variants (`arrive-corner-ready`, `exit-slide-along-gutter`, etc.) as a lookup table, each a combination of rotation/scale/arc-height/easing primitives rather than a bespoke animation per name.
+- `route-ball/route-ball.tsx` — the visual gold (`#FFCD0D`) ball + the Guided-motion toggle control. Real work happens in one `useEffect` per active-panel change: exit the previous panel along its own exit preset, arrive at the next panel's entry anchor along its entry preset, settle at its active anchor — respecting `prefers-reduced-motion` and the Guided-motion override (System/On/Reduced) throughout.
+- `pinned-cta-panel.tsx` — Book a Session (Cal.com popup embed, `cal-booking-trigger.tsx` — the **only** place on the site using Cal's popup pattern; every other Cal.com link site-wide stays a plain outbound `<Link target="_blank">`), Join the Newsletter (`newsletter-dialog.tsx`, reused as-is), Join the Group (`join-group-widget.tsx`), Go Deeper/Related (`DeeperLinks`, reused from `pain-point-content.tsx`), Download as PDF (`#9F0000` button, "Coming soon" for ~2s, no real PDF yet). Two states of one element via an `IntersectionObserver`'d sentinel: expanded in-flow panel on load → collapsed pinned badge once its sentinel scrolls out, and back, freely, on scroll direction — **not** a one-way lock like the Services page's "Together" section.
+- `join-group-widget.tsx` — real signup count only (`GET /api/interest-signups?source=teen_weekly_group`, added alongside the existing `POST` handler), never fabricated. "Currently forming — need N more parents" counting down truthfully; at `count >= 3` a placeholder "Cohort confirmed" message (flagged, pending Bobby's real copy). Same pill → email reveal → submit → persisted-checkmark pattern as `components/marketing/services/interest-signup-widget.tsx`, new `source` value.
+
+**Known gaps, intentionally left open:** the pinned CTA panel's disclaimer copy/placement; the "Cohort confirmed" exact copy; whether Join the Group's `8`-slot framing or a hard cap ever applies (not enforced — the count only ever counts up); panel 02's and panel 04's `BALL EXIT` values are this build's best-guess update for the reordered panels, not confirmed by Bobby; no real PDF yet.
 
 ---
 
@@ -204,7 +229,7 @@ Keeps the internal research bibles current in the repo, upstream of the Content 
 
 Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` stays in the schema as an audit log only.
 
-**Scope:** bible sync is built (see below). Pain-point/module Drive sync is in progress — the Keystatic schema for both collections is already complete (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios all exist and the 10 live pain-point / 2 live awareness-module files already conform to it), but the webhook has no `parentFacingContent` branch yet and the `parent-content-builder` skill (Claude Desktop, outside this repo) doesn't yet produce files in the shape the new parser expects. Full spec in `Research-Content-Pipeline-Handoff-v3.md` at repo root.
+**Scope:** bible sync is built (see below). Pain Point / Awareness Module sync is a **separate, independent pipeline** — see "Parent Content Sync Pipeline" below, not a branch of this one. Full spec for this pipeline in `Research-Content-Pipeline-Handoff-v5.md` at repo root.
 
 **What's built:**
 - `keystatic.config.ts` → `researchBibles` collection, `content/research-bibles/*/index.mdx`, `format: { contentField: "body" }` (frontmatter + `---` + MDX body in one file). Fields: `slugName`, `title`, `version`, `lastUpdated`, `tags`, `noindex`, `changelog` (array of `date`/`summary`/`prUrl`), `body`. No entries exist yet.
@@ -232,6 +257,31 @@ Git PRs are the approval/versioning layer, not a custom UI. `pending_reviews` st
 - The frontmatter serializer's output hasn't been diffed against what a real hand-created `/keystatic` entry for this collection actually produces (blocked on Keystatic's GitHub App env vars — see Keystatic CMS section).
 - The webhook route hasn't been exercised end-to-end against a live Drive file + real GitHub PAT (only unit-tested against fixtures so far).
 - The Apps Script trigger (`drive_content_sync_setup.md`) is not installed yet — manual step for Bobby in script.google.com: paste the script, set `CONFIG.driveFolderId` to `1DYDwFPEyWFmsHR-XKvviajypNlDQedT2` and `CONFIG.webhookSecret` to match `WEBHOOK_SECRET`, then run `setup()` once.
+
+---
+
+## Parent Content Sync Pipeline
+
+A second, independent Drive→GitHub-PR pipeline covering Pain Point Pages and Awareness Modules — same *pattern* as the Research Bible Ingestion Pipeline above (Drive doc → parse → validate → PR → Bobby reviews and merges), but its own code, its own endpoint, its own trigger model. The two pipelines share only generic, content-agnostic utility code (`lib/google/drive.ts`'s `fetchDriveFileContent`, `lib/github/contents.ts`'s REST client) — no parsing/serialization/validation logic, no webhook route, no Apps Script project, no secret. Full spec: `Research-Content-Pipeline-Handoff-v5.md` at repo root.
+
+**Trigger model — the one thing that differs on purpose:** bibles auto-sync every 15 minutes (see above); this pipeline is **manual-only, forever, by design** — Bobby writes/edits this content in bursts and runs a sync when something's ready. There is no trigger installed for it, and none should be added without Bobby explicitly asking.
+
+**Flow:** the `parent-content-builder` skill (Claude Desktop, outside this repo) writes `PainPoint_[Name].md` / `Module_[Name].md` files into the `Parent Facing Content` Drive folder (`content/sync-config.json`'s `parentFacingContent.driveFolderId`) → Bobby manually runs `syncParentFacingContent()` from its own standalone Apps Script project → `app/api/webhooks/parent-content-sync/route.ts` fetches, parses, validates, dedups, and opens a GitHub PR per changed file → Bobby reviews and merges.
+
+**What's built:**
+- `lib/parent-content/parse.ts` — parses the source `.md` file's frontmatter + section-header body (contract in the handoff doc §2) into typed fields, and runs the hard validation rules (bad `status` → silent skip, not an error; missing/non-boolean `crisis`, unapproved `icon`, placeholder markers, malformed internal hrefs, or a missing required section → `ParentContentParseError`, no PR opened). Exports `parsePainPointSource` / `parseAwarenessModuleSource`. Unit-tested: `node --experimental-strip-types --test lib/parent-content/parse.test.ts`.
+- `lib/parent-content/frontmatter.ts` — a hand-rolled block-YAML reader/writer scoped to exactly the `painPoints`/`awarenessModules` collection shape (`format: { data: "yaml" }` — the whole file is the YAML, no frontmatter/body split like bibles). Unlike the bible serializer's JSON-string-scalar shortcut, this one reproduces Keystatic's own `>-` folded-scalar/block-sequence style, because its reader has to parse the real, pre-existing hand/Keystatic-authored files anyway (for the dedup guard and to preserve the site-owned `featured` flag) — verified to round-trip cleanly against all 10 live `content/pain-points/*.yaml` and both `content/awareness-modules/*.yaml` files. Unit-tested: `node --experimental-strip-types --test lib/parent-content/frontmatter.test.ts`. No YAML dependency added, same rule as the bible pipeline.
+- `app/api/webhooks/parent-content-sync/route.ts` — the sync webhook. Own auth (`X-Webhook-Secret` timing-safe compare against `PARENT_CONTENT_WEBHOOK_SECRET` — a separate env var from the bible's `WEBHOOK_SECRET`) and own in-memory token-bucket rate limiter. Body: `{fileId, fileName}` — no `folderKey`, since this route only ever serves one folder; classifies by filename prefix (`PainPoint_*.md` / `Module_*.md`), anything else 400s. Dedup hashes the *parsed field set* (not the raw file) against the existing GitHub file's parsed fields, so whitespace-only Drive edits don't open pointless PRs. `featured` (pain points only) is site-owned — defaults `false` on first sync, preserved untouched on every resync. Reuses `GITHUB_CONTENT_SYNC_TOKEN` for the GitHub write.
+- `parent_content_sync_setup.md` (repo root) — Apps Script reference for the standalone `syncParentFacingContent()` project. No `setup()` function and no trigger is ever installed — running the sync function by hand from the Apps Script editor *is* the trigger.
+
+**Known, documented deviation from the handoff doc's literal wording:** the handoff's §3 validation rule says `deepDiveHref`/`related[].href` must start with `/docs/` or `/help/`. The real, live pain-point/module YAML files all link to each other via `/common-pain-points/<slug>` (the canonical current route — `/help/*` 301-redirects to it, it isn't what real content actually links to), plus one bare `/help` link to the index. Validation in `lib/parent-content/parse.ts` accepts `/docs/`, `/common-pain-points/`, and `/help` (bare or with a slug) instead of the handoff's literal wording, to match the site's real routes rather than rejecting every existing file's links.
+
+**Still outstanding:**
+- Not yet exercised end-to-end against a live Drive file + real GitHub PAT (only unit-tested against fixtures and round-tripped against the real committed YAML files so far).
+- `PARENT_CONTENT_WEBHOOK_SECRET` is not yet set in Vercel Production — manual step for Bobby (see Manual Steps in the handoff doc).
+- The standalone Apps Script project (`parent_content_sync_setup.md`) has not been created yet — manual step for Bobby.
+- The generated YAML hasn't been round-tripped through a real `/keystatic` save (blocked on the same Keystatic GitHub App env vars as the bible pipeline — see Keystatic CMS section).
+- Retiring the old topic-doc pipeline (`/api/refresh`, `/api/research-bible/notify-change`, the `pending_reviews` table, the `adhd` sync-config entry) is explicitly sequenced *after* this pipeline is proven against real content — not done yet, and the Dormant Routes table below is unchanged until it is.
 
 ---
 
@@ -378,7 +428,7 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 - `research-bible-builder` — builds comprehensive research bibles from source documents
 - `research-bible-refinement` — runs locally in Claude Desktop; searches for new/emerging research on a bible's topic and integrates it into the existing bible structure. Drives the Research Bible Ingestion Pipeline; intentionally unaware of git/GitHub/website infrastructure, never triggers publishing directly
-- `parent-content-builder` — transforms research bibles into parent-facing content (bible → webpage copy → MDX/JSON). Needs `cardTeaser`, `tag`, `icon`, `crisis` (boolean, always explicitly confirmed, never defaulted), and per-age-band scenario content added to its live definition — see Open Items
+- `parent-content-builder` — transforms research bibles into parent-facing content (bible → webpage copy → MDX/JSON). For Pain Points/Awareness Modules, produces `PainPoint_[Name].md` / `Module_[Name].md` files (frontmatter + section-header body, including `cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios) for the Parent Content Sync Pipeline; also has a Deep Dive Page format defined for a later phase, not yet ingested by any webhook
 - `content-development-from-trends` — develops content packages from trend report topics
 - `video-script-format` — produces video scripts in a consistent format
 - `substack-voice-structure` — writes Substack articles in a consistent voice
@@ -387,8 +437,8 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **`parent-content-builder` skill fields:** the skill outputs a flat frontmatter/prose format, not the granular fields the live Keystatic schema needs (`cardTeaser`, `tag`, `icon`, `crisis`, per-age-band scenarios, structured backfires/tries). The skill lives outside this repo (Claude Desktop's skill storage) — Claude Code cannot see or edit it, only Claude Desktop/Cowork can.
 - **Research Bible Ingestion Pipeline** is uncommitted, in-progress work — see its "Still outstanding" list for what's unconfirmed before treating it as production-ready.
+- **Parent Content Sync Pipeline** is uncommitted, in-progress work — see its "Still outstanding" list. Notably: the standalone Apps Script project doesn't exist yet, and `PARENT_CONTENT_WEBHOOK_SECRET` isn't set in Vercel Production.
 - **Substack subdomain** (`roughlyeducated`) needs Bobby's confirmation before the embed ships.
 - **"Parent Education Workshops" naming** on `/services/organizations`: this is the $850/flat Group-Contracting engagement from the business plan. Worth confirming with Bobby that the name doesn't cause confusion with the separate (unbuilt, not on the site) $150–300/session "Paid Parent-Education Evenings" offering.
 - **`/services/organizations`'s "Let's Talk" CTA** currently routes to a plain `mailto:` link as a placeholder — confirm with Bobby whether a dedicated contact form or scheduling link should replace it.
@@ -410,7 +460,7 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 | Docs UI | `components/docs/` |
 | CMS-managed content | `content/{testimonials,pain-points,awareness-modules,faq,footer,about,site-settings,research-bibles}/` |
 | Hand-authored content | `content/docs/*.mdx`, `content/data/*.json` |
-| Shared logic | `lib/` — see `lib/auth/`, `lib/db/`, `lib/github/`, `lib/google/`, `lib/research-bibles/`, `lib/tools/` |
+| Shared logic | `lib/` — see `lib/auth/`, `lib/db/`, `lib/github/`, `lib/google/`, `lib/research-bibles/`, `lib/parent-content/`, `lib/tools/` |
 | CMS schema | `keystatic.config.ts` |
 | DB schema | `lib/db/schema.ts`, `drizzle/` migrations |
 | Middleware | `proxy.ts` (this project's name for Next.js middleware) |

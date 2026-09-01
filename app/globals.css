@@ -64,16 +64,15 @@
      for the hero's flat black field and the testimonial cards' tape accent,
      and aliased into every semantic token below so the whole site re-themes
      from these three values. */
-  --brand-red: #6B0000;
+  --brand-red: #9F0000;
   --brand-black: #111111;
   --brand-offwhite: #F8F8F8;
   /* Dark-gray surface for sections that invert the palette (e.g. Services'
      "Start Walking Your Path"), and a brighter tint of the brand red for
-     text on that surface. The base --brand-red (#6B0000) is a deep, dark
-     maroon — its contrast against any dark-gray background is too low to
-     read as a heading (roughly 1.2:1, nowhere near the ~3:1 WCAG floor for
-     large/bold text), so headers on dark surfaces use this brighter tint of
-     the same hue instead; body copy on those surfaces uses --brand-offwhite. */
+     text on that surface. The base --brand-red (#9F0000) still doesn't clear
+     the ~3:1 WCAG floor for large/bold text against a dark-gray ground, so
+     headers on dark surfaces use this brighter tint of the same hue instead;
+     body copy on those surfaces uses --brand-offwhite. */
   --brand-charcoal: #262626;
   --brand-red-bright: #F0342F;
 
@@ -83,7 +82,7 @@
   --card-foreground: #111111;
   --popover: #FFFFFF;
   --popover-foreground: #111111;
-  --primary: #6B0000;
+  --primary: #9F0000;
   --primary-foreground: #F8F8F8;
   --secondary: #111111;
   --secondary-foreground: #F8F8F8;
@@ -94,8 +93,8 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: #DADADA;
   --input: #DADADA;
-  --ring: #6B0000;
-  --chart-1: #6B0000;
+  --ring: #9F0000;
+  --chart-1: #9F0000;
   --chart-2: #111111;
   --chart-3: #3A8FD4;
   --chart-4: #D4943A;
@@ -103,12 +102,12 @@
   --radius: 0.5rem;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #111111;
-  --sidebar-primary: #6B0000;
+  --sidebar-primary: #9F0000;
   --sidebar-primary-foreground: #F8F8F8;
   --sidebar-accent: #F6E2E2;
   --sidebar-accent-foreground: #111111;
   --sidebar-border: #DADADA;
-  --sidebar-ring: #6B0000;
+  --sidebar-ring: #9F0000;
 
   /* Fumadocs UI theme tokens — mapped to the same brand palette above. */
   --color-fd-background: #F8F8F8;
@@ -120,20 +119,20 @@
   --color-fd-card: #FFFFFF;
   --color-fd-card-foreground: #111111;
   --color-fd-border: #DADADA;
-  --color-fd-primary: #6B0000;
+  --color-fd-primary: #9F0000;
   --color-fd-primary-foreground: #F8F8F8;
   --color-fd-secondary: #111111;
   --color-fd-secondary-foreground: #F8F8F8;
-  --color-fd-accent: rgba(107, 0, 0, 0.08);
+  --color-fd-accent: rgba(159, 0, 0, 0.08);
   --color-fd-accent-foreground: #111111;
-  --color-fd-ring: #6B0000;
+  --color-fd-ring: #9F0000;
   --color-fd-overlay: rgba(17, 17, 17, 0.4);
 }
 
 /* This app has one deliberate light brand identity (see brand-style-guide.md)
    — no dark variant is defined, so .dark mirrors :root rather than inverting it. */
 .dark {
-  --brand-red: #6B0000;
+  --brand-red: #9F0000;
   --brand-black: #111111;
   --brand-offwhite: #F8F8F8;
   --brand-charcoal: #262626;
@@ -145,7 +144,7 @@
   --card-foreground: #111111;
   --popover: #FFFFFF;
   --popover-foreground: #111111;
-  --primary: #6B0000;
+  --primary: #9F0000;
   --primary-foreground: #F8F8F8;
   --secondary: #111111;
   --secondary-foreground: #F8F8F8;
@@ -156,20 +155,20 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: #DADADA;
   --input: #DADADA;
-  --ring: #6B0000;
-  --chart-1: #6B0000;
+  --ring: #9F0000;
+  --chart-1: #9F0000;
   --chart-2: #111111;
   --chart-3: #3A8FD4;
   --chart-4: #D4943A;
   --chart-5: #5A5A5A;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #111111;
-  --sidebar-primary: #6B0000;
+  --sidebar-primary: #9F0000;
   --sidebar-primary-foreground: #F8F8F8;
   --sidebar-accent: #F6E2E2;
   --sidebar-accent-foreground: #111111;
   --sidebar-border: #DADADA;
-  --sidebar-ring: #6B0000;
+  --sidebar-ring: #9F0000;
 
   /* Fumadocs UI theme tokens — mapped to the same brand palette above. */
   --color-fd-background: #F8F8F8;
@@ -181,13 +180,13 @@
   --color-fd-card: #FFFFFF;
   --color-fd-card-foreground: #111111;
   --color-fd-border: #DADADA;
-  --color-fd-primary: #6B0000;
+  --color-fd-primary: #9F0000;
   --color-fd-primary-foreground: #F8F8F8;
   --color-fd-secondary: #111111;
   --color-fd-secondary-foreground: #F8F8F8;
-  --color-fd-accent: rgba(107, 0, 0, 0.08);
+  --color-fd-accent: rgba(159, 0, 0, 0.08);
   --color-fd-accent-foreground: #111111;
-  --color-fd-ring: #6B0000;
+  --color-fd-ring: #9F0000;
   --color-fd-overlay: rgba(17, 17, 17, 0.4);
 }
 
