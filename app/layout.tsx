@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 import { Archivo, Arvo, Caveat, Geist_Mono, Libre_Franklin } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -62,6 +63,14 @@ export const metadata: Metadata = {
   },
 };
 
+// GA4 Google tag — sitewide, loaded once from the root layout (shared by
+// every route). `afterInteractive` is Next.js's/Google's recommended
+// strategy for analytics: it loads early without blocking hydration. Since
+// this lives in the root layout rather than a page component, it isn't
+// remounted on client-side navigation between routes, so gtag() only
+// initializes once per page load.
+const GA4_MEASUREMENT_ID = "G-5ZLMM0G7CV";
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -88,6 +97,18 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA4_MEASUREMENT_ID}');
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

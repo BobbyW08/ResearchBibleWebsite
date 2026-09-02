@@ -396,6 +396,14 @@ No COPPA exposure, no accidental PII collection for minors. This is a product/le
 
 ---
 
+## Analytics
+
+Two separate, unrelated analytics products are wired into `app/layout.tsx` — don't confuse them:
+- **Vercel Analytics** (`@vercel/analytics/next`, `<Analytics />`) — Vercel's own first-party product.
+- **Google Analytics 4** (measurement ID `G-5ZLMM0G7CV`) — the `gtag.js` snippet, loaded sitewide from the root layout via two `next/script` tags (`strategy="afterInteractive"`), so it initializes once per page load rather than remounting on client-side navigation. Added after Bobby's GA4 property reported "Your Google tag wasn't detected on your website" — the site had Vercel Analytics but no GA4 instrumentation at all.
+
+---
+
 ## Build Rules
 
 Before every commit, all three must exit zero:
