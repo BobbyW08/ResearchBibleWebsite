@@ -35,11 +35,10 @@ const OFFERS: OfferCardData[] = [
       "An open, drop-in group. No application, no commitment to a series: just show up with what's actually going on. Hearing other parents say the quiet part out loud is part of what makes this work.",
     details: ["$20/seat", "Virtual, one session a week", "A new topic each week, grounded in real experience, not a fixed curriculum"],
     cta: {
-      kind: "link",
-      href: "https://cal.com/bobby-washburn/intro-call",
-      external: true,
-      label: "Talk to Bobby",
-      note: "Free 30-minute intro call. No pressure. No judgment.",
+      kind: "interest-signup",
+      source: "weekly_group",
+      label: "Join the Group",
+      note: "We need 5 participants to start. Dates and times flexible per group preference.",
     },
   },
   {
