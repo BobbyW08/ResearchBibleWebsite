@@ -6,6 +6,7 @@ import Footer from "@/components/marketing/footer";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 import OfferCard, { type OfferCardData } from "@/components/marketing/services/offer-card";
 import WedgedHeroHeadline from "@/components/marketing/services/wedged-hero-headline";
+import ModalityCards from "@/components/marketing/services/modality-cards";
 
 export const metadata: Metadata = {
   title: "Services for Parents",
@@ -81,17 +82,18 @@ export default function ServicesPage() {
             finalized copy decision, that named framework is cut from this
             page entirely; this section names the actual modalities instead. */}
         <section className="border-b border-border bg-brand-charcoal">
-          <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-8 lg:py-20">
+          <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-8 lg:py-20">
             <p className="font-subtitle text-xs font-semibold uppercase tracking-[0.25em] text-brand-red-bright sm:text-sm">
-              A Blending of Evidence-Based Practices
+              My Approach
             </p>
             <h2 className="mt-3 font-heading text-2xl font-medium tracking-tight text-brand-offwhite sm:text-3xl">
-              My Approach
+              A Blending of Evidence-Based Practices
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-base font-normal leading-relaxed text-brand-offwhite/80 sm:text-lg">
               Grounded in Peer Recovery/Support Specialist principles, brain-based parenting,
               trauma-informed parenting, and DBT-influenced skill building.
             </p>
+            <ModalityCards />
           </div>
         </section>
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -64,6 +64,19 @@ function PathsHeroSection() {
   );
   const togetherY = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [28, 0]);
   const togetherScale = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [0.75, 1]);
+
+  // Once "Together" finishes growing in, it locks permanently on screen —
+  // not just "sticky until the pin releases." `locked` never resets to
+  // false (no else-branch), so scrolling back up afterward doesn't undo it
+  // either. The in-flow animated instance below fades to opacity 0 (but
+  // keeps its layout space, so nothing jumps) and a `position: fixed`
+  // instance takes over at a stable viewport anchor, staying visible as the
+  // pinned hero releases and the rest of the page (closing CTA, "My
+  // Approach" section, etc.) scrolls underneath it.
+  const [locked, setLocked] = useState(false);
+  useMotionValueEvent(togetherOpacity, "change", (value) => {
+    if (value >= 1) setLocked(true);
+  });
 
   return (
     <div ref={containerRef} className="relative h-[340vh] bg-brand-black">
@@ -149,13 +162,29 @@ function PathsHeroSection() {
         <div aria-hidden className="-mt-6 flex h-20 shrink-0 items-center justify-center sm:-mt-8 sm:h-28 lg:-mt-10 lg:h-32">
           <motion.p
             data-role="together"
-            style={{ opacity: togetherOpacity, y: togetherY, scale: togetherScale }}
+            style={{ opacity: locked ? 0 : togetherOpacity, y: togetherY, scale: togetherScale }}
             className="font-quote text-7xl font-bold text-brand-red-bright sm:text-8xl lg:text-9xl"
           >
             Together
           </motion.p>
         </div>
       </div>
+
+      {/* Locked-in-place instance — renders once `locked` flips true (see
+          above) and stays mounted for the rest of the page's scroll, fixed
+          to the viewport rather than the document, so it never scrolls away
+          and never reverts. z-40 keeps it under the header (z-50) but above
+          normal page content; pointer-events-none so it never blocks clicks
+          on the CTA/content that ends up underneath it. */}
+      {locked && (
+        <p
+          aria-hidden
+          data-role="together-locked"
+          className="pointer-events-none fixed inset-x-0 bottom-12 z-40 text-center font-quote text-7xl font-bold text-brand-red-bright sm:bottom-16 sm:text-8xl lg:bottom-20 lg:text-9xl"
+        >
+          Together
+        </p>
+      )}
     </div>
   );
 }
