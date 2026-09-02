@@ -91,19 +91,12 @@ function PainPointSidebarLayout({ topic }: { topic: SidebarLayoutTopic }) {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8">
-        <p className="max-w-3xl text-base leading-relaxed text-muted-foreground">{topic.intro}</p>
-
-        {topic.exampleScenario && (
-          <div className="mt-6 max-w-3xl rounded-lg border border-l-[3px] border-border border-l-secondary bg-card px-4 py-3">
-            <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              <UserCircle className="h-3.5 w-3.5" />
-              What this might look like
-            </p>
-            <p className="text-sm italic leading-relaxed text-muted-foreground">{topic.exampleScenario}</p>
-          </div>
-        )}
-
-        <div className="mt-4 grid gap-8 lg:grid-cols-[16rem_1fr]">
+        {/* Sidebar and main column now start at the same vertical position —
+            the intro/example-scenario block moved inside the main column
+            (aligned with the section cards below it) instead of spanning
+            full-width above the two-column grid, so the sidebar no longer
+            waits below it to begin. */}
+        <div className="grid gap-8 lg:grid-cols-[16rem_1fr]">
           <aside className="lg:sticky lg:top-40 lg:h-fit">
             <div className="flex items-center justify-between lg:mb-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">On this page</p>
@@ -167,6 +160,20 @@ function PainPointSidebarLayout({ topic }: { topic: SidebarLayoutTopic }) {
           </aside>
 
           <div className="flex flex-col gap-4">
+            <div>
+              <p className="max-w-3xl text-base leading-relaxed text-muted-foreground">{topic.intro}</p>
+
+              {topic.exampleScenario && (
+                <div className="mt-6 max-w-3xl rounded-lg border border-l-[3px] border-border border-l-secondary bg-card px-4 py-3">
+                  <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    <UserCircle className="h-3.5 w-3.5" />
+                    What this might look like
+                  </p>
+                  <p className="text-sm italic leading-relaxed text-muted-foreground">{topic.exampleScenario}</p>
+                </div>
+              )}
+            </div>
+
             <section
               id="whats-happening"
               ref={(el) => {
