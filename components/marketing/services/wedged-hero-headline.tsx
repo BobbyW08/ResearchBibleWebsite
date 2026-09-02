@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -65,35 +64,6 @@ function PathsHeroSection() {
   );
   const togetherY = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [28, 0]);
   const togetherScale = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [0.75, 1]);
-
-  // Once "Together" finishes growing in, it locks permanently on screen —
-  // not just "sticky until the pin releases." `locked` never resets to
-  // false (no reset path), so scrolling back up afterward doesn't undo it
-  // either. The in-flow animated instance below fades to opacity 0 (but
-  // keeps its layout space, so nothing jumps) and a second instance takes
-  // over, portaled straight to document.body (createPortal) so it's
-  // structurally guaranteed to be a direct child of <body> — it can never
-  // end up nested inside a transformed/filtered ancestor (this component's
-  // own animated video wrapper, or anything added later) that would turn
-  // its `fixed` positioning into something relative to that ancestor's box
-  // instead of the real viewport. Its `top` is captured, once, from the
-  // animated instance's own getBoundingClientRect() at the exact moment it
-  // locks — pixel-exact continuity from the animated position, rather than
-  // a guessed Tailwind bottom-* offset that only approximately matched it.
-  // togetherRef/lockedRef are refs (not state) so the one-time capture in
-  // this scroll-driven callback always reads current values, never a stale
-  // closure.
-  const togetherRef = useRef<HTMLParagraphElement>(null);
-  const lockedRef = useRef(false);
-  const [locked, setLocked] = useState(false);
-  const [lockedTop, setLockedTop] = useState<number | null>(null);
-  useMotionValueEvent(togetherOpacity, "change", (value) => {
-    if (value >= 1 && !lockedRef.current) {
-      lockedRef.current = true;
-      setLockedTop(togetherRef.current?.getBoundingClientRect().top ?? null);
-      setLocked(true);
-    }
-  });
 
   return (
     <div ref={containerRef} className="relative h-[340vh] bg-brand-black">
@@ -173,46 +143,28 @@ function PathsHeroSection() {
         </div>
 
         {/* "Together" — fades and scales up from behind the composition
-            once "We Build"/"Your Path" have settled. Reserves its own
-            space below the video the whole time so nothing reflows when it
-            appears; only opacity/transform animate. */}
+            once "We Build"/"Your Path" have settled, then simply clamps at
+            full size/opacity for the rest of the scroll (useTransform's
+            default clamping — no separate lock state needed). Deliberately
+            NOT position: fixed and NOT portaled anywhere: Bobby's explicit
+            call after seeing an earlier viewport-locked version live is
+            that "Together" should stay at its resting position ON THE PAGE,
+            not pinned to the screen — so once it reaches full size it's
+            just normal in-flow content again, part of this sticky panel
+            until the pin releases, then scrolls away with the rest of the
+            page exactly like everything else. Reserves its own space below
+            the video the whole time so nothing reflows when it appears;
+            only opacity/transform animate. */}
         <div aria-hidden className="-mt-6 flex h-20 shrink-0 items-center justify-center sm:-mt-8 sm:h-28 lg:-mt-10 lg:h-32">
           <motion.p
-            ref={togetherRef}
             data-role="together"
-            style={{ opacity: locked ? 0 : togetherOpacity, y: togetherY, scale: togetherScale }}
+            style={{ opacity: togetherOpacity, y: togetherY, scale: togetherScale }}
             className="font-quote text-7xl font-bold text-brand-red-bright sm:text-8xl lg:text-9xl"
           >
             Together
           </motion.p>
         </div>
       </div>
-
-      {/* Locked-in-place instance — renders once `locked` flips true (see
-          above) and stays mounted for the rest of the page's scroll.
-          Portaled to document.body (not just `fixed` in place here) so no
-          ancestor of this component can ever turn its fixed positioning
-          into something relative to itself; anchored via an inline `top`
-          captured pixel-for-pixel from the animated instance's position at
-          lock time, not a guessed breakpoint offset, so the swap is
-          seamless and, since `top` doesn't depend on the viewport's bottom
-          edge, robust to mobile browsers resizing the visual viewport as
-          their toolbar collapses/expands during scroll. z-40 keeps it under
-          the header (z-50) but above normal page content; pointer-events-none
-          so it never blocks clicks on the CTA/content underneath it. */}
-      {locked &&
-        lockedTop !== null &&
-        createPortal(
-          <p
-            aria-hidden
-            data-role="together-locked"
-            style={{ top: lockedTop }}
-            className="pointer-events-none fixed inset-x-0 z-40 text-center font-quote text-7xl font-bold text-brand-red-bright sm:text-8xl lg:text-9xl"
-          >
-            Together
-          </p>,
-          document.body,
-        )}
     </div>
   );
 }

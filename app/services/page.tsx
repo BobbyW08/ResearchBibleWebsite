@@ -47,7 +47,7 @@ const OFFERS: OfferCardData[] = [
     description:
       "Submit a question ahead of time, get a direct, real answer in a live session — a faster, more direct format than the group.",
     details: ["$20/seat", "Launching as the weekly group gets going; check back or ask when booking a call"],
-    cta: { kind: "newsletter", label: "Join the waitlist" },
+    cta: { kind: "interest-signup", source: "live_qa", label: "Join the waitlist" },
   },
   {
     title: "Cohorts (6-Week Series)",
@@ -55,7 +55,7 @@ const OFFERS: OfferCardData[] = [
     description:
       "A committed, six-week deep-dive on one specific topic (behavior, co-parenting, anxiety, de-escalation, and others) with the same small group of parents the whole way through.",
     details: ["$400/seat for the full series", "Launching once there's a full cohort ready to go; ask about the current waitlist"],
-    cta: { kind: "newsletter", label: "Join the waitlist" },
+    cta: { kind: "interest-signup", source: "cohorts", label: "Join the waitlist" },
   },
 ];
 
