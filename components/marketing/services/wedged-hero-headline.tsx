@@ -30,8 +30,8 @@ const HEADLINE_CLASS = "font-subtitle font-bold";
 //   scrolling resumes.
 const PHASES = {
   convergeEnd: 0.55,
-  togetherStart: 0.7,
-  togetherEnd: 0.88,
+  togetherStart: 0.65,
+  togetherEnd: 0.75,
 };
 
 function PathsHeroSection() {
@@ -146,11 +146,11 @@ function PathsHeroSection() {
             once "We Build"/"Your Path" have settled. Reserves its own
             space below the video the whole time so nothing reflows when it
             appears; only opacity/transform animate. */}
-        <div aria-hidden className="mt-4 flex h-16 shrink-0 items-center justify-center sm:mt-6 sm:h-20 lg:h-24">
+        <div aria-hidden className="-mt-6 flex h-20 shrink-0 items-center justify-center sm:-mt-8 sm:h-28 lg:-mt-10 lg:h-32">
           <motion.p
             data-role="together"
             style={{ opacity: togetherOpacity, y: togetherY, scale: togetherScale }}
-            className="font-quote text-5xl text-brand-red-bright sm:text-6xl lg:text-7xl"
+            className="font-quote text-7xl font-bold text-brand-red-bright sm:text-8xl lg:text-9xl"
           >
             Together
           </motion.p>

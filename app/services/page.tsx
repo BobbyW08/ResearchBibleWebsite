@@ -16,25 +16,6 @@ export const metadata: Metadata = {
   },
 };
 
-const PHASES = [
-  {
-    name: "Stabilize",
-    body: "Get through the hard moments without making them worse. Before anything else changes, everyone in the house needs to learn how to regulate better. Dysregulation is the enemy; we can't learn, listen, or think critically when we are dysregulated.",
-  },
-  {
-    name: "Connect",
-    body: "We listen to people we like. Simple as that. Build enough trust that your child can hear you. Trust comes from predictability and comfort. Structure doesn't work without trust.",
-  },
-  {
-    name: "Structure",
-    body: "Create routines, expectations, and follow-through that hold up at home; the unglamorous stuff that actually changes daily life. Consistency is required.",
-  },
-  {
-    name: "Adapt",
-    body: "Adjust the tools for your family, your child, and whatever's in front of you right now: the diagnosis, the school fight, the teenager, the co-parenting.",
-  },
-];
-
 const OFFERS: OfferCardData[] = [
   {
     anchorId: "one-on-one",
@@ -95,31 +76,22 @@ export default function ServicesPage() {
 
         {/* Inverted palette for this section only: dark-gray field, brand red
             (brightened for contrast — see globals.css) for headers, off-white
-            for body copy. */}
+            for body copy. Replaces the old "Start Walking Your Path"
+            Stabilize/Connect/Structure/Adapt framework grid — per the
+            finalized copy decision, that named framework is cut from this
+            page entirely; this section names the actual modalities instead. */}
         <section className="border-b border-border bg-brand-charcoal">
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 lg:py-20">
-            <h2 className="font-heading text-2xl font-medium tracking-tight text-brand-red-bright sm:text-3xl">
-              Start Walking Your Path
-            </h2>
-            <p className="mt-4 max-w-3xl text-base font-normal text-brand-offwhite/80">
-              I developed this loose structure because it&apos;s how your nervous system actually
-              works, not something I made up: Stabilize, Connect, Structure, Adapt. You
-              can&apos;t teach your kid structure if you don&apos;t have stability or connection
-              first. That&apos;s not an opinion; it&apos;s just the order things happen in. At
-              different points, we&apos;ll move back and forth through all four, depending on
-              what we&apos;re working on, and that&apos;s exactly how it&apos;s supposed to work.
-              Progress is hardly ever linear.
+          <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-8 lg:py-20">
+            <p className="font-subtitle text-xs font-semibold uppercase tracking-[0.25em] text-brand-red-bright sm:text-sm">
+              A Blending of Evidence-Based Practices
             </p>
-            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {PHASES.map((phase) => (
-                <div key={phase.name} className="flex flex-col gap-2 rounded-lg border border-brand-offwhite/15 bg-brand-offwhite/5 p-5">
-                  <p className="font-heading text-base font-semibold tracking-tight text-brand-red-bright">
-                    {phase.name}
-                  </p>
-                  <p className="text-sm font-normal text-brand-offwhite/75">{phase.body}</p>
-                </div>
-              ))}
-            </div>
+            <h2 className="mt-3 font-heading text-2xl font-medium tracking-tight text-brand-offwhite sm:text-3xl">
+              My Approach
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base font-normal leading-relaxed text-brand-offwhite/80 sm:text-lg">
+              Grounded in Peer Recovery/Support Specialist principles, brain-based parenting,
+              trauma-informed parenting, and DBT-influenced skill building.
+            </p>
           </div>
         </section>
 
