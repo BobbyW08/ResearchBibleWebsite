@@ -24,6 +24,35 @@ export async function fetchSheetValues(sheetId: string, tab: string): Promise<st
   return data.values ?? [];
 }
 
+/**
+ * Appends a single row to a Google Sheet tab via `values.append`. Direct
+ * `fetch` + Bearer token, same pattern as `fetchSheetValues` above, but
+ * requests the read-write `spreadsheets` scope instead of the read-only one.
+ */
+export async function appendSheetRow(sheetId: string, tab: string, row: string[]): Promise<void> {
+  const token = await getGoogleAccessToken([GOOGLE_SCOPES.spreadsheets]);
+
+  const response = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(sheetId)}/values/${encodeURIComponent(
+      tab,
+    )}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ values: [row] }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Sheets values.append failed for sheet ${sheetId} tab "${tab}": HTTP ${response.status} — ${await response.text()}`,
+    );
+  }
+}
+
 interface DashboardStat {
   value: string;
   label: string;

@@ -89,4 +89,5 @@ export async function getGoogleAccessToken(scopes: string[]): Promise<string> {
 export const GOOGLE_SCOPES = {
   driveReadonly: "https://www.googleapis.com/auth/drive.readonly",
   spreadsheetsReadonly: "https://www.googleapis.com/auth/spreadsheets.readonly",
+  spreadsheets: "https://www.googleapis.com/auth/spreadsheets",
 } as const;
