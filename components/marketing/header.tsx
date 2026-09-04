@@ -107,7 +107,7 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
       transition={{ duration: 0.7, ease: "easeInOut" }}
       className={cn(
         "inset-x-0 z-50 px-4 flex items-center justify-center sticky top-0 h-20",
-        onHeroField && "bg-brand-black",
+        onHeroField ? "bg-brand-black" : "bg-background",
       )}
     >
       <div
