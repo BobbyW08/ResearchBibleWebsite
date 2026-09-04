@@ -113,8 +113,35 @@ function indentOf(line: string): number {
   return i;
 }
 
+/**
+ * Strips a trailing ` # comment` from an inline scalar (the source-file
+ * contract's documented examples use these on `status`/`icon`/`crisis`,
+ * e.g. `status: ready               # draft | ready — ...`). Only a `#`
+ * preceded by whitespace (or at the very start) starts a comment — matches
+ * real YAML comment semantics — and a `#` inside a quoted string is never
+ * treated as one, so quoted values can contain a literal `#`.
+ */
+function stripInlineComment(text: string): string {
+  let quote: string | null = null;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (quote) {
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      continue;
+    }
+    if (ch === "#" && (i === 0 || /\s/.test(text[i - 1]))) {
+      return text.slice(0, i);
+    }
+  }
+  return text;
+}
+
 function parseScalarInline(text: string): string | boolean {
-  const trimmed = text.trim();
+  const trimmed = stripInlineComment(text).trim();
   if (trimmed === "true") return true;
   if (trimmed === "false") return false;
   if (trimmed.startsWith('"')) {

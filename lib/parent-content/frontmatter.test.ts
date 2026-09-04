@@ -222,3 +222,26 @@ test("parseYamlDocument: handles an empty [] sequence", () => {
   assert.deepEqual(doc.related, []);
   assert.equal(doc.crisis, true);
 });
+
+test("parseYamlDocument: strips trailing inline comments on unquoted and boolean scalars", () => {
+  // Matches Research-Content-Pipeline-Handoff-v5.md §2's documented example
+  // exactly: `status: ready               # draft | ready — ...`.
+  const doc = parseYamlDocument(
+    'status: ready               # draft | ready — anything other than exactly "ready" is ignored, not an error\n' +
+      "icon: Flame                  # must exactly match one of the 12 approved values\n" +
+      "crisis: false                 # must be an explicit boolean\n",
+  );
+  assert.equal(doc.status, "ready");
+  assert.equal(doc.icon, "Flame");
+  assert.equal(doc.crisis, false);
+});
+
+test("parseYamlDocument: a '#' inside a quoted scalar is not treated as a comment", () => {
+  const doc = parseYamlDocument('tag: "Rank #1 concern"\n');
+  assert.equal(doc.tag, "Rank #1 concern");
+});
+
+test("parseYamlDocument: a '#' with no preceding whitespace is not treated as a comment", () => {
+  const doc = parseYamlDocument("deepDiveHref: /docs/some-topic#section\n");
+  assert.equal(doc.deepDiveHref, "/docs/some-topic#section");
+});

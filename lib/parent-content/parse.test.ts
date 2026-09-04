@@ -176,6 +176,18 @@ test("parsePainPointSource: missing a required section throws", () => {
   assert.throws(() => parsePainPointSource(missingSupport), ParentContentParseError);
 });
 
+test("parsePainPointSource: a ### item with no body text throws", () => {
+  const emptyBackfireBody = VALID_PAIN_POINT.replace(
+    "### Matching their intensity.\nWhen you raise your voice, your child's nervous system reads \"more danger.\"\n",
+    "### Matching their intensity.\n",
+  );
+  assert.throws(() => parsePainPointSource(emptyBackfireBody), (err: unknown) => {
+    assert.ok(err instanceof ParentContentParseError);
+    assert.match((err as Error).message, /Matching their intensity/);
+    return true;
+  });
+});
+
 test("parsePainPointSource: wrong declared type throws (guards against misclassified filename)", () => {
   const wrongType = VALID_PAIN_POINT.replace("type: pain-point", "type: awareness-module");
   assert.throws(() => parsePainPointSource(wrongType), ParentContentParseError);

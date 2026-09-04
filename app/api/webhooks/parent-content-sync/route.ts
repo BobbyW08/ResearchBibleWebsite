@@ -93,6 +93,17 @@ function todayUtcIsoDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+/**
+ * Short random suffix so a second same-day resync of the same slug (e.g. a
+ * correction made right after the first sync) never collides with an
+ * already-created branch name. Without this, `createBranch` 409s on the
+ * duplicate ref, the route 502s, and the corrected Drive content silently
+ * never gets retried unless someone manually intervenes.
+ */
+function branchSuffix(): string {
+  return crypto.randomBytes(3).toString("hex");
+}
+
 function hashFields(value: unknown): string {
   return crypto.createHash("sha256").update(JSON.stringify(value), "utf-8").digest("hex");
 }
@@ -149,7 +160,7 @@ async function handlePainPointSync(fileId: string, fileName: string): Promise<Sy
   const yamlContents = serializePainPointYaml(finalData);
   const changedFields = diffFieldNames(existingParsed as unknown as Record<string, unknown> | null, finalData as unknown as Record<string, unknown>);
 
-  const branchName = `content-sync/parent-content-pain-point-${source.slugName}-${todayUtcIsoDate()}`;
+  const branchName = `content-sync/parent-content-pain-point-${source.slugName}-${todayUtcIsoDate()}-${branchSuffix()}`;
 
   try {
     const baseSha = await getDefaultBranchSha();
@@ -212,7 +223,7 @@ async function handleAwarenessModuleSync(fileId: string, fileName: string): Prom
   const yamlContents = serializeAwarenessModuleYaml(finalData);
   const changedFields = diffFieldNames(existingParsed as unknown as Record<string, unknown> | null, finalData as unknown as Record<string, unknown>);
 
-  const branchName = `content-sync/parent-content-module-${source.slugName}-${todayUtcIsoDate()}`;
+  const branchName = `content-sync/parent-content-module-${source.slugName}-${todayUtcIsoDate()}-${branchSuffix()}`;
 
   try {
     const baseSha = await getDefaultBranchSha();

@@ -167,6 +167,20 @@ function requireSection(sections: Section[], heading: string): string {
   return match.content;
 }
 
+/**
+ * Validates every `### <title>` sub-item under a section has a non-empty
+ * body — a title immediately followed by the next heading (no body text in
+ * between) parses to `body: ""` and would otherwise pass the array's
+ * length-only check, opening a PR with an empty accordion item.
+ */
+function requireNonEmptyItems(items: { title: string; body: string }[], parentHeading: string): void {
+  for (const item of items) {
+    if (!item.body) {
+      throw new ParentContentParseError(`"### ${item.title}" under "## ${parentHeading}" has no body text`);
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Pain Point
 // ---------------------------------------------------------------------------
@@ -248,12 +262,14 @@ export function parsePainPointSource(raw: string): SourceParseResult<PainPointSo
   if (fields.backfires.length === 0) {
     throw new ParentContentParseError('Section "## Why This Usually Makes It Worse" has no ### items');
   }
+  requireNonEmptyItems(fields.backfires, "Why This Usually Makes It Worse");
 
   const triesRaw = requireSection(topSections, "Try This Week");
   fields.tries = splitByHeadingLevel(triesRaw, "###").map((s) => ({ title: s.heading, body: s.content }));
   if (fields.tries.length === 0) {
     throw new ParentContentParseError('Section "## Try This Week" has no ### items');
   }
+  requireNonEmptyItems(fields.tries, "Try This Week");
 
   fields.support = requireSection(topSections, "When To Get More Support");
 
