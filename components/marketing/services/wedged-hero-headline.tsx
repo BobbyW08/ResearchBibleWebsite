@@ -111,20 +111,24 @@ function PathsHeroSection() {
             phone viewport a fixed size pushed content below the fold;
             letting flexbox hand it whatever vertical room is left after the
             intro copy and the "Together" slot means it always fits, on any
-            screen height. The caps are generous (54rem / 96vw) so the frame
+            screen height. The caps are generous (68rem / 98vw) so the frame
             reads as genuinely large on real screens, not just filling
-            leftover space. Gradient scrims top/bottom keep the off-white
-            text legible regardless of what the video is showing. The
-            headline overlay is a sibling of the video box, not a child of
-            it, so its horizontal slide-in isn't clipped by the video's own
-            rounded-corner `overflow-hidden` — it travels (and visually
+            leftover space. `aspect-[6/5]` is 1.5x as wide per unit height as
+            the earlier `aspect-[4/5]` (Bobby's explicit ask: much larger,
+            1.5x wider) — the outer wrapper's own cap is bumped alongside it
+            (max-w-6xl -> max-w-[92rem]) so it isn't the thing constraining
+            the now-wider frame. Gradient scrims top/bottom keep the
+            off-white text legible regardless of what the video is showing.
+            The headline overlay is a sibling of the video box, not a child
+            of it, so its horizontal slide-in isn't clipped by the video's
+            own rounded-corner `overflow-hidden` — it travels (and visually
             overlaps) across the wider shared wrapper instead. */}
         <div className="flex w-full min-h-0 flex-1 items-center justify-center py-4">
-          <div className="relative flex h-full w-full max-w-6xl items-center justify-center">
+          <div className="relative flex h-full w-full max-w-[92rem] items-center justify-center">
             <motion.div
               aria-hidden
               style={{ scale: videoScale }}
-              className="relative aspect-[4/5] h-full max-h-[54rem] max-w-[96vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
+              className="relative aspect-[6/5] h-full max-h-[68rem] max-w-[98vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
             >
               <video
                 src="/videos/paths-loop.mp4"
@@ -173,11 +177,20 @@ function PathsHeroSection() {
             pinned to the screen — so once it reaches full size it's just
             normal in-flow content again, part of this sticky panel until
             the pin releases, then it moves with the rest of the page like
-            any other content. The negative margin pulls it up so "T"/"h"
-            tuck a touch under the video's bottom edge. Reserves its own
-            space below the video the whole time so nothing reflows when it
+            any other content.
+            Bobby's explicit ask: "Together" must NEVER be hidden behind the
+            video. Two layers of guarantee, not just one: (1) a real
+            positive gap (mt-*, not the earlier negative margin that
+            deliberately tucked it under the video's bottom edge) so the two
+            boxes never geometrically overlap regardless of how large the
+            video gets; (2) `relative z-20` as a hard backstop, since a
+            `<video>` element is commonly promoted to its own compositing
+            layer by the browser and can in some engines ignore normal DOM
+            paint order — explicit z-index forces it above the video's
+            stacking context even if that happens. Reserves its own space
+            below the video the whole time so nothing reflows when it
             appears. */}
-        <div aria-hidden className="-mt-16 flex h-28 shrink-0 items-center justify-center sm:-mt-20 sm:h-36 lg:-mt-28 lg:h-44">
+        <div aria-hidden className="relative z-20 mt-4 flex h-28 shrink-0 items-center justify-center sm:mt-6 sm:h-36 lg:mt-8 lg:h-44">
           <motion.p
             data-role="together"
             style={

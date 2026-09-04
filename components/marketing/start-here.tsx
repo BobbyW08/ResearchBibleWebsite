@@ -4,17 +4,17 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import FadeInView from "@/components/marketing/fade-in-view";
 import { getAllPainPoints } from "@/lib/pain-points-reader";
 
-// Row 2 panels — per homepage-redesign-v3.md Section 2: Parents and Groups
-// both land on /services, deep-linked to the #one-on-one and #weekly-group
-// anchors (see app/services/page.tsx); Organizations goes to its own page.
-// Real photos of Bobby's own parents/groups/office aren't ready yet — these
-// are warm-toned Unsplash stock placeholders standing in until he supplies
-// real ones.
+// Row 2 panels — per homepage-redesign-v3.md Section 2: Parents lands at the
+// top of /services (the page's own hero, not an anchor); Groups deep-links
+// to the #weekly-group anchor (see app/services/page.tsx); Organizations
+// goes to its own page. Real photos of Bobby's own parents/groups/office
+// aren't ready yet — these are warm-toned Unsplash stock placeholders
+// standing in until he supplies real ones.
 const ROW_TWO_PANELS = [
   {
     label: "Parents.",
     alt: "A parent with a toddler and baby at home",
-    href: "/services#one-on-one",
+    href: "/services",
     image: "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=800&q=70&auto=format&fit=crop",
   },
   {
