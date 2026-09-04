@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -65,6 +65,26 @@ function PathsHeroSection() {
   const togetherY = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [28, 0]);
   const togetherScale = useTransform(progress, [PHASES.togetherStart, PHASES.togetherEnd], [0.75, 1]);
 
+  // One-way latch: once scroll progress has carried "Together" to full
+  // opacity/scale, it STAYS fully visible from then on, full stop — no
+  // longer re-derived from live scroll progress at all. This guards
+  // against exactly the bug Bobby flagged live: the scroll-linked motion
+  // values (though clamped in theory) were intermittently reporting a
+  // dropped-back-to-near-0 opacity right as the pin released, making
+  // "Together" flicker out just after it had fully appeared. Latching
+  // removes that class of bug entirely — once true, `revealed` never
+  // resets, and the element renders hard-coded {opacity:1, scale:1, y:0}
+  // regardless of what the scroll-linked values do afterward. It's still
+  // normal in-flow content (no position:fixed, no portal — Bobby's
+  // explicit call is that this stays ON THE PAGE, not pinned to the
+  // screen), so it still moves with the page like any other content once
+  // the user scrolls far enough past it; the fix is that it never fades
+  // or flickers while doing so.
+  const [revealed, setRevealed] = useState(false);
+  useMotionValueEvent(progress, "change", (p) => {
+    if (p >= PHASES.togetherEnd) setRevealed(true);
+  });
+
   return (
     <div ref={containerRef} className="relative h-[340vh] bg-brand-black">
       <div className="sticky top-0 flex h-dvh flex-col items-center overflow-hidden px-4 pt-24 pb-6 sm:px-8 sm:pt-28">
@@ -91,7 +111,7 @@ function PathsHeroSection() {
             phone viewport a fixed size pushed content below the fold;
             letting flexbox hand it whatever vertical room is left after the
             intro copy and the "Together" slot means it always fits, on any
-            screen height. The caps are generous (44rem / 94vw) so the frame
+            screen height. The caps are generous (54rem / 96vw) so the frame
             reads as genuinely large on real screens, not just filling
             leftover space. Gradient scrims top/bottom keep the off-white
             text legible regardless of what the video is showing. The
@@ -100,11 +120,11 @@ function PathsHeroSection() {
             rounded-corner `overflow-hidden` — it travels (and visually
             overlaps) across the wider shared wrapper instead. */}
         <div className="flex w-full min-h-0 flex-1 items-center justify-center py-4">
-          <div className="relative flex h-full w-full max-w-4xl items-center justify-center">
+          <div className="relative flex h-full w-full max-w-6xl items-center justify-center">
             <motion.div
               aria-hidden
               style={{ scale: videoScale }}
-              className="relative aspect-[3/4] h-full max-h-[44rem] max-w-[94vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
+              className="relative aspect-[4/5] h-full max-h-[54rem] max-w-[96vw] overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
             >
               <video
                 src="/videos/paths-loop.mp4"
@@ -143,23 +163,29 @@ function PathsHeroSection() {
         </div>
 
         {/* "Together" — fades and scales up from behind the composition
-            once "We Build"/"Your Path" have settled, then simply clamps at
-            full size/opacity for the rest of the scroll (useTransform's
-            default clamping — no separate lock state needed). Deliberately
-            NOT position: fixed and NOT portaled anywhere: Bobby's explicit
-            call after seeing an earlier viewport-locked version live is
-            that "Together" should stay at its resting position ON THE PAGE,
-            not pinned to the screen — so once it reaches full size it's
-            just normal in-flow content again, part of this sticky panel
-            until the pin releases, then scrolls away with the rest of the
-            page exactly like everything else. Reserves its own space below
-            the video the whole time so nothing reflows when it appears;
-            only opacity/transform animate. */}
-        <div aria-hidden className="-mt-6 flex h-20 shrink-0 items-center justify-center sm:-mt-8 sm:h-28 lg:-mt-10 lg:h-32">
+            once "We Build"/"Your Path" have settled, then LATCHES to fully
+            visible (see the `revealed` state above) rather than staying
+            continuously scroll-linked — once shown it never fades or
+            flickers again, no matter what. Deliberately NOT position:
+            fixed and NOT portaled anywhere: Bobby's explicit call after
+            seeing an earlier viewport-locked version live is that
+            "Together" should stay at its resting position ON THE PAGE, not
+            pinned to the screen — so once it reaches full size it's just
+            normal in-flow content again, part of this sticky panel until
+            the pin releases, then it moves with the rest of the page like
+            any other content. The negative margin pulls it up so "T"/"h"
+            tuck a touch under the video's bottom edge. Reserves its own
+            space below the video the whole time so nothing reflows when it
+            appears. */}
+        <div aria-hidden className="-mt-16 flex h-28 shrink-0 items-center justify-center sm:-mt-20 sm:h-36 lg:-mt-28 lg:h-44">
           <motion.p
             data-role="together"
-            style={{ opacity: togetherOpacity, y: togetherY, scale: togetherScale }}
-            className="font-quote text-7xl font-bold text-brand-red-bright sm:text-8xl lg:text-9xl"
+            style={
+              revealed
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: togetherOpacity, y: togetherY, scale: togetherScale }
+            }
+            className="font-quote text-8xl font-bold text-brand-red-bright sm:text-9xl lg:text-[10.5rem]"
           >
             Together
           </motion.p>
