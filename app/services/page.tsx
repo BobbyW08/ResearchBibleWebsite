@@ -135,6 +135,9 @@ export default function ServicesPage() {
                 Join the newsletter →
               </NewsletterDialog>
             </div>
+            <p className="pt-2 text-xs font-normal text-muted-foreground/80">
+              CPRS certified. Registered and insured. Not a replacement for clinical care.
+            </p>
           </div>
         </section>
       </main>

@@ -10,7 +10,7 @@ import { reader } from "@/lib/keystatic-reader";
 const FALLBACK_TAGLINE = "Parenting support from someone who's been there.";
 const FALLBACK_CONTACT_EMAIL = "bobbywashburn0@gmail.com";
 const FALLBACK_COPYRIGHT =
-  "© 2026 Bobby Washburn. Peer support and parenting education — not therapy, diagnosis, or medical advice.";
+  "© 2026 Bobby Washburn Parent Support, LLC. Peer support and parenting education, not therapy, diagnosis, or medical advice. CPRS certified through the Rhode Island Certification Board. Registered and insured.";
 
 // Per homepage-redesign-v3.md Section 5: the footer nav is NOT identical to
 // the header nav — it's one item longer (Organizations, which is deliberately
@@ -97,7 +97,12 @@ async function Footer() {
             </div>
           </div>
           <Separator orientation="horizontal" className="bg-brand-offwhite/15" />
-          <p className="pb-10 text-sm font-normal text-brand-offwhite/60 text-center">{copyrightText}</p>
+          <p className="pb-10 text-sm font-normal text-brand-offwhite/60 text-center">
+            {copyrightText}{" "}
+            <Link href="/legal" className="underline underline-offset-2 hover:text-brand-offwhite">
+              Legal
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

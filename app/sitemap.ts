@@ -14,6 +14,7 @@ const STATIC_ROUTES = [
   "/tech-safety",
   "/docs",
   "/research",
+  "/legal",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

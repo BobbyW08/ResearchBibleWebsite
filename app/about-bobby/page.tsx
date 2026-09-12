@@ -51,7 +51,13 @@ export const metadata: Metadata = {
   },
 };
 
-function IntroCallCta({ align = "center" }: { align?: "center" | "start" }) {
+function IntroCallCta({
+  align = "center",
+  showDisclaimer = false,
+}: {
+  align?: "center" | "start";
+  showDisclaimer?: boolean;
+}) {
   return (
     <div className={`flex flex-col gap-2 ${align === "start" ? "items-start" : "items-center"}`}>
       <Link
@@ -63,6 +69,14 @@ function IntroCallCta({ align = "center" }: { align?: "center" | "start" }) {
         Book an intro call →
       </Link>
       <p className="text-sm font-normal text-muted-foreground">Free 30-min call. No pitch.</p>
+      {showDisclaimer && (
+        <p
+          className={`max-w-xs text-xs font-normal text-muted-foreground/80 ${align === "start" ? "text-left" : "text-center"}`}
+        >
+          This is peer support, not therapy. CPRS certified, RI Board #202153. Bobby Washburn
+          Parent Support, LLC is registered and insured.
+        </p>
+      )}
     </div>
   );
 }
@@ -128,7 +142,7 @@ export default async function AboutBobbyPage() {
                 </p>
               ))}
               <div className="flex justify-center pt-2">
-                <IntroCallCta />
+                <IntroCallCta showDisclaimer />
               </div>
             </section>
 
@@ -165,6 +179,11 @@ export default async function AboutBobbyPage() {
                     <p>{about.also}</p>
                   </div>
                 )}
+                <div>
+                  <p className="font-medium text-foreground">Business</p>
+                  <p>Bobby Washburn Parent Support, LLC, a registered Rhode Island business</p>
+                  <p>Insured: general liability, professional liability, cyber liability</p>
+                </div>
               </div>
             </section>
           </div>
