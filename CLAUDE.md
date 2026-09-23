@@ -1,7 +1,7 @@
 # CLAUDE.md — ResearchBibleWebsite
 
 **Repo:** BobbyW08/ResearchBibleWebsite · `main` branch
-**Local path:** `C:\Users\robwa\Documents\Claude\ResearchBibleWebsite`
+**Local path:** `C:\dev\ResearchBibleWebsite`
 **Shell:** PowerShell
 **Hosting:** Vercel (watches `main`)
 
