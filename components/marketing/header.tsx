@@ -23,22 +23,18 @@ import { ArrowUpRight } from "lucide-react";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 import ComingSoonTrigger from "@/components/marketing/coming-soon-trigger";
+import { HeaderAuthButton } from "@/components/marketing/header-auth-button";
 
 type NavigationSection = {
   title: string;
   href: string;
 };
 
-// Per homepage-redesign-v3.md: About / Start Here / Parents / FAQs, no dropdown.
-// "Parents" (renamed from "Services") links to /services — Organizations is
-// deliberately not a header item, reached via Start Here or the footer nav
-// instead (see footer.tsx). Start Here and FAQs are in-page anchors on the
-// homepage; from any other page they still work — the browser navigates home,
-// then scrolls to the anchor.
 const navigationData: NavigationSection[] = [
   { title: "About", href: "/about-bobby" },
   { title: "Start Here", href: "/#start-here" },
   { title: "Parents", href: "/services" },
+  { title: "Organizations", href: "/services/organizations" },
   { title: "FAQs", href: "/#faq" },
 ];
 
@@ -151,7 +147,8 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
           </NavigationMenu>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
+          <HeaderAuthButton />
           <BookACallButton className="hidden lg:flex" />
 
           <div className="lg:hidden">

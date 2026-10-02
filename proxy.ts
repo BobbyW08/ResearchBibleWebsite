@@ -16,7 +16,9 @@ export default function middleware(request: NextRequest) {
 
   if (!hasSession) {
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/sign-in";
+    const returnTo = encodeURIComponent(request.nextUrl.pathname);
+    url.pathname = "/sign-in";
+    url.search = `?returnTo=${returnTo}`;
     return NextResponse.redirect(url);
   }
 
@@ -24,5 +26,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*", "/onboarding/:path*"],
+  matcher: ["/account/:path*", "/onboarding/:path*", "/community/:path*", "/courses/:path*"],
 };

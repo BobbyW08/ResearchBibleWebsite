@@ -10,13 +10,8 @@ import { reader } from "@/lib/keystatic-reader";
 const FALLBACK_TAGLINE = "Parenting support from someone who's been there.";
 const FALLBACK_CONTACT_EMAIL = "bobbywashburn0@gmail.com";
 const FALLBACK_COPYRIGHT =
-  "© 2026 Bobby Washburn Parent Support, LLC. Peer support and parenting education, not therapy, diagnosis, or medical advice. CPRS certified through the Rhode Island Certification Board. Registered and insured.";
+  "© 2026 Bobby Washburn Parent Support, LLC. Peer support and parenting education, not therapy, diagnosis, or medical advice. CPRS certified through the Rhode Island Certification Board. Registered and insured. Peer support and parenting education only. Not a clinical, peer recovery support, or mandated service. Not a substitute for therapy, clinical case management, or crisis intervention.";
 
-// Per homepage-redesign-v3.md Section 5: the footer nav is NOT identical to
-// the header nav — it's one item longer (Organizations, which is deliberately
-// left out of the header — see header.tsx). Set in Arvo, bigger type, with a
-// bymonolog.com-style hover treatment (row fills solid, text inverts, arrow
-// appears) rather than the header's inline underline/color-change pattern.
 const SITEMAP_LINKS = [
   { title: "About", href: "/about-bobby" },
   { title: "Start Here", href: "/#start-here" },
@@ -101,6 +96,10 @@ async function Footer() {
             {copyrightText}{" "}
             <Link href="/legal" className="underline underline-offset-2 hover:text-brand-offwhite">
               Legal
+            </Link>
+            {" · "}
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-brand-offwhite">
+              Privacy
             </Link>
           </p>
         </div>

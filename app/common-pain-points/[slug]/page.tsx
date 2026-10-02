@@ -37,6 +37,7 @@ export async function generateMetadata({
   return {
     title: entry.title,
     description: entry.cardTeaser,
+    alternates: { canonical: `/common-pain-points/${slug}` },
   };
 }
 

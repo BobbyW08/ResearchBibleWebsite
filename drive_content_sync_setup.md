@@ -34,10 +34,10 @@ webhook calls for every unrelated file someone drops in the folder.
 ```javascript
 const CONFIG = {
   // content/sync-config.json -> researchBibles.driveFolderId
-  driveFolderId: "REPLACE_WITH_RESEARCH_BIBLES_FOLDER_ID",
+  driveFolderId: "1DYDwFPEyWFmsHR-XKvviajypNlDQedT2",
   webhookUrl: "https://bobby-washburn.com/api/webhooks/drive-content-sync",
   // Must match the WEBHOOK_SECRET env var on Vercel exactly.
-  webhookSecret: "REPLACE_WITH_WEBHOOK_SECRET",
+  webhookSecret: "6848a5b3dc7f7003ea79ad20cea03a194e23c3fbad12f0615fd63f0671d93475",
   folderKey: "researchBibles",
 };
 

@@ -211,7 +211,12 @@ export default config({
         version: fields.text({ label: "Version (auto-computed by sync, do not hand-edit)" }),
         lastUpdated: fields.date({ label: "Last updated" }),
         tags: fields.array(fields.text({ label: "Tag" }), { label: "Tags" }),
-        noindex: fields.checkbox({ label: "Hide from search engines", defaultValue: false }),
+        // Defaults on: bibles are an internal, continuously-revised practitioner
+        // resource, not content written for an open audience to land on via
+        // search. Crawling still happens either way (robots.ts never disallows
+        // /research/) — this only keeps a bible out of search/AI-answer results
+        // until Bobby explicitly un-checks it for a specific entry he wants public.
+        noindex: fields.checkbox({ label: "Hide from search engines", defaultValue: true }),
         changelog: fields.array(
           fields.object({
             date: fields.date({ label: "Date" }),

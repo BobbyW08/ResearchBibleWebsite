@@ -54,7 +54,7 @@ const OFFERS: OfferCardData[] = [
     availability: "comingSoon",
     description:
       "A committed, six-week deep-dive on one specific topic (behavior, co-parenting, anxiety, de-escalation, and others) with the same small group of parents the whole way through.",
-    details: ["$400/seat for the full series", "Launching once there's a full cohort ready to go; ask about the current waitlist"],
+    details: ["$400/seat for the full series", "Launching once there's a full cohort ready to go; ask about the current waitlist", "Organization-sponsored cohorts can be offered at no cost to participating parents."],
     cta: { kind: "interest-signup", source: "cohorts", label: "Join the waitlist" },
   },
 ];

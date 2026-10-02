@@ -23,6 +23,7 @@ export async function generateMetadata(props: {
   return {
     title: `${data.topic.title} — Quick Reference`,
     description: data.topic.subtitle,
+    alternates: { canonical: `/dashboard/${slug}` },
   };
 }
 
