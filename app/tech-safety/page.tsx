@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Tech Safety & Consequence Setup Guide",
   description:
     "Step-by-step parental controls for every device your child uses. Tell us your setup, and this guide builds itself around your family.",
+  alternates: { canonical: "/tech-safety" },
 };
 
 export default function TechSafetyToolPage() {

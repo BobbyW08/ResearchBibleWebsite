@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Research Bibles",
   description:
     "Long-form, evidence-backed reference documents behind the site's parent-facing content.",
+  alternates: { canonical: "/research" },
 };
 
 export default async function ResearchBiblesIndexPage() {

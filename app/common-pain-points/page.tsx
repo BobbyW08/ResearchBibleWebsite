@@ -5,9 +5,10 @@ import PainPointCard from "@/components/marketing/pain-point-card";
 import { getAllAwarenessModules, getAllPainPoints } from "@/lib/pain-points-reader";
 
 export const metadata: Metadata = {
-  title: "Pain Points",
+  title: "Parent Pain Points",
   description:
-    "Find the situation that feels closest to what's happening at home, and start there.",
+    "Common parenting pain points, from meltdowns to screen battles to teen conflict — find the situation that feels closest to what's happening at home, and start there.",
+  alternates: { canonical: "/common-pain-points" },
 };
 
 export default async function HelpIndexPage() {

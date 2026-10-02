@@ -38,6 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: entry.title,
     description: entry.cardTeaser,
+    alternates: { canonical: "/common-pain-points/teen" },
   };
 }
 

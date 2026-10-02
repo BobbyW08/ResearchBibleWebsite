@@ -23,6 +23,7 @@ export async function generateMetadata({
 
   return {
     title: entry.title,
+    alternates: { canonical: `/research/${slug}` },
     robots: { index: !entry.noindex, follow: !entry.noindex },
   };
 }

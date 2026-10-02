@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
+import { profilesV1 } from "@/lib/db/schema";
 
 export async function setAccountType(formData: FormData) {
   const { data } = await auth.getSession();
@@ -16,10 +16,10 @@ export async function setAccountType(formData: FormData) {
   }
 
   await db
-    .insert(profiles)
+    .insert(profilesV1)
     .values({ userId: user.id, accountType })
     .onConflictDoUpdate({
-      target: profiles.userId,
+      target: profilesV1.userId,
       set: { accountType },
     });
 
