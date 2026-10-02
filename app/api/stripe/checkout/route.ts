@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
 import { profiles, stripeOrders } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { STRIPE_PRODUCTS } from "@/lib/stripe-products";
 
 export async function POST(request: Request) {
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin") ?? "https://bobby-washburn.com";
 
-  const checkoutSession = await stripe.checkout.sessions.create({
+  const checkoutSession = await getStripe().checkout.sessions.create({
     mode: "payment",
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/account?checkout=success`,
