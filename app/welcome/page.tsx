@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function WelcomePage() {
   const { data: session } = await auth.getSession();
   if (!session?.user) {
