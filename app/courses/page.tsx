@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
 import { profiles, courses, lessons } from "@/lib/db/schema";
-import { eq, or, asc, count } from "drizzle-orm";
+import { eq, asc, count } from "drizzle-orm";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { Card, CardContent } from "@/components/ui/card";
