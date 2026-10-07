@@ -1,60 +1,17 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { profiles, courses, lessons } from "@/lib/db/schema";
-import { eq, asc, count } from "drizzle-orm";
+import type { Metadata } from "next";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
-import { Card, CardContent } from "@/components/ui/card";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Courses",
+  description: "Structured parenting courses from Bobby Washburn. Coming soon.",
 };
 
-export const dynamic = "force-dynamic";
-
-export default async function CoursesPage() {
-  const { data: session } = await auth.getSession();
-  if (!session?.user) redirect("/sign-in?returnTo=/courses");
-
-  const profile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
-
-  if (!profile) redirect("/welcome");
-
-  const allCourses = await db
-    .select()
-    .from(courses)
-    .where(
-      eq(courses.isPublished, true)
-    )
-    .orderBy(asc(courses.sortOrder));
-
-  const visibleCourses = allCourses.filter(
-    (c) => c.audience === "all" || c.audience === profile.userRole
-  );
-
-  const lessonCounts = await Promise.all(
-    visibleCourses.map((c) =>
-      db
-        .select({ count: count() })
-        .from(lessons)
-        .where(eq(lessons.courseId, c.id))
-        .then((r) => ({ courseId: c.id, count: r[0]?.count ?? 0 }))
-    )
-  );
-  const countMap = Object.fromEntries(lessonCounts.map((r) => [r.courseId, r.count]));
-
+export default function CoursesPage() {
   return (
     <div className="flex flex-1 flex-col">
       <Header />
-      <main className="flex-1">
+      <main className="flex flex-1 flex-col">
         <section className="border-b border-border">
           <div className="mx-auto max-w-4xl px-4 py-16 sm:px-8 lg:py-20">
             <h1 className="font-heading text-3xl font-medium tracking-tight">Courses</h1>
@@ -63,31 +20,18 @@ export default async function CoursesPage() {
             </p>
           </div>
         </section>
-        <section>
-          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-8">
-            {visibleCourses.length === 0 && (
-              <p className="text-base text-muted-foreground">No courses available yet. Check back soon.</p>
-            )}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {visibleCourses.map((course) => (
-                <Link key={course.id} href={`/courses/${course.slug}`}>
-                  <Card className="h-full hover:border-primary transition-colors">
-                    <CardContent className="flex flex-col gap-3 px-6 py-6">
-                      <h2 className="font-heading text-lg font-medium text-foreground">
-                        {course.title}
-                      </h2>
-                      {course.description && (
-                        <p className="text-sm text-muted-foreground">{course.description}</p>
-                      )}
-                      <p className="text-xs font-medium text-muted-foreground">
-                        {countMap[course.id] ?? 0} lesson
-                        {(countMap[course.id] ?? 0) !== 1 ? "s" : ""}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+        <section className="flex flex-1 items-center justify-center">
+          <div className="mx-auto max-w-md px-4 py-24 text-center">
+            <p className="font-subtitle text-sm font-semibold uppercase tracking-widest text-primary">
+              Coming Soon
+            </p>
+            <h2 className="mt-4 font-heading text-2xl font-medium tracking-tight">
+              Courses are in development
+            </h2>
+            <p className="mt-4 text-base text-muted-foreground">
+              The first courses will cover the same evidence-based topics as the deep dives
+              on this site, with guided structure and practical takeaways. Check back soon.
+            </p>
           </div>
         </section>
       </main>
