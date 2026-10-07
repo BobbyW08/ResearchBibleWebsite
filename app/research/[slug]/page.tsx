@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
-import { getAllResearchBibles, getResearchBible, resolveBibleBody } from "@/lib/research-bibles-reader";
+import { getAllResearchBibles, getResearchBible } from "@/lib/research-bibles-reader";
 import { renderBibleBody } from "@/lib/research-bibles/render-mdx";
 
 type ResearchBiblePageProps = {
@@ -34,8 +34,7 @@ export default async function ResearchBiblePage({ params }: ResearchBiblePagePro
 
   if (!entry) notFound();
 
-  const bodySource = await resolveBibleBody(entry.body);
-  const bodyContent = await renderBibleBody(bodySource);
+  const bodyContent = await renderBibleBody(entry.body);
 
   return (
     <div className="flex flex-1 flex-col">

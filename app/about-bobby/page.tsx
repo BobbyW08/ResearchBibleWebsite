@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
-import { reader } from "@/lib/keystatic-reader";
+import { readAbout } from "@/lib/content-reader";
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -82,7 +82,7 @@ function IntroCallCta({
 }
 
 export default async function AboutBobbyPage() {
-  const about = await reader.singletons.about.read();
+  const about = readAbout();
 
   if (!about) {
     return (

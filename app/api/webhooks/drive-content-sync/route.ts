@@ -148,12 +148,11 @@ async function handleBibleSync(fileId: string, fileName: string): Promise<SyncRe
     version,
     lastUpdated: todayUtcIsoDate(),
     // Site-owned: default [] on first sync, otherwise leave whatever was
-    // already set in Keystatic completely untouched.
+    // already set in the CMS completely untouched.
     tags: existingParsed?.frontmatter.tags ?? [],
     // Defaults hidden from search engines on first sync — bibles aren't
-    // written for an open audience to land on. Matches keystatic.config.ts's
-    // noindex default; Bobby opts a specific bible into search visibility
-    // manually via Keystatic, never as a side effect of a resync.
+    // written for an open audience to land on. Bobby opts a specific bible
+    // into search visibility manually in the CMS, never as a side effect of a resync.
     noindex: existingParsed?.frontmatter.noindex ?? true,
     changelog: [
       ...(existingParsed?.frontmatter.changelog ?? []),

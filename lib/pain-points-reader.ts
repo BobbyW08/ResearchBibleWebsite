@@ -1,4 +1,12 @@
-import { reader } from "@/lib/keystatic-reader";
+import {
+  readAllPainPoints,
+  readAllAwarenessModules,
+  readPainPoint,
+  readAwarenessModule,
+  type ContentBlockRaw,
+  type PainPointYaml,
+  type AwarenessModuleYaml,
+} from "@/lib/content-reader";
 import { resolvePainPointIcon } from "@/lib/pain-point-icons";
 import type {
   AwarenessModule,
@@ -7,24 +15,16 @@ import type {
   PainPointTopic,
 } from "@/lib/pain-points";
 
-type RawContentBlock = {
-  discriminant: "p" | "stat" | "list";
-  value: string | readonly string[];
-};
-
-type PainPointEntry = Awaited<ReturnType<typeof reader.collections.painPoints.read>>;
-type AwarenessModuleEntry = Awaited<ReturnType<typeof reader.collections.awarenessModules.read>>;
-
-function transformContentBlocks(blocks: readonly RawContentBlock[]): ContentBlock[] {
+function transformContentBlocks(blocks: ContentBlockRaw[]): ContentBlock[] {
   return blocks.map((block) => {
     if (block.discriminant === "list") {
-      return { kind: "list", items: [...(block.value as readonly string[])] };
+      return { kind: "list", items: [...block.value] };
     }
-    return { kind: block.discriminant, html: block.value as string };
+    return { kind: block.discriminant as "p" | "stat", html: block.value as string };
   });
 }
 
-function transformPainPoint(slug: string, entry: NonNullable<PainPointEntry>): PainPointTopic {
+function transformPainPoint(slug: string, entry: PainPointYaml): PainPointTopic {
   return {
     kind: "pain-point",
     slug,
@@ -34,26 +34,25 @@ function transformPainPoint(slug: string, entry: NonNullable<PainPointEntry>): P
     cardTeaser: entry.cardTeaser,
     headline: entry.headline,
     intro: entry.intro,
-    featured: entry.featured,
+    featured: entry.featured ?? false,
     exampleScenario: entry.exampleScenario || undefined,
     whatHappening: transformContentBlocks(entry.whatHappening),
     backfires: entry.backfires.map((item) => ({ title: item.title, body: item.body })),
     tries: entry.tries.map((item) => ({ title: item.title, body: item.body })),
     support: entry.support,
     crisis: entry.crisis,
-    deepDive: { label: entry.deepDiveLabel, href: entry.deepDiveHref },
+    deepDive: entry.deepDiveHref
+      ? { label: entry.deepDiveLabel ?? "", href: entry.deepDiveHref }
+      : undefined,
     related: entry.related.map((link) => ({ label: link.label, href: link.href })),
   };
 }
 
-function transformAwarenessModule(
-  slug: string,
-  entry: NonNullable<AwarenessModuleEntry>,
-): AwarenessModule {
+function transformAwarenessModule(slug: string, entry: AwarenessModuleYaml): AwarenessModule {
   return {
     kind: "module",
     slug,
-    icon: resolvePainPointIcon(entry.icon),
+    icon: resolvePainPointIcon(entry.icon ?? ""),
     tag: entry.tag,
     title: entry.title,
     cardTeaser: entry.cardTeaser,
@@ -69,13 +68,13 @@ function transformAwarenessModule(
 }
 
 export async function getAllPainPoints(): Promise<PainPointTopic[]> {
-  const entries = await reader.collections.painPoints.all();
-  return entries.map(({ slug, entry }) => transformPainPoint(slug, entry));
+  return readAllPainPoints().map(({ slug, data }) => transformPainPoint(slug, data));
 }
 
 export async function getAllAwarenessModules(): Promise<AwarenessModule[]> {
-  const entries = await reader.collections.awarenessModules.all();
-  return entries.map(({ slug, entry }) => transformAwarenessModule(slug, entry));
+  return readAllAwarenessModules().map(({ slug, data }) =>
+    transformAwarenessModule(slug, data)
+  );
 }
 
 export async function getAllHelpEntries(): Promise<HelpEntry[]> {
@@ -92,13 +91,11 @@ export async function getFeaturedPainPoints(): Promise<PainPointTopic[]> {
 }
 
 export async function getHelpEntry(slug: string): Promise<HelpEntry | undefined> {
-  const painPointEntry = await reader.collections.painPoints.read(slug);
-  if (painPointEntry) {
-    return transformPainPoint(slug, painPointEntry);
-  }
-  const moduleEntry = await reader.collections.awarenessModules.read(slug);
-  if (moduleEntry) {
-    return transformAwarenessModule(slug, moduleEntry);
-  }
+  const painPointData = readPainPoint(slug);
+  if (painPointData) return transformPainPoint(slug, painPointData);
+
+  const moduleData = readAwarenessModule(slug);
+  if (moduleData) return transformAwarenessModule(slug, moduleData);
+
   return undefined;
 }

@@ -14,7 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-// Keep in sync with keystatic.config.ts's PAIN_POINT_ICON_OPTIONS.
+// Keep in sync with the approved icon list in src/payload/collections/PainPoints.ts.
 export const PAIN_POINT_ICONS = {
   Flame,
   Smartphone,

@@ -1,4 +1,4 @@
-import { reader } from "@/lib/keystatic-reader";
+import { readTestimonials } from "@/lib/content-reader";
 import ProofWallHero, { type Testimonial } from "@/components/marketing/proof-wall-hero";
 
 const FALLBACK_TESTIMONIALS: Testimonial[] = [
@@ -30,10 +30,8 @@ const FALLBACK_TESTIMONIALS: Testimonial[] = [
 ];
 
 async function Hero() {
-  const entries = await reader.collections.testimonials.all();
-  const testimonials: Testimonial[] = entries.length
-    ? entries.map(({ entry }) => ({ quote: entry.quote, attribution: entry.attribution }))
-    : FALLBACK_TESTIMONIALS;
+  const entries = readTestimonials();
+  const testimonials: Testimonial[] = entries.length ? entries : FALLBACK_TESTIMONIALS;
 
   return <ProofWallHero testimonials={testimonials} />;
 }

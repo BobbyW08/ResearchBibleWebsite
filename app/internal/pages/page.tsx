@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { reader } from "@/lib/keystatic-reader";
+import { readAllPainPoints, readAllAwarenessModules, readTestimonials } from "@/lib/content-reader";
+import { getAllResearchBibles } from "@/lib/research-bibles-reader";
 
 export const metadata: Metadata = {
   title: "Page Registry",
   robots: { index: false, follow: false },
 };
 
-// Internal-only page registry — not linked from nav, not indexed. Pulls the
-// live slug list from every Keystatic collection that maps to a public
-// route, plus a small hardcoded list of one-off routes that aren't backed
-// by a collection at all.
 const ONE_OFF_ROUTES = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about-bobby" },
@@ -22,34 +19,36 @@ const ONE_OFF_ROUTES = [
   { label: "Research bibles index", href: "/research" },
   { label: "Tech Safety & Consequence Setup", href: "/tech-safety" },
   { label: "Tools", href: "/tools" },
-  { label: "Keystatic admin", href: "/keystatic" },
+  { label: "Admin (Payload)", href: "/admin" },
 ];
 
 async function getRegistrySections() {
-  const [researchBibleSlugs, painPointSlugs, awarenessModuleSlugs, testimonialSlugs] =
-    await Promise.all([
-      reader.collections.researchBibles.list(),
-      reader.collections.painPoints.list(),
-      reader.collections.awarenessModules.list(),
-      reader.collections.testimonials.list(),
-    ]);
+  const [researchBibles, painPoints, awarenessModules, testimonials] = await Promise.all([
+    getAllResearchBibles(),
+    Promise.resolve(readAllPainPoints()),
+    Promise.resolve(readAllAwarenessModules()),
+    Promise.resolve(readTestimonials()),
+  ]);
 
   return [
     {
       label: "Research Bibles",
-      entries: researchBibleSlugs.map((slug) => ({ label: slug, href: `/research/${slug}` })),
+      entries: researchBibles.map((b) => ({ label: b.slug, href: `/research/${b.slug}` })),
     },
     {
       label: "Pain Points",
-      entries: painPointSlugs.map((slug) => ({ label: slug, href: `/common-pain-points/${slug}` })),
+      entries: painPoints.map(({ slug }) => ({ label: slug, href: `/common-pain-points/${slug}` })),
     },
     {
       label: "Awareness Modules",
-      entries: awarenessModuleSlugs.map((slug) => ({ label: slug, href: `/common-pain-points/${slug}` })),
+      entries: awarenessModules.map(({ slug }) => ({
+        label: slug,
+        href: `/common-pain-points/${slug}`,
+      })),
     },
     {
       label: "Testimonials (no public route — CMS entries only)",
-      entries: testimonialSlugs.map((slug) => ({ label: slug, href: null })),
+      entries: testimonials.map((t, i) => ({ label: `${i + 1}: ${t.attribution}`, href: null })),
     },
   ];
 }

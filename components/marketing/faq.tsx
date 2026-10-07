@@ -1,10 +1,10 @@
 import { Badge } from "@/components/ui/badge";
-import { reader } from "@/lib/keystatic-reader";
+import { readFaq } from "@/lib/content-reader";
 import FaqAccordion from "@/components/marketing/faq-accordion";
 import FadeInView from "@/components/marketing/fade-in-view";
 
 async function Faq() {
-  const data = await reader.singletons.faq.read();
+  const data = readFaq();
   const items = data?.items ?? [];
 
   const faqJsonLd = {
