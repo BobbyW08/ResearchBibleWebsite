@@ -1,4 +1,4 @@
-import { readTestimonials } from "@/lib/content-reader";
+import { getPayloadClient } from "@/lib/payload-client";
 import ProofWallHero, { type Testimonial } from "@/components/marketing/proof-wall-hero";
 
 const FALLBACK_TESTIMONIALS: Testimonial[] = [
@@ -23,15 +23,25 @@ const FALLBACK_TESTIMONIALS: Testimonial[] = [
     attribution: "Parent peer-support client",
   },
   {
-    quote:
-      "If we didn't have Bobby, I don't know if we would be where we are.",
+    quote: "If we didn't have Bobby, I don't know if we would be where we are.",
     attribution: "Parent peer-support client",
   },
 ];
 
 async function Hero() {
-  const entries = readTestimonials();
-  const testimonials: Testimonial[] = entries.length ? entries : FALLBACK_TESTIMONIALS;
+  let testimonials: Testimonial[] = FALLBACK_TESTIMONIALS;
+  try {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({ collection: "testimonials", limit: 20, depth: 0 });
+    if (docs.length > 0) {
+      testimonials = docs.map((doc) => {
+        const d = doc as unknown as { quote: string; attribution: string };
+        return { quote: d.quote, attribution: d.attribution };
+      });
+    }
+  } catch {
+    // Payload not ready yet — use fallback
+  }
 
   return <ProofWallHero testimonials={testimonials} />;
 }

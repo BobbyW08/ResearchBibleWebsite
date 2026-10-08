@@ -1,9 +1,20 @@
 import type { NextConfig } from "next";
-import { createMDX } from "fumadocs-mdx/next";
-
-const withMDX = createMDX();
+import { withPayload } from "@payloadcms/next/withPayload";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    resolveAlias: {
+      "@payload-config": "./payload.config.ts",
+    },
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias as Record<string, string>),
+      "@payload-config": path.resolve(process.cwd(), "payload.config.ts"),
+    };
+    return config;
+  },
   images: {
     remotePatterns: [
       {
@@ -43,4 +54,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withMDX(nextConfig);
+export default withPayload(nextConfig);

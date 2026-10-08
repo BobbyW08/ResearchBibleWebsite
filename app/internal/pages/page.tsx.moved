@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { readAllPainPoints, readAllAwarenessModules, readTestimonials } from "@/lib/content-reader";
 import { getAllResearchBibles } from "@/lib/research-bibles-reader";
+import { getAllPainPoints, getAllAwarenessModules } from "@/lib/pain-points-reader";
+import { getPayloadClient } from "@/lib/payload-client";
 
 export const metadata: Metadata = {
   title: "Page Registry",
@@ -23,11 +24,19 @@ const ONE_OFF_ROUTES = [
 ];
 
 async function getRegistrySections() {
-  const [researchBibles, painPoints, awarenessModules, testimonials] = await Promise.all([
+  const payload = await getPayloadClient().catch(() => null);
+  const testimonialDocs = payload
+    ? (
+        await payload
+          .find({ collection: "testimonials", limit: 100, depth: 0 })
+          .catch(() => ({ docs: [] }))
+      ).docs
+    : [];
+
+  const [researchBibles, painPoints, awarenessModules] = await Promise.all([
     getAllResearchBibles(),
-    Promise.resolve(readAllPainPoints()),
-    Promise.resolve(readAllAwarenessModules()),
-    Promise.resolve(readTestimonials()),
+    getAllPainPoints(),
+    getAllAwarenessModules(),
   ]);
 
   return [
@@ -48,7 +57,10 @@ async function getRegistrySections() {
     },
     {
       label: "Testimonials (no public route — CMS entries only)",
-      entries: testimonials.map((t, i) => ({ label: `${i + 1}: ${t.attribution}`, href: null })),
+      entries: (testimonialDocs as { attribution?: string }[]).map((t, i) => ({
+        label: `${i + 1}: ${t.attribution ?? ""}`,
+        href: null,
+      })),
     },
   ];
 }

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { getAllResearchBibles, getResearchBible } from "@/lib/research-bibles-reader";
-import { renderBibleBody } from "@/lib/research-bibles/render-mdx";
 
 type ResearchBiblePageProps = {
   params: Promise<{ slug: string }>;
@@ -33,8 +33,6 @@ export default async function ResearchBiblePage({ params }: ResearchBiblePagePro
   const entry = await getResearchBible(slug);
 
   if (!entry) notFound();
-
-  const bodyContent = await renderBibleBody(entry.body);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -67,15 +65,18 @@ export default async function ResearchBiblePage({ params }: ResearchBiblePagePro
           ) : null}
 
           <article className="prose prose-neutral mt-8 max-w-none dark:prose-invert">
-            {bodyContent}
+            {entry.body ? (
+              <RichText data={entry.body as Parameters<typeof RichText>[0]["data"]} />
+            ) : (
+              <p className="text-muted-foreground">Content coming soon.</p>
+            )}
           </article>
 
           {entry.changelog.length > 0 ? (
             <section className="mt-16 border-t border-border pt-8">
               <h2 className="font-heading text-xl font-medium tracking-tight">Updates</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                A visible history of changes to this document as new research is
-                integrated.
+                A visible history of changes to this document as new research is integrated.
               </p>
               <ol className="mt-6 space-y-6">
                 {entry.changelog.map((item, index) => (

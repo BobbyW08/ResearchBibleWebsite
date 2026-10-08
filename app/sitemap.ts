@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { source } from "@/lib/source";
 import { getAllHelpEntries } from "@/lib/pain-points-reader";
 import { getAllResearchBibles } from "@/lib/research-bibles-reader";
+import { getPayloadClient } from "@/lib/payload-client";
 
 const SITE_URL = "https://bobby-washburn.com";
 
@@ -18,8 +18,21 @@ const STATIC_ROUTES = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [docsParams, helpEntries, bibles] = await Promise.all([
-    source.generateParams(),
+  const payload = await getPayloadClient().catch(() => null);
+  const deepDiveDocs = payload
+    ? (
+        await payload
+          .find({
+            collection: "deep-dives",
+            where: { _status: { equals: "published" } },
+            limit: 200,
+            depth: 0,
+          })
+          .catch(() => ({ docs: [] }))
+      ).docs
+    : [];
+
+  const [helpEntries, bibles] = await Promise.all([
     getAllHelpEntries(),
     getAllResearchBibles(),
   ]);
@@ -28,10 +41,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE_URL}${route}`,
   }));
 
-  const docsEntries: MetadataRoute.Sitemap = docsParams
-    .filter((param) => param.slug.length > 0)
-    .map((param) => ({
-      url: `${SITE_URL}/docs/${param.slug.join("/")}`,
+  const docsEntries: MetadataRoute.Sitemap = (deepDiveDocs as { slug?: string }[])
+    .filter((d) => d.slug)
+    .map((d) => ({
+      url: `${SITE_URL}/docs/${d.slug}`,
     }));
 
   const helpEntriesSitemap: MetadataRoute.Sitemap = helpEntries.map((entry) => ({

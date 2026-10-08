@@ -2,36 +2,26 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import { Archivo, Arvo, Caveat, Geist_Mono, Libre_Franklin } from "next/font/google";
-import { RootProvider } from "fumadocs-ui/provider/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Providers } from "./providers";
-import "./globals.css";
+import { Providers } from "../providers";
+import "../globals.css";
 
-// Heading + subheading + body, per the brand system — real spec, not a placeholder.
 const libreFranklin = Libre_Franklin({
   variable: "--font-libre-franklin",
   subsets: ["latin"],
 });
 
-// Quote / testimonial text, per the brand system — real spec, not a placeholder.
 const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
 });
 
-// Placeholder for "Philly Sans" (hero-level title font). Bobby is resolving
-// licensing/a production substitute before this ships — swapping the real font
-// in only means changing this import and the --font-title-placeholder variable
-// name below, nothing structural.
 const titlePlaceholder = Archivo({
   variable: "--font-title-placeholder",
   subsets: ["latin"],
   weight: ["600", "700", "800"],
 });
 
-// Subtitle font — resolved, per homepage-redesign-v3.md: Arvo replaces the
-// Rockwell placeholder (free Google Font, no licensing issue). Real/final,
-// not a placeholder — unlike titlePlaceholder above.
 const arvo = Arvo({
   variable: "--font-arvo",
   subsets: ["latin"],
@@ -63,12 +53,6 @@ export const metadata: Metadata = {
   },
 };
 
-// GA4 Google tag — sitewide, loaded once from the root layout (shared by
-// every route). `afterInteractive` is Next.js's/Google's recommended
-// strategy for analytics: it loads early without blocking hydration. Since
-// this lives in the root layout rather than a page component, it isn't
-// remounted on client-side navigation between routes, so gtag() only
-// initializes once per page load.
 const GA4_MEASUREMENT_ID = "G-5ZLMM0G7CV";
 
 const personJsonLd = {
@@ -96,6 +80,12 @@ export default function RootLayout({
       className={`${libreFranklin.variable} ${caveat.variable} ${titlePlaceholder.variable} ${arvo.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`}
@@ -109,15 +99,9 @@ export default function RootLayout({
             gtag('config', '${GA4_MEASUREMENT_ID}');
           `}
         </Script>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
-        />
-        <RootProvider theme={{ forcedTheme: "light", defaultTheme: "light" }}>
-          <Providers>
-            <TooltipProvider>{children}</TooltipProvider>
-          </Providers>
-        </RootProvider>
+        <Providers>
+          <TooltipProvider>{children}</TooltipProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>

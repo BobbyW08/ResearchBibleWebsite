@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import PlaceholderPhoto from "@/components/marketing/placeholder-photo";
-import { readAbout } from "@/lib/content-reader";
+import { getAbout } from "@/lib/payload-globals";
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -82,7 +82,7 @@ function IntroCallCta({
 }
 
 export default async function AboutBobbyPage() {
-  const about = readAbout();
+  const about = await getAbout().catch(() => null);
 
   if (!about) {
     return (
@@ -93,6 +93,16 @@ export default async function AboutBobbyPage() {
       </div>
     );
   }
+
+  // Payload stores shortAboutParagraphs as [{paragraph, id}] and training as a joined string
+  const paragraphs = (about.shortAboutParagraphs as { paragraph: string }[] | undefined) ?? [];
+  const trainingItems = (about.training as string | undefined)
+    ?.split("; ")
+    .filter(Boolean) ?? [];
+  const photoUrl =
+    about.photo && typeof about.photo === "object"
+      ? (about.photo as { url: string }).url
+      : null;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -117,9 +127,9 @@ export default async function AboutBobbyPage() {
               <IntroCallCta align="start" />
             </div>
             <div className="flex justify-center lg:justify-end">
-              {about.photo ? (
+              {photoUrl ? (
                 <Image
-                  src={`/images/about/${about.photo}`}
+                  src={photoUrl}
                   alt="Photo of Bobby Washburn"
                   width={320}
                   height={320}
@@ -136,9 +146,9 @@ export default async function AboutBobbyPage() {
 
           <div className="mt-12 flex flex-col gap-12">
             <section className="flex flex-col gap-4">
-              {about.shortAboutParagraphs.map((paragraph, index) => (
+              {paragraphs.map((item, index) => (
                 <p key={index} className="text-base font-normal text-muted-foreground">
-                  {paragraph}
+                  {item.paragraph}
                 </p>
               ))}
               <div className="flex justify-center pt-2">
@@ -161,14 +171,16 @@ export default async function AboutBobbyPage() {
                   <p className="font-medium text-foreground">Current role</p>
                   <p>{about.currentRole}</p>
                 </div>
-                <div>
-                  <p className="font-medium text-foreground">Training</p>
-                  <ul className="list-disc space-y-1 pl-5">
-                    {about.training.map((item, index) => (
-                      <li key={index}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
+                {trainingItems.length > 0 && (
+                  <div>
+                    <p className="font-medium text-foreground">Training</p>
+                    <ul className="list-disc space-y-1 pl-5">
+                      {trainingItems.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div>
                   <p className="font-medium text-foreground">Prior</p>
                   <p>{about.prior}</p>
@@ -176,7 +188,7 @@ export default async function AboutBobbyPage() {
                 {about.also && (
                   <div>
                     <p className="font-medium text-foreground">Also</p>
-                    <p>{about.also}</p>
+                    <p>{about.also as string}</p>
                   </div>
                 )}
                 <div>

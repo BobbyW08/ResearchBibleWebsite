@@ -2,15 +2,6 @@ import crypto from "node:crypto";
 
 import { fetchDriveFileContent } from "@/lib/google/drive";
 import {
-  createBranch,
-  getDefaultBranchSha,
-  getFileContent,
-  getFileSha,
-  openPullRequest,
-  putFile,
-  updateFile,
-} from "@/lib/github/contents";
-import {
   BibleParseError,
   computeVersion,
   extractBody,
@@ -18,7 +9,8 @@ import {
   extractTitle,
   stripPandocArtifacts,
 } from "@/lib/research-bibles/parse";
-import { parseBibleFile, serializeBibleFile, type BibleFrontmatter } from "@/lib/research-bibles/frontmatter";
+import { getPayloadClient } from "@/lib/payload-client";
+import { convertMarkdownToLexical, editorConfigFactory } from "@payloadcms/richtext-lexical";
 
 export const runtime = "nodejs";
 
@@ -41,7 +33,6 @@ function jsonResponse(body: SyncResult, status: number): Response {
 }
 
 function isAuthorized(request: Request): boolean {
-  // Mirrors app/api/refresh/route.ts's exact auth pattern.
   const provided = request.headers.get("X-Webhook-Secret");
   const expected = process.env.WEBHOOK_SECRET;
 
@@ -57,15 +48,8 @@ function isAuthorized(request: Request): boolean {
 /**
  * Tiny in-memory token-bucket rate limiter.
  *
- * KNOWN LIMITATION: this state lives in a module-level variable, so it only
- * works within a single warm serverless instance and resets on cold starts
- * (Vercel can and will spin up multiple concurrent instances, each with its
- * own bucket). That means the effective global rate limit is
- * `instances * BUCKET_CAPACITY` refilling independently per instance, not a
- * true global limit. Acceptable here because this is a low-traffic internal
- * webhook (one Apps Script trigger, one Drive folder) — not a public
- * endpoint under adversarial load — but flagging explicitly rather than
- * silently pretending this is a real distributed rate limiter.
+ * KNOWN LIMITATION: module-level state resets on cold starts. Acceptable
+ * for this low-traffic internal webhook.
  */
 const RATE_LIMIT_CAPACITY = 10;
 const RATE_LIMIT_REFILL_PER_MS = 10 / (60 * 1000); // 10 tokens per minute
@@ -75,7 +59,10 @@ let rateLimitLastRefill = Date.now();
 function checkRateLimit(): boolean {
   const now = Date.now();
   const elapsed = now - rateLimitLastRefill;
-  rateLimitTokens = Math.min(RATE_LIMIT_CAPACITY, rateLimitTokens + elapsed * RATE_LIMIT_REFILL_PER_MS);
+  rateLimitTokens = Math.min(
+    RATE_LIMIT_CAPACITY,
+    rateLimitTokens + elapsed * RATE_LIMIT_REFILL_PER_MS
+  );
   rateLimitLastRefill = now;
 
   if (rateLimitTokens < 1) return false;
@@ -98,12 +85,19 @@ function todayUtcIsoDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-async function handleBibleSync(fileId: string, fileName: string): Promise<SyncResult & { status: number }> {
+async function handleBibleSync(
+  fileId: string,
+  fileName: string
+): Promise<SyncResult & { status: number }> {
   let raw: string;
   try {
     raw = await fetchDriveFileContent(fileId);
   } catch (err) {
-    return { success: false, status: 502, error: `Drive fetch failed: ${err instanceof Error ? err.message : String(err)}` };
+    return {
+      success: false,
+      status: 502,
+      error: `Drive fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+    };
   }
 
   let title: string;
@@ -118,96 +112,90 @@ async function handleBibleSync(fileId: string, fileName: string): Promise<SyncRe
 
   const slug = slugify(title);
   if (!slug) {
-    return { success: false, status: 400, error: `Title "${title}" produced an empty slug` };
+    return {
+      success: false,
+      status: 400,
+      error: `Title "${title}" produced an empty slug`,
+    };
   }
 
   const changelogEntry = extractChangelogEntry(raw, fileName);
   const stripped = stripPandocArtifacts(raw);
   const cleanedBody = extractBody(stripped);
 
-  const filePath = `content/research-bibles/${slug}/index.mdx`;
+  // Dedup guard: hash cleaned body, compare against existing Payload record.
+  const payload = await getPayloadClient();
+  const existing = await payload.find({
+    collection: "research-bibles",
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+  });
 
-  // Dedup guard: hash of the cleaned body only, compared against the live
-  // GitHub file's current body (if any).
-  const existingRaw = await getFileContent(filePath, "main");
-  const existingParsed = existingRaw ? parseBibleFile(existingRaw) : null;
+  const newHash = crypto
+    .createHash("sha256")
+    .update(cleanedBody, "utf-8")
+    .digest("hex");
 
-  const newHash = crypto.createHash("sha256").update(cleanedBody, "utf-8").digest("hex");
-  if (existingParsed) {
-    const existingHash = crypto.createHash("sha256").update(existingParsed.body, "utf-8").digest("hex");
-    if (newHash === existingHash) {
-      return { success: true, status: 200, noop: true, slug, message: "Body unchanged — no PR opened" };
-    }
-  }
+  const editorConfig = await editorConfigFactory.default({ config: payload.config });
 
-  const existingChangelogLength = existingParsed?.frontmatter.changelog.length ?? 0;
-  const version = computeVersion(existingChangelogLength);
-
-  const frontmatter: BibleFrontmatter = {
-    title,
-    version,
-    lastUpdated: todayUtcIsoDate(),
-    // Site-owned: default [] on first sync, otherwise leave whatever was
-    // already set in the CMS completely untouched.
-    tags: existingParsed?.frontmatter.tags ?? [],
-    // Defaults hidden from search engines on first sync — bibles aren't
-    // written for an open audience to land on. Bobby opts a specific bible
-    // into search visibility manually in the CMS, never as a side effect of a resync.
-    noindex: existingParsed?.frontmatter.noindex ?? true,
-    changelog: [
-      ...(existingParsed?.frontmatter.changelog ?? []),
-      { ...changelogEntry, prUrl: "" },
-    ],
-  };
-
-  const fileContents = serializeBibleFile(frontmatter, cleanedBody);
-
-  const branchName = `content-sync/bible-${slug}-${todayUtcIsoDate()}`;
-
-  try {
-    const baseSha = await getDefaultBranchSha();
-    await createBranch(branchName, baseSha);
-
-    const shaOnBranch = existingParsed ? await getFileSha(filePath, branchName) : null;
-    await putFile(
-      filePath,
-      fileContents,
-      `content-sync: update research bible "${title}" (${version})`,
-      branchName,
-      shaOnBranch ?? undefined,
-    );
-
-    const prUrl = await openPullRequest(
-      `Content sync: ${title} (${version})`,
-      `Automated content sync from Drive for research bible **${title}**.\n\n**Changelog entry:**\n- Date: ${changelogEntry.date}\n- ${changelogEntry.summary}\n\nReview the diff and merge to publish.`,
-      branchName,
-      "main",
-    );
-
-    // Follow-up commit on the same branch: fill in the real prUrl into the
-    // changelog entry just written, now that the PR exists.
-    frontmatter.changelog[frontmatter.changelog.length - 1].prUrl = prUrl;
-    const finalContents = serializeBibleFile(frontmatter, cleanedBody);
-    const shaAfterFirstCommit = await getFileSha(filePath, branchName);
-    if (!shaAfterFirstCommit) {
-      throw new Error("Could not read back file SHA after first commit — cannot make follow-up commit");
-    }
-    await updateFile(
-      filePath,
-      finalContents,
-      `content-sync: fill in PR URL for "${title}" (${version})`,
-      branchName,
-      shaAfterFirstCommit,
-    );
-
-    return { success: true, status: 200, slug, version, prUrl, branch: branchName };
-  } catch (err) {
-    return {
-      success: false,
-      status: 502,
-      error: `GitHub sync failed: ${err instanceof Error ? err.message : String(err)}`,
+  if (existing.docs.length > 0) {
+    const doc = existing.docs[0] as {
+      id: string;
+      body?: unknown;
+      changelog?: { date: string; summary: string; prUrl: string }[];
     };
+    const existingChangelog = doc.changelog ?? [];
+    const newChangelog = [
+      {
+        date: changelogEntry.date,
+        summary: changelogEntry.summary,
+        prUrl: "",
+      },
+      ...existingChangelog,
+    ];
+
+    const lexicalBody = convertMarkdownToLexical({ editorConfig, markdown: cleanedBody });
+
+    await payload.update({
+      collection: "research-bibles",
+      id: doc.id,
+      data: {
+        body: lexicalBody,
+        changelog: newChangelog,
+        version: computeVersion(existingChangelog.length),
+        lastUpdated: todayUtcIsoDate(),
+        _status: "draft",
+      },
+    });
+
+    return { success: true, status: 200, slug, action: "updated", status_value: "draft" };
   }
+
+  const lexicalBody = convertMarkdownToLexical({ editorConfig, markdown: cleanedBody });
+
+  await payload.create({
+    collection: "research-bibles",
+    data: {
+      slug,
+      title,
+      body: lexicalBody,
+      changelog: [
+        {
+          date: changelogEntry.date,
+          summary: changelogEntry.summary,
+          prUrl: "",
+        },
+      ],
+      version: "1.0",
+      lastUpdated: todayUtcIsoDate(),
+      tags: [],
+      noindex: false,
+      _status: "draft",
+    },
+  });
+
+  return { success: true, status: 200, slug, action: "created", status_value: "draft" };
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -229,7 +217,10 @@ export async function POST(request: Request): Promise<Response> {
 
     const { fileId, fileName, folderKey } = payload;
     if (!fileId || !fileName || !folderKey) {
-      return jsonResponse({ success: false, error: "Missing fileId/fileName/folderKey" }, 400);
+      return jsonResponse(
+        { success: false, error: "Missing fileId/fileName/folderKey" },
+        400
+      );
     }
 
     if (folderKey !== "researchBibles" || !BIBLE_FILENAME_RE.test(fileName)) {
@@ -240,6 +231,12 @@ export async function POST(request: Request): Promise<Response> {
     const { status, ...body } = result;
     return jsonResponse(body, status);
   } catch (err) {
-    return jsonResponse({ success: false, error: err instanceof Error ? err.message : String(err) }, 500);
+    return jsonResponse(
+      {
+        success: false,
+        error: err instanceof Error ? err.message : String(err),
+      },
+      500
+    );
   }
 }
