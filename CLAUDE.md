@@ -253,7 +253,6 @@ Schema source: `src/payload/collections/` and `src/payload/globals/`. Config: `p
 
 **Remaining manual steps:**
 1. Set `PAYLOAD_SECRET` + `DATABASE_URI` in Vercel Production (still needed for production)
-2. Visit `/admin/create-first-user` on localhost to create Bobby's admin account
 
 **Node.js v24 patch:** `node_modules/payload/dist/bin/loadEnv.js` line 1–3 patched to use `import * as _nextEnvAll from '@next/env'; const nextEnvImport = _nextEnvAll.default ?? _nextEnvAll;` — fixes tsx ESM/CJS interop. Gets overwritten by `npm install`; re-apply if migration script fails with "Cannot destructure property 'loadEnvConfig'".
 
@@ -375,7 +374,6 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **Payload admin account** — Bobby must visit `http://localhost:3000/admin/create-first-user` after running `npm run dev` to create his admin account
 - **Vercel env vars** — `PAYLOAD_SECRET` and `DATABASE_URI` must be set in Vercel Production before deploy goes live; also update `sslmode=require` → `sslmode=verify-full` in both `DATABASE_URL` and `DATABASE_URI` if not already done
 - **`paths-loop.mp4` Chrome decode failure** — video renders as black box; Bobby needs to re-export faststart-encoded
 - **`/welcome` page broken** — page fails to load; see v18 Part R for diagnosis and fix
