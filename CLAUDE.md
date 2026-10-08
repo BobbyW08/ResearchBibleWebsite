@@ -271,13 +271,24 @@ Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[sl
 
 **Neon Postgres:** provisioned. `neon_auth` schema (Neon Auth). `public` schema (Drizzle + Payload coexist, no name conflicts).
 
-**Drizzle tables (all exist):**
-- `profiles` (`user_id`, `account_type`, age, gender) — needs community columns from v18 Part J
-- `topic_progress` — exists, empty
-- `interest_signups` (`email`, `source`, `created_at`) — live, backs `/api/interest-signups`. Mirrors to Google Sheet on new signup (`INTEREST_SIGNUPS_SHEET_ID`)
-- `pending_reviews` — audit log only
+**Drizzle tables (all exist in `public` schema):**
+- `profiles`, `topic_progress`, `interest_signups`, `pending_reviews` — original tables
+- `posts`, `comments`, `likes`, `points_ledger`, `post_tags` — community tables
+- `course_progress`, `entitlements` — courses gating tables
+- `stripe_customers`, `stripe_subscriptions`, `stripe_orders` — Stripe tables
+- `courses`, `lessons` — course catalog tables (Drizzle-managed, separate from Payload's `payload_courses`)
 
-**Stripe tables (migration exists, not yet confirmed run):** `stripe_customers`, `stripe_subscriptions`
+**Payload tables (all exist in `payload_cms` schema):** Payload auto-synced its schema on first run and uses a separate DB schema (`payload_cms`).
+
+**Drizzle migration tracking issue:** `drizzle.__drizzle_migrations` table exists but is empty — Drizzle has no record of which migrations were applied (tables exist but weren't stamped). `drizzle-kit migrate` will fail until this is fixed. Bobby must run this SQL once in the Neon console (SQL editor):
+```sql
+INSERT INTO drizzle."__drizzle_migrations" (hash, created_at) VALUES
+  ('4df8b7b2ed1b41fa3f2243b2b619c0b82ce2efa84fdf31855a6771fdb9c067cc', 1700000000000),
+  ('28ac3508e4689309eea09265313a391be6f2fd33c2b4fdec4fdd565ca797801a', 1700000000001),
+  ('4aea8844bed345c2a27b898077235944aed3a4527a9909e10c95e50db094723e', 1700000000002),
+  ('a695cb2655471c0d97ab48948b6422961ac9b435befb35867dfe1f44487f5bf9', 1700000000003),
+  ('d33068189a247ce821dea8b7c61a771c3dafcd4a720fd6cc904279c2ea2bd403', 1700000000004);
+```
 
 ---
 
@@ -368,8 +379,8 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 - **Vercel env vars** — `PAYLOAD_SECRET` and `DATABASE_URI` must be set in Vercel Production before deploy goes live; also update `sslmode=require` → `sslmode=verify-full` in both `DATABASE_URL` and `DATABASE_URI` if not already done
 - **`paths-loop.mp4` Chrome decode failure** — video renders as black box; Bobby needs to re-export faststart-encoded
 - **`/welcome` page broken** — page fails to load; see v18 Part R for diagnosis and fix
-- **Community/courses platform** — Parts J–P of v18 not started; see `claude-code-handoff-v18.md`
-- **Stripe DB migration** — `0004_stripe_customers_subscriptions.sql` exists but may not have run against Neon yet
+- **Drizzle migration tracking** — all tables exist but `drizzle.__drizzle_migrations` is empty; run the INSERT SQL in the Database section above in the Neon console before any future `drizzle-kit migrate` runs
+- **Community/courses platform** — DB tables exist; routes built but untested end-to-end; Neon Auth (`NEON_AUTH_BASE_URL`) must be configured before auth flow works; Stripe checkout/webhook routes not yet built
 - **Research Bible Pipeline end-to-end** — webhook not tested live; Apps Script trigger not installed
 - **Parent Content Sync Pipeline** — not tested end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not in Vercel
 - **Substack subdomain** (`roughlyeducated`) — needs Bobby's confirmation before embed ships
