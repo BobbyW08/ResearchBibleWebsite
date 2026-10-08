@@ -69,13 +69,13 @@ All tokens are CSS custom properties in `app/globals.css`. One deliberate light 
 - **Animation:** Motion
 - **Booking:** Cal.com — direct outbound links to `intro-call` (not embedded), except one Cal popup on the Teen page's pinned CTA
 - **Newsletter:** Substack embed in `components/marketing/newsletter-dialog.tsx`. Subdomain in `lib/links.ts`
-- **CMS:** Payload CMS 3.90.2 — installed, building. Admin at `/admin`. 9 collections, 4 globals. Schema in `payload.config.ts` (repo root). Collections and globals source in `src/payload/`. **Payload DB tables don't exist yet** — Bobby must run migrations and visit `/admin/create-first-user`. Migration script: `npx tsx scripts/migrate-to-payload.ts`.
+- **CMS:** Payload CMS 3.90.2 — active. Admin at `/admin`. 9 collections, 4 globals. Schema in `payload.config.ts` (repo root). Collections and globals source in `src/payload/`. DB tables exist and all content has been migrated. **One remaining manual step:** Bobby must visit `/admin/create-first-user` to create his admin account. Migration script (`npx tsx scripts/migrate-to-payload.ts`) has already run — do not re-run without clearing the DB first.
 - **Payments:** Stripe — scaffolded (`lib/stripe.ts`, `lib/stripe-client.ts`, `lib/stripe-products.ts`). Checkout and webhook routes not yet built.
 - **Database:** Neon Postgres — provisioned. `neon_auth` schema exists. Payload uses `DATABASE_URI`; Drizzle uses `DATABASE_URL` (same connection string, different var names, both in `.env.local`).
 - **Hosting:** Vercel
 - **Server-side integrations:** hand-rolled REST clients only — no `googleapis`, no Octokit.
 
-Do NOT use: Framer, Keystatic, Fumadocs, Aceternity UI, Magic UI Pro, Supabase, self-hosted better-auth, any SaaS boilerplate.
+Do NOT use: Framer, Keystatic, Fumadocs (removed), Aceternity UI, Magic UI Pro, Supabase, self-hosted better-auth, any SaaS boilerplate.
 
 ---
 
@@ -247,17 +247,23 @@ Schema source: `src/payload/collections/` and `src/payload/globals/`. Config: `p
 
 **`siteSettings` global** (`substackSubdomain`, `calComUrl`) — nothing reads from it yet. `lib/links.ts` and Cal.com URLs are still hardcoded.
 
-**Required manual steps before Payload works:**
-1. Set `PAYLOAD_SECRET` + `DATABASE_URI` in Vercel Production
-2. Payload migrations run on first start (or `payload migrate:run`)
-3. Visit `/admin/create-first-user`
-4. Run `npx tsx scripts/migrate-to-payload.ts` to populate from YAML/MDX sources
+**Completed setup:**
+- DB tables exist (Payload auto-synced schema on first local run)
+- All content migrated: 5 testimonials, 6 FAQ items, 10 pain points, 2 awareness modules, 36 deep dives (ADHD as draft), footer, site settings, about global
+
+**Remaining manual steps:**
+1. Set `PAYLOAD_SECRET` + `DATABASE_URI` in Vercel Production (still needed for production)
+2. Visit `/admin/create-first-user` on localhost to create Bobby's admin account
+
+**Node.js v24 patch:** `node_modules/payload/dist/bin/loadEnv.js` line 1–3 patched to use `import * as _nextEnvAll from '@next/env'; const nextEnvImport = _nextEnvAll.default ?? _nextEnvAll;` — fixes tsx ESM/CJS interop. Gets overwritten by `npm install`; re-apply if migration script fails with "Cannot destructure property 'loadEnvConfig'".
 
 ---
 
-## Community and Courses Platform (v18 Parts J–P — not yet built)
+## Community and Courses Platform (v18 Parts J–P — routes built, not yet live)
 
-DB schema for community tables (`posts`, `comments`, `likes`, `points_ledger`, `course_progress`, `entitlements`, `stripe_customers`, `stripe_subscriptions`) is partially done — Stripe tables exist in `drizzle/0004_stripe_customers_subscriptions.sql`. Community tables (`posts`, `comments`, `likes`, `points_ledger`) not yet added. Routes, API routes, and auth pages not yet built. See `claude-code-handoff-v18.md` Parts J–P for the full spec.
+DB schema complete in `lib/db/schema.ts`: `profiles` (with community fields), `posts`, `comments`, `likes`, `pointsLedger`, `courseProgress`, `entitlements`, `stripeCustomers`, `stripeSubscriptions`, `stripeOrders`, `postTags`. Drizzle migrations may need to run against Neon to create these tables.
+
+Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`, `/account`, `/welcome`. Auth middleware in `proxy.ts`. Stripe checkout and webhook routes not yet built. See `claude-code-handoff-v18.md` Parts J–P for remaining work.
 
 ---
 
@@ -358,7 +364,8 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **Payload manual steps** — see Required Manual Steps in Payload CMS section above
+- **Payload admin account** — Bobby must visit `http://localhost:3000/admin/create-first-user` after running `npm run dev` to create his admin account
+- **Vercel env vars** — `PAYLOAD_SECRET` and `DATABASE_URI` must be set in Vercel Production before deploy goes live; also update `sslmode=require` → `sslmode=verify-full` in both `DATABASE_URL` and `DATABASE_URI` if not already done
 - **`paths-loop.mp4` Chrome decode failure** — video renders as black box; Bobby needs to re-export faststart-encoded
 - **`/welcome` page broken** — page fails to load; see v18 Part R for diagnosis and fix
 - **Community/courses platform** — Parts J–P of v18 not started; see `claude-code-handoff-v18.md`
@@ -368,8 +375,8 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 - **Substack subdomain** (`roughlyeducated`) — needs Bobby's confirmation before embed ships
 - **Start Here Row 2 photos** — temp Unsplash stock; swap `ROW_TWO_PANELS` URL constants when real photos arrive
 - **`siteSettings` global** — not yet wired to `lib/links.ts` or Cal.com URLs
-- **Organizations page** — CTA is `mailto:` placeholder; full rebuild per v18 Part P not started
-- **Pending copy from Bobby:** About-Bobby, `/services/organizations`, FAQ
+- **Organizations page** — full rebuild per v18 Part P done (static content + inquiry form); `OrgInquiryForm` POSTs to `/api/org-inquiry` which does not yet exist — needs building
+- **Pending copy from Bobby:** About-Bobby page content, FAQ answers
 
 ---
 
