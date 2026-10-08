@@ -17,8 +17,15 @@ export default async function SignInPage({
 }: {
   searchParams: Promise<{ returnTo?: string }>;
 }) {
-  const { data: session } = await auth.getSession();
   const { returnTo } = await searchParams;
+
+  let session = null;
+  try {
+    const result = await auth.getSession();
+    session = result.data;
+  } catch {
+    // auth not configured — render sign-in UI anyway
+  }
 
   if (session?.user) {
     redirect(returnTo ?? "/community");

@@ -16,16 +16,28 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function WelcomePage() {
-  const { data: session } = await auth.getSession();
+  let session = null;
+  try {
+    const result = await auth.getSession();
+    session = result.data;
+  } catch {
+    redirect("/sign-in");
+  }
+
   if (!session?.user) {
     redirect("/sign-in");
   }
 
-  const existing = await db
-    .select({ id: profiles.id })
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1);
+  let existing: { id: string }[] = [];
+  try {
+    existing = await db
+      .select({ id: profiles.id })
+      .from(profiles)
+      .where(eq(profiles.userId, session.user.id))
+      .limit(1);
+  } catch {
+    // DB not yet migrated — treat as no profile
+  }
 
   if (existing.length > 0) {
     redirect("/community");
