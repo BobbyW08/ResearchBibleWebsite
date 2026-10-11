@@ -3,6 +3,7 @@ import { withPayload } from "@payloadcms/next/withPayload";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@payloadcms/next", "@payloadcms/ui"],
   turbopack: {
     resolveAlias: {
       "@payload-config": "./payload.config.ts",

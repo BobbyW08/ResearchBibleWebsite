@@ -1,3 +1,7 @@
+// Payload's compiled dist strips the CSS import from RootLayout — add it explicitly here.
+// See: node_modules/@payloadcms/next/dist/layouts/Root/index.tsx (source) vs index.js (compiled).
+import "@payloadcms/ui/scss/app.scss";
+
 import { RootLayout } from "@payloadcms/next/layouts";
 import { handleServerFunctions } from "@payloadcms/next/layouts";
 import config from "@payload-config";

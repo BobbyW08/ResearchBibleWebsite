@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Edge-compatible middleware (Next.js 16 uses proxy.ts, not middleware.ts).
-// Full session validation happens server-side on the protected pages; this
-// just gates unauthenticated requests before they reach the React tree.
-// Better Auth's default cookie names — both HTTP and Secure variants.
+// Edge-compatible middleware. Full session validation happens server-side on
+// the protected pages; this gates unauthenticated requests before they reach
+// the React tree. Neon Auth sets __Secure-neon-auth.session_token in
+// production (HTTPS) and neon-auth.session_token in local dev (HTTP).
 const SESSION_COOKIES = [
-  "better-auth.session_token",
-  "__Secure-better-auth.session_token",
+  "__Secure-neon-auth.session_token",
+  "neon-auth.session_token",
 ];
 
 export default function middleware(request: NextRequest) {
@@ -26,5 +26,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*", "/onboarding/:path*", "/community/:path*", "/courses/:path*"],
+  matcher: ["/account/:path*", "/community/:path*", "/courses/:path*"],
 };
