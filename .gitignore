@@ -61,4 +61,5 @@ graveyard/HANDOFF-round2.md
 
 # Claude-generated content drafts and session handoff docs — local only
 content/Claude outputs/
-claude-code-handoff-v17.md
+Claude outputs/
+claude-code-handoff-v*.md

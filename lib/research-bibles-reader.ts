@@ -1,4 +1,4 @@
-import { reader } from "@/lib/keystatic-reader";
+import { getPayloadClient } from "@/lib/payload-client";
 
 export type ResearchBibleChangelogEntry = {
   date: string | null;
@@ -14,51 +14,61 @@ export type ResearchBibleEntry = {
   tags: string[];
   noindex: boolean;
   changelog: ResearchBibleChangelogEntry[];
-  /**
-   * Raw MDX source for the body. Keystatic's reader type for the
-   * `contentField` of a `format: { contentField: "body" }` collection comes
-   * back as `string | (() => Promise<string>)` — resolve with
-   * `resolveBibleBody()` below rather than assuming either shape directly.
-   */
-  body: string | (() => Promise<string>);
+  // Lexical rich text object — rendered via @payloadcms/richtext-lexical/react
+  body: unknown;
 };
 
-/** Resolves a `ResearchBibleEntry.body` to its raw MDX string, regardless of which shape Keystatic's reader gave back. */
-export async function resolveBibleBody(body: ResearchBibleEntry["body"]): Promise<string> {
-  return typeof body === "function" ? body() : body;
-}
-
-type ResearchBibleReaderEntry = Awaited<
-  ReturnType<typeof reader.collections.researchBibles.read>
->;
-
-function transformResearchBible(
-  slug: string,
-  entry: NonNullable<ResearchBibleReaderEntry>,
-): ResearchBibleEntry {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapBible(doc: any): ResearchBibleEntry {
   return {
-    slug,
-    title: entry.title,
-    version: entry.version,
-    lastUpdated: entry.lastUpdated,
-    tags: [...entry.tags],
-    noindex: entry.noindex,
-    changelog: entry.changelog.map((item) => ({
-      date: item.date,
-      summary: item.summary,
-      prUrl: item.prUrl,
-    })),
-    body: entry.body,
+    slug: doc.slug ?? "",
+    title: doc.title ?? "",
+    version: doc.version ?? "1.0",
+    lastUpdated: doc.lastUpdated ?? null,
+    tags: (doc.tags ?? []).map((t: { tag: string }) => t.tag ?? ""),
+    noindex: doc.noindex ?? false,
+    changelog: (doc.changelog ?? []).map(
+      (entry: { date?: string; summary?: string; prUrl?: string }) => ({
+        date: entry.date ?? null,
+        summary: entry.summary ?? "",
+        prUrl: entry.prUrl ?? null,
+      })
+    ),
+    body: doc.body ?? null,
   };
 }
 
 export async function getAllResearchBibles(): Promise<ResearchBibleEntry[]> {
-  const entries = await reader.collections.researchBibles.all();
-  return entries.map(({ slug, entry }) => transformResearchBible(slug, entry));
+  try {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "research-bibles",
+      where: { _status: { equals: "published" } },
+      limit: 200,
+      depth: 0,
+    });
+    return docs.map(mapBible);
+  } catch {
+    return [];
+  }
 }
 
-export async function getResearchBible(slug: string): Promise<ResearchBibleEntry | undefined> {
-  const entry = await reader.collections.researchBibles.read(slug);
-  if (!entry) return undefined;
-  return transformResearchBible(slug, entry);
+export async function getResearchBible(
+  slug: string
+): Promise<ResearchBibleEntry | undefined> {
+  try {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "research-bibles",
+      where: {
+        and: [{ slug: { equals: slug } }, { _status: { equals: "published" } }],
+      },
+      limit: 1,
+      depth: 0,
+    });
+    if (docs.length === 0) return undefined;
+    return mapBible(docs[0]);
+  } catch {
+    return undefined;
+  }
 }

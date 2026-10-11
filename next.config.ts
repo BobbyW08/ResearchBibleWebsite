@@ -1,14 +1,21 @@
 import type { NextConfig } from "next";
-import { createMDX } from "fumadocs-mdx/next";
-
-const withMDX = createMDX();
+import { withPayload } from "@payloadcms/next/withPayload";
+import path from "path";
 
 const nextConfig: NextConfig = {
-  // Keystatic (GitHub storage mode) redirects the browser from localhost to
-  // 127.0.0.1 for its OAuth loopback flow (RFC 8252). Without this, Next 16's
-  // dev-origin protection silently blocks the redirected page's dev assets,
-  // leaving /keystatic blank with no console/server error.
-  allowedDevOrigins: ["127.0.0.1"],
+  transpilePackages: ["@payloadcms/next", "@payloadcms/ui"],
+  turbopack: {
+    resolveAlias: {
+      "@payload-config": "./payload.config.ts",
+    },
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias as Record<string, string>),
+      "@payload-config": path.resolve(process.cwd(), "payload.config.ts"),
+    };
+    return config;
+  },
   images: {
     remotePatterns: [
       {
@@ -48,4 +55,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withMDX(nextConfig);
+export default withPayload(nextConfig);

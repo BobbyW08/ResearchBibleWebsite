@@ -1,24 +1,16 @@
 /**
  * Purpose-built (NOT general-purpose) YAML-frontmatter serializer/parser for
- * exactly the `researchBibles` Keystatic collection schema
- * (`format: { contentField: "body" }` — everything except `body` goes into a
- * `---`-delimited YAML frontmatter block, `body` is the raw MDX that follows).
+ * the `researchBibles` content schema (`format: { contentField: "body" }` —
+ * everything except `body` goes into a `---`-delimited YAML frontmatter block,
+ * `body` is the raw MDX that follows).
  *
- * This intentionally avoids adding a YAML dependency (`js-yaml`/`yaml` exist
- * only as *transitive* deps of other packages right now, not declared
- * project dependencies — CLAUDE.md's tech stack is locked, no new deps
- * without approval) by emitting every string scalar as a JSON string
- * literal. JSON string syntax is valid YAML 1.2 flow-scalar syntax, so this
- * round-trips through any spec-compliant YAML parser (including whatever
- * Keystatic itself uses to read the file back in `/keystatic`) — it just
- * won't look like hand-authored YAML (no unquoted strings, no literal block
- * scalars). That's a deliberate simplification, not an oversight.
+ * Emits every string scalar as a JSON string literal. JSON string syntax is
+ * valid YAML 1.2 flow-scalar syntax, so this round-trips through any
+ * spec-compliant YAML parser — it just won't look like hand-authored YAML.
+ * That's a deliberate simplification, not an oversight.
  *
- * FLAG FOR BOBBY: verify this against a real entry created by hand through
- * `/keystatic` once that's reachable (needs the GitHub App env vars — see
- * Keystatic CMS section in CLAUDE.md) before trusting this in production.
- * The plan's spec asked for this because no I/O against a live Keystatic
- * instance was possible in this environment.
+ * FLAG FOR BOBBY: verify this against a real entry created through /admin
+ * once Payload migration is complete before trusting this in production.
  */
 
 export interface BibleChangelogEntry {

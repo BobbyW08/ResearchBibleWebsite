@@ -220,3 +220,24 @@ export const stripeOrders = pgTable("stripe_orders", {
   status: text("status", { enum: ["pending", "complete", "expired"] }).notNull().default("pending"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const stripeCustomers = pgTable("stripe_customers", {
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" })
+    .unique(),
+  stripeCustomerId: text("stripe_customer_id").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const stripeSubscriptions = pgTable("stripe_subscriptions", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  stripeCustomerId: text("stripe_customer_id").notNull(),
+  status: text("status").notNull(),
+  productId: text("product_id").notNull(),
+  currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});

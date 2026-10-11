@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { InstagramIcon, LinkedinIcon, SubstackIcon } from "@/components/marketing/social-icons";
 import NewsletterDialog from "@/components/marketing/newsletter-dialog";
 import ComingSoonTrigger from "@/components/marketing/coming-soon-trigger";
-import { reader } from "@/lib/keystatic-reader";
+import { getFooter } from "@/lib/payload-globals";
 
 const FALLBACK_TAGLINE = "Parenting support from someone who's been there.";
 const FALLBACK_CONTACT_EMAIL = "bobbywashburn0@gmail.com";
@@ -21,7 +21,7 @@ const SITEMAP_LINKS = [
 ];
 
 async function Footer() {
-  const data = await reader.singletons.footer.read();
+  const data = await getFooter().catch(() => null);
   const tagline = data?.tagline || FALLBACK_TAGLINE;
   const contactEmail = data?.contactEmail || FALLBACK_CONTACT_EMAIL;
   const copyrightText = data?.copyrightText || FALLBACK_COPYRIGHT;

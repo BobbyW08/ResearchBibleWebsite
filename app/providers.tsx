@@ -1,31 +1,10 @@
 "use client";
 
-import { NeonAuthUIProvider } from "@neondatabase/auth-ui";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { authClient } from "@/lib/auth/client";
-
-// Social login / organizations are intentionally not enabled here — the
-// bundled better-auth version behind @neondatabase/auth currently carries
-// known CVEs specific to OAuth/OIDC flows. Email/password only until a
-// patched release lands. See CLAUDE.md "Auth & Data Layer" for the tracking
-// note.
+// NeonAuthUIProvider is wired here when visitor auth is configured.
+// Auth is not required for launch — this is a passthrough until
+// NEON_AUTH_BASE_URL is set and the sign-in flow is tested end-to-end.
 export function Providers({ children }: { children: ReactNode }) {
-  const router = useRouter();
-
-  return (
-    <NeonAuthUIProvider
-      authClient={authClient}
-      navigate={router.push}
-      replace={router.replace}
-      onSessionChange={() => router.refresh()}
-      redirectTo="/onboarding"
-      defaultTheme="light"
-      Link={Link}
-    >
-      {children}
-    </NeonAuthUIProvider>
-  );
+  return <>{children}</>;
 }

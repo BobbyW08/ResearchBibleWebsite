@@ -17,15 +17,8 @@ import { Fragment, jsx, jsxs } from "react/jsx-runtime";
  * this needs to be swapped for a real MDX compiler (`@mdx-js/mdx`, already
  * present transitively via `fumadocs-mdx` — see note below).
  *
- * DEPENDENCY NOTE: `remark-parse`, `remark-rehype`, and
- * `hast-util-to-jsx-runtime` are used here as *transitive* dependencies
- * (pulled in by `fumadocs-mdx`/`rehype-remark`'s own dependency tree), not
- * declared directly in `package.json`. This works today but is fragile — a
- * future `fumadocs-mdx` upgrade that changes its internals could silently
- * remove them from `node_modules`. Flagged as a follow-up: declare these
- * three as direct dependencies once Bobby approves a `package.json` change
- * (no new packages actually get installed, this just pins what's already
- * resolved).
+ * `remark-parse`, `remark-rehype`, and `hast-util-to-jsx-runtime` are
+ * declared as direct dependencies in `package.json`.
  */
 export async function renderBibleBody(mdxSource: string): Promise<ReactNode> {
   const processor = unified().use(remarkParse).use(remarkGfm).use(remarkRehype);

@@ -1,11 +1,11 @@
 import { Badge } from "@/components/ui/badge";
-import { reader } from "@/lib/keystatic-reader";
+import { getFaq } from "@/lib/payload-globals";
 import FaqAccordion from "@/components/marketing/faq-accordion";
 import FadeInView from "@/components/marketing/fade-in-view";
 
 async function Faq() {
-  const data = await reader.singletons.faq.read();
-  const items = data?.items ?? [];
+  const data = await getFaq().catch(() => null);
+  const items = (data?.items as { question: string; answer: string }[] | undefined) ?? [];
 
   const faqJsonLd = {
     "@context": "https://schema.org",
