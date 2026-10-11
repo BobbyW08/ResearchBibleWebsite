@@ -15,6 +15,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Logo from "@/assets/logo/logo";
@@ -28,6 +29,8 @@ import { HeaderAuthButton } from "@/components/marketing/header-auth-button";
 type NavigationSection = {
   title: string;
   href: string;
+  /** Renders as a non-link with a "Coming soon" hover/focus tooltip. */
+  comingSoon?: boolean;
 };
 
 const navigationData: NavigationSection[] = [
@@ -35,6 +38,8 @@ const navigationData: NavigationSection[] = [
   { title: "Start Here", href: "/#start-here" },
   { title: "Parents", href: "/services" },
   { title: "Organizations", href: "/services/organizations" },
+  { title: "Courses", href: "/courses", comingSoon: true },
+  { title: "Community", href: "/community", comingSoon: true },
   { title: "FAQs", href: "/#faq" },
 ];
 
@@ -128,7 +133,31 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
             )}
           >
             <NavigationMenuList className="flex gap-0">
-              {navigationData.map((navItem) => (
+              {navigationData.map((navItem) =>
+                navItem.comingSoon ? (
+                  <NavigationMenuItem key={navItem.title}>
+                    <Tooltip>
+                      <TooltipTrigger
+                        render={
+                          <span
+                            tabIndex={0}
+                            aria-disabled="true"
+                            aria-label={`${navItem.title}, coming soon`}
+                            className={cn(
+                              "inline-flex cursor-default items-center px-2 lg:px-4 py-2 text-sm font-medium rounded-full tracking-normal opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                              onHeroField
+                                ? "text-brand-offwhite/80"
+                                : "text-muted-foreground",
+                            )}
+                          />
+                        }
+                      >
+                        {navItem.title}
+                      </TooltipTrigger>
+                      <TooltipContent>Coming soon</TooltipContent>
+                    </Tooltip>
+                  </NavigationMenuItem>
+                ) : (
                 <NavigationMenuItem key={navItem.title}>
                   <NavigationMenuLink
                     render={<Link href={navItem.href} />}
@@ -142,7 +171,8 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
                     {navItem.title}
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-              ))}
+                ),
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -191,7 +221,20 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
                       className="items-start flex-none"
                     >
                       <NavigationMenuList className="flex flex-col items-start gap-3">
-                        {navigationData.map((item) => (
+                        {navigationData.map((item) =>
+                          item.comingSoon ? (
+                            <NavigationMenuItem key={item.title}>
+                              <span
+                                aria-disabled="true"
+                                className="flex items-center gap-3 text-2xl font-semibold tracking-tight text-muted-foreground/60 cursor-default"
+                              >
+                                {item.title}
+                                <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                                  Coming soon
+                                </span>
+                              </span>
+                            </NavigationMenuItem>
+                          ) : (
                           <NavigationMenuItem key={item.title}>
                             <NavigationMenuLink
                               render={<Link href={item.href} />}
@@ -200,7 +243,8 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
                               {item.title}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
-                        ))}
+                          ),
+                        )}
                       </NavigationMenuList>
                     </NavigationMenu>
 
