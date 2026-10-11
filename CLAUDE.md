@@ -262,7 +262,7 @@ Schema source: `src/payload/collections/` and `src/payload/globals/`. Config: `p
 
 DB schema complete in `lib/db/schema.ts`: `profiles` (with community fields), `posts`, `comments`, `likes`, `pointsLedger`, `courseProgress`, `entitlements`, `stripeCustomers`, `stripeSubscriptions`, `stripeOrders`, `postTags`. Drizzle migrations may need to run against Neon to create these tables.
 
-Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`, `/account`, `/welcome`. Auth middleware in `proxy.ts`. Stripe checkout and webhook routes not yet built. See `claude-code-handoff-v18.md` Parts J–P for remaining work.
+Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`, `/account`, `/welcome`. Auth middleware in `middleware.ts` (protects `/community`, `/courses`, `/account`). Stripe checkout and webhook routes not yet built. See `claude-code-handoff-v18.md` Parts J–P for remaining work.
 
 ---
 
@@ -298,7 +298,7 @@ INSERT INTO drizzle."__drizzle_migrations" (hash, created_at) VALUES
 | LinkedIn | Live outbound link |
 | Instagram `bobby__washburn` | Disabled (`coming-soon-trigger.tsx`). Re-enable once content exists |
 | Cal.com `bobby-washburn/intro-call` | Live outbound link site-wide. One popup embed on Teen page only |
-| Substack `roughlyeducated` | On-page modal (`newsletter-dialog.tsx`). Subdomain needs Bobby's confirmation |
+| Substack `bwparentsupport` | On-page modal (`newsletter-dialog.tsx`). Subdomain confirmed. |
 
 ---
 
@@ -374,14 +374,12 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **Vercel env vars** — `PAYLOAD_SECRET` and `DATABASE_URI` must be set in Vercel Production before deploy goes live; also update `sslmode=require` → `sslmode=verify-full` in both `DATABASE_URL` and `DATABASE_URI` if not already done
+- **Vercel env vars** — `PAYLOAD_SECRET` and `DATABASE_URI` are set in Vercel Production. `sslmode=verify-full` already in both `DATABASE_URL` and `DATABASE_URI`.
 - **`paths-loop.mp4` Chrome decode failure** — video renders as black box; Bobby needs to re-export faststart-encoded
-- **`/welcome` page broken** — page fails to load; see v18 Part R for diagnosis and fix
 - **Drizzle migration tracking** — all tables exist but `drizzle.__drizzle_migrations` is empty; run the INSERT SQL in the Database section above in the Neon console before any future `drizzle-kit migrate` runs
 - **Community/courses platform** — DB tables exist; routes built but untested end-to-end; Neon Auth (`NEON_AUTH_BASE_URL`) must be configured before auth flow works; Stripe checkout/webhook routes not yet built
 - **Research Bible Pipeline end-to-end** — webhook not tested live; Apps Script trigger not installed
 - **Parent Content Sync Pipeline** — not tested end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not in Vercel
-- **Substack subdomain** (`roughlyeducated`) — needs Bobby's confirmation before embed ships
 - **Start Here Row 2 photos** — temp Unsplash stock; swap `ROW_TWO_PANELS` URL constants when real photos arrive
 - **`siteSettings` global** — not yet wired to `lib/links.ts` or Cal.com URLs
 - **Organizations page** — full rebuild per v18 Part P done (static content + inquiry form); `OrgInquiryForm` POSTs to `/api/org-inquiry` which does not yet exist — needs building
@@ -405,6 +403,6 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 | DB schema | `lib/db/schema.ts`, `drizzle/` migrations |
 | Stripe config | `lib/stripe.ts`, `lib/stripe-client.ts`, `lib/stripe-products.ts` |
 | Shared logic | `lib/auth/`, `lib/db/`, `lib/github/`, `lib/google/`, `lib/research-bibles/`, `lib/parent-content/`, `lib/tools/` |
-| YAML content (migration sources, reference only) | `content/` |
-| Middleware | `proxy.ts` |
+| YAML content (reference only — docs and data) | `content/docs/`, `content/data/` |
+| Middleware | `middleware.ts` |
 | Retired files | `graveyard/` |
