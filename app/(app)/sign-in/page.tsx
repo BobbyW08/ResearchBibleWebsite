@@ -28,7 +28,15 @@ export default async function SignInPage({
   }
 
   if (session?.user) {
-    redirect(returnTo ?? "/community");
+    // Only allow internal paths to prevent open redirect attacks.
+    // A valid returnTo starts with "/" and never with "//" (which browsers treat as protocol-relative).
+    const safe =
+      typeof returnTo === "string" &&
+      returnTo.startsWith("/") &&
+      !returnTo.startsWith("//")
+        ? returnTo
+        : "/community";
+    redirect(safe);
   }
 
   return (

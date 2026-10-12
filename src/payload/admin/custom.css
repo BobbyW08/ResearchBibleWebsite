@@ -1,0 +1,22 @@
+/* Override Payload's success/accent color scale with brand red #9F0000 */
+:root {
+  --color-success-50: rgb(254, 242, 242);
+  --color-success-100: rgb(253, 228, 228);
+  --color-success-150: rgb(250, 209, 209);
+  --color-success-200: rgb(246, 189, 189);
+  --color-success-250: rgb(240, 166, 166);
+  --color-success-300: rgb(232, 141, 141);
+  --color-success-350: rgb(220, 114, 114);
+  --color-success-400: rgb(204, 85, 85);
+  --color-success-450: rgb(183, 43, 43);
+  --color-success-500: rgb(159, 0, 0);
+  --color-success-550: rgb(140, 0, 0);
+  --color-success-600: rgb(122, 0, 0);
+  --color-success-650: rgb(105, 0, 0);
+  --color-success-700: rgb(90, 0, 0);
+  --color-success-750: rgb(74, 0, 0);
+  --color-success-800: rgb(60, 0, 0);
+  --color-success-850: rgb(47, 0, 0);
+  --color-success-900: rgb(35, 0, 0);
+  --color-success-950: rgb(23, 0, 0);
+}

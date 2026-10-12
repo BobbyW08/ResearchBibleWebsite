@@ -28,6 +28,12 @@ export default buildConfig({
     meta: {
       titleSuffix: "— Bobby Washburn Admin",
     },
+    components: {
+      graphics: {
+        Logo: { path: "./src/payload/admin/Logo" },
+        Icon: { path: "./src/payload/admin/Logo" },
+      },
+    },
   },
   collections: [
     Users,

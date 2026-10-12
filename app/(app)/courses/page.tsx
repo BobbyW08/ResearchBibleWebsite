@@ -8,6 +8,7 @@ import { getAllCourses } from "@/lib/payload-courses";
 export const metadata: Metadata = {
   title: "Courses",
   description: "Structured parenting courses from Bobby Washburn.",
+  robots: { index: false },
 };
 
 export default async function CoursesPage() {

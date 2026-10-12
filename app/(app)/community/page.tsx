@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
@@ -8,6 +9,11 @@ import Footer from "@/components/marketing/footer";
 import PostComposer from "./post-composer";
 import PostCard from "./post-card";
 import CommunityLeaderboard from "./community-leaderboard";
+
+export const metadata: Metadata = {
+  title: "Community",
+  robots: { index: false },
+};
 
 export const dynamic = "force-dynamic";
 

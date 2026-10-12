@@ -1,22 +1,9 @@
 import type { MetadataRoute } from "next";
 
-// See CLAUDE.md's "Content Protection / SEO" section. AI crawlers are split
-// by what they're actually used for, not blocked as a single "AI bots" bucket:
-//
-// - Training crawlers harvest content into a foundation model's training
-//   set — blocked site-wide. This is the "don't let AI steal it" half.
-// - Retrieval/answer crawlers (ChatGPT Search, Perplexity, Claude's web
-//   search) fetch a page live to answer one user's specific question and
-//   cite it back, the same function a search engine serves — allowed the
-//   same as Googlebot. This is the "let AI find and cite it" half.
-//
-// Per-page visibility (e.g. a research bible that should stay out of every
-// engine's results while still being crawled — see the researchBibles
-// `noindex` field) is controlled via each page's own `robots` metadata, not
-// here — robots.txt only decides whether a bot may fetch a page at all.
-//
-// Bot names shift over time; recheck against each provider's published
-// crawler docs periodically rather than assuming this list stays current.
+// Training crawlers harvest content into a foundation model's training set - blocked site-wide.
+// Retrieval/answer crawlers (ChatGPT Search, Perplexity, Claude web search) fetch live to answer
+// a user's question and cite it back - allowed the same as Googlebot.
+// Bot names shift over time; recheck against each provider's published crawler docs periodically.
 const TRAINING_CRAWLERS = [
   "GPTBot", // OpenAI — training
   "ClaudeBot", // Anthropic — training
@@ -24,7 +11,7 @@ const TRAINING_CRAWLERS = [
   "Google-Extended", // Google — Gemini/Vertex training only, doesn't affect Search or AI Overviews
   "CCBot", // Common Crawl — widely reused as training data
   "Bytespider", // ByteDance — training
-  "Applebot-Extended", // Apple Intelligence training (separate from Applebot, which serves Siri/Spotlight)
+  "Applebot-Extended", // Apple Intelligence training (separate from Applebot)
   "Meta-ExternalAgent", // Meta — training
   "Amazonbot", // Amazon — training
   "Diffbot",
@@ -39,16 +26,29 @@ const RETRIEVAL_CRAWLERS = [
   "Perplexity-User", // live fetch during a Perplexity session
 ];
 
+// Paths that no crawler should index: admin panel, auth flows, gated pages, and API routes.
+const PRIVATE_PATHS = [
+  "/admin",
+  "/community",
+  "/courses",
+  "/account",
+  "/sign-in",
+  "/welcome",
+  "/api/",
+];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "Googlebot",
         allow: "/",
+        disallow: ["/admin"],
       },
       ...RETRIEVAL_CRAWLERS.map((userAgent) => ({
         userAgent,
         allow: "/",
+        disallow: ["/admin"],
       })),
       ...TRAINING_CRAWLERS.map((userAgent) => ({
         userAgent,
@@ -57,7 +57,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/docs/", "/common-pain-points/"],
+        disallow: [...PRIVATE_PATHS, "/docs/", "/common-pain-points/"],
       },
     ],
     sitemap: "https://bobby-washburn.com/sitemap.xml",

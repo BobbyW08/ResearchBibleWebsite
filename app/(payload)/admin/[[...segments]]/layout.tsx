@@ -1,5 +1,7 @@
 // Payload's compiled admin stylesheet (nav, templates, login, fields, cards).
 import "@payloadcms/next/css";
+// Brand color override: replaces Payload's default blue accent with #9F0000.
+import "@/src/payload/admin/custom.css";
 
 import { RootLayout } from "@payloadcms/next/layouts";
 import { handleServerFunctions } from "@payloadcms/next/layouts";
