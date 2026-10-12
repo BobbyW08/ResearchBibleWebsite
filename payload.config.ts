@@ -13,6 +13,13 @@ import { ResearchBibles } from "./src/payload/collections/ResearchBibles";
 import { DeepDives } from "./src/payload/collections/DeepDives";
 import { Courses } from "./src/payload/collections/Courses";
 import { Lessons } from "./src/payload/collections/Lessons";
+import { VisitorProfiles } from "./src/payload/collections/VisitorProfiles";
+import { Posts } from "./src/payload/collections/Posts";
+import { Comments } from "./src/payload/collections/Comments";
+import { Reports } from "./src/payload/collections/Reports";
+import { LessonProgress } from "./src/payload/collections/LessonProgress";
+import { Entitlements } from "./src/payload/collections/Entitlements";
+import { InterestSignups } from "./src/payload/collections/InterestSignups";
 
 import { FAQ } from "./src/payload/globals/FAQ";
 import { Footer } from "./src/payload/globals/Footer";
@@ -45,6 +52,13 @@ export default buildConfig({
     DeepDives,
     Courses,
     Lessons,
+    VisitorProfiles,
+    Posts,
+    Comments,
+    Reports,
+    LessonProgress,
+    Entitlements,
+    InterestSignups,
   ],
   globals: [FAQ, Footer, SiteSettings, About],
   db: postgresAdapter({

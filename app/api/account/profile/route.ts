@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { getPayloadClient } from "@/lib/payload-client";
 
 export async function PATCH(request: Request) {
   const { data: session } = await auth.getSession();
@@ -16,10 +14,21 @@ export async function PATCH(request: Request) {
   if (displayName.length > 80) return NextResponse.json({ error: "Display name too long" }, { status: 400 });
   if (bio !== null && bio.length > 400) return NextResponse.json({ error: "Bio too long" }, { status: 400 });
 
-  await db
-    .update(profiles)
-    .set({ displayName, bio: bio ?? "", updatedAt: new Date() })
-    .where(eq(profiles.userId, session.user.id));
+  const payload = await getPayloadClient();
+
+  const { docs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+
+  if (!docs[0]) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+
+  await payload.update({
+    collection: "visitor-profiles",
+    id: docs[0].id as string,
+    data: { displayName, bio: bio ?? "" },
+  });
 
   return NextResponse.json({ ok: true });
 }

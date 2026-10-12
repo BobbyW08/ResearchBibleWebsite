@@ -6,7 +6,7 @@ export const Lessons: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "course", "gateType", "sortOrder", "_status"],
-    description: "Lesson content and gate settings. Progress tracked separately in Drizzle.",
+    description: "Lesson content and gate settings. Progress tracked in the LessonProgress collection.",
   },
   versions: { drafts: true },
   fields: [

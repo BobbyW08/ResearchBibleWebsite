@@ -1,62 +1,29 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import {
-  profiles,
-  courses,
-  lessons,
-  courseProgress,
-  entitlements,
-  pointsLedger,
-} from "@/lib/db/schema";
-import { eq, and, or, isNull, gt, sql, asc } from "drizzle-orm";
+import { getPayloadClient } from "@/lib/payload-client";
+import { getCourse, getLesson, getLessonsForCourse } from "@/lib/payload-courses";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { PageContainer } from "@/components/layout/page-container";
-import { renderBibleBody } from "@/lib/research-bibles/render-mdx";
-import fs from "node:fs/promises";
-import path from "node:path";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 
 export const dynamic = "force-dynamic";
 
-async function completeLessonIfNeeded(profileId: string, lessonId: string, points: number) {
-  const existing = await db
-    .select({ lessonId: courseProgress.lessonId })
-    .from(courseProgress)
-    .where(and(eq(courseProgress.userId, profileId), eq(courseProgress.lessonId, lessonId)))
-    .limit(1);
-
-  if (existing.length > 0) return;
-
-  await db.insert(courseProgress).values({ userId: profileId, lessonId });
-  await db.insert(pointsLedger).values({
-    userId: profileId,
-    action: "lesson_completed",
-    pointsDelta: points,
-    refType: "lesson",
-    refId: lessonId,
+async function markLessonComplete(userId: string, lessonId: string) {
+  const payload = await getPayloadClient();
+  const { docs: existing } = await payload.find({
+    collection: "lesson-progress",
+    where: {
+      and: [{ userId: { equals: userId } }, { lessonId: { equals: lessonId } }],
+    },
+    limit: 1,
   });
-  const { levelFromPoints } = await import("@/lib/level-thresholds");
-  await db
-    .update(profiles)
-    .set({
-      totalPoints: sql`${profiles.totalPoints} + ${points}`,
-      updatedAt: new Date(),
-    })
-    .where(eq(profiles.id, profileId));
-  const updated = await db
-    .select({ totalPoints: profiles.totalPoints })
-    .from(profiles)
-    .where(eq(profiles.id, profileId))
-    .limit(1)
-    .then((r) => r[0]);
-  if (updated) {
-    await db
-      .update(profiles)
-      .set({ level: levelFromPoints(updated.totalPoints), updatedAt: new Date() })
-      .where(eq(profiles.id, profileId));
-  }
+  if (existing.length > 0) return;
+  await payload.create({
+    collection: "lesson-progress",
+    data: { userId, lessonId, completedAt: new Date().toISOString() },
+  });
 }
 
 export default async function LessonPage({
@@ -68,53 +35,38 @@ export default async function LessonPage({
   const { data: session } = await auth.getSession();
   if (!session?.user) redirect(`/sign-in?returnTo=/courses/${slug}/${lessonSlug}`);
 
-  const profile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
+  const payload = await getPayloadClient();
 
-  if (!profile) redirect("/welcome");
+  const { docs: profileDocs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+  if (!profileDocs[0]) redirect("/welcome");
 
-  const course = await db
-    .select()
-    .from(courses)
-    .where(and(eq(courses.slug, slug), eq(courses.isPublished, true)))
-    .limit(1)
-    .then((r) => r[0] ?? null);
-
+  const course = await getCourse(slug);
   if (!course) notFound();
 
-  const lesson = await db
-    .select()
-    .from(lessons)
-    .where(
-      and(
-        eq(lessons.courseId, course.id),
-        eq(lessons.slug, lessonSlug),
-        eq(lessons.isPublished, true)
-      )
-    )
-    .limit(1)
-    .then((r) => r[0] ?? null);
-
+  const lesson = await getLesson(slug, lessonSlug);
   if (!lesson) notFound();
 
-  if (lesson.gateType === "paid") {
-    const entitled = await db
-      .select({ id: entitlements.id })
-      .from(entitlements)
-      .where(
-        and(
-          eq(entitlements.userId, profile.id),
-          eq(entitlements.productId, course.slug),
-          or(isNull(entitlements.expiresAt), gt(entitlements.expiresAt, new Date()))
-        )
-      )
-      .limit(1);
-
-    if (entitled.length === 0) {
+  // Paid gate: check entitlement
+  if ((lesson.gateType as string) === "paid") {
+    const { docs: entitlements } = await payload.find({
+      collection: "entitlements",
+      where: {
+        and: [
+          { userId: { equals: session.user.id } },
+          { productId: { equals: course.slug as string } },
+        ],
+      },
+      limit: 1,
+    });
+    const now = new Date();
+    const active = entitlements.filter(
+      (e) => !e.expiresAt || new Date(e.expiresAt as string) > now
+    );
+    if (active.length === 0) {
       return (
         <div className="flex flex-1 flex-col">
           <Header />
@@ -136,48 +88,15 @@ export default async function LessonPage({
     }
   }
 
-  if (lesson.gateType === "level") {
-    const minLevel = lesson.gateMinLevel ?? 2;
-    if (profile.level < minLevel) {
-      return (
-        <div className="flex flex-1 flex-col">
-          <Header />
-          <main className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
-            <h1 className="font-heading text-2xl font-medium">Unlock at Level {minLevel}</h1>
-            <p className="mt-3 text-base text-muted-foreground max-w-sm">
-              You are Level {profile.level}. Earn points by posting, commenting, and having your
-              posts liked to level up.
-            </p>
-            <Link href="/community" className="mt-6 text-sm font-medium text-primary hover:underline">
-              Go to the community
-            </Link>
-          </main>
-          <Footer />
-        </div>
-      );
-    }
-  }
+  // Level gate is on hold (gamification backlogged) — lessons always accessible.
 
   try {
-    await completeLessonIfNeeded(profile.id, lesson.id, 5);
+    await markLessonComplete(session.user.id, lesson.id as string);
   } catch {
     // non-fatal
   }
 
-  let content: import("react").ReactNode = null;
-  try {
-    const filePath = path.join(/*turbopackIgnore: true*/ process.cwd(), lesson.contentPath);
-    const raw = await fs.readFile(filePath, "utf-8");
-    content = await renderBibleBody(raw);
-  } catch {
-    content = null;
-  }
-
-  const allLessons = await db
-    .select()
-    .from(lessons)
-    .where(and(eq(lessons.courseId, course.id), eq(lessons.isPublished, true)))
-    .orderBy(asc(lessons.sortOrder));
+  const allLessons = await getLessonsForCourse(course.id as string);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -185,32 +104,32 @@ export default async function LessonPage({
       <main className="flex-1">
         <PageContainer className="py-12">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[2fr_1fr] lg:gap-14">
-            {/* Main: lesson content */}
             <div>
               <Link
                 href={`/courses/${slug}`}
                 className="text-sm text-muted-foreground hover:text-foreground mb-6 inline-block"
               >
-                &larr; Back to {course.title}
+                &larr; Back to {course.title as string}
               </Link>
               <h1 className="font-heading text-3xl font-medium tracking-tight mb-8">
-                {lesson.title}
+                {lesson.title as string}
               </h1>
-              {content ? (
-                <article className="prose prose-sm max-w-none">{content}</article>
+              {lesson.body ? (
+                <article className="prose prose-sm max-w-none">
+                  <RichText data={lesson.body} />
+                </article>
               ) : (
                 <p className="text-muted-foreground">Content not yet available.</p>
               )}
             </div>
 
-            {/* Sidebar: lesson list */}
             <aside className="hidden lg:block">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-                {course.title}
+                {course.title as string}
               </p>
               <ol className="flex flex-col gap-2">
                 {allLessons.map((l, i) => (
-                  <li key={l.id}>
+                  <li key={l.id as string}>
                     <Link
                       href={`/courses/${slug}/${l.slug}`}
                       className={`block rounded px-3 py-2 text-sm transition-colors ${
@@ -220,7 +139,7 @@ export default async function LessonPage({
                       }`}
                     >
                       <span className="mr-2 text-xs">{i + 1}.</span>
-                      {l.title}
+                      {l.title as string}
                     </Link>
                   </li>
                 ))}

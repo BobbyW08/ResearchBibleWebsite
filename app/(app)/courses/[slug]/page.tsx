@@ -1,9 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { profiles, courses, lessons, courseProgress } from "@/lib/db/schema";
-import { eq, asc, and } from "drizzle-orm";
+import { getPayloadClient } from "@/lib/payload-client";
+import { getCourse, getLessonsForCourse } from "@/lib/payload-courses";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { PageContainer } from "@/components/layout/page-container";
@@ -19,36 +18,28 @@ export default async function CourseOverviewPage({
   const { data: session } = await auth.getSession();
   if (!session?.user) redirect(`/sign-in?returnTo=/courses/${slug}`);
 
-  const profile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
+  const payload = await getPayloadClient();
 
-  if (!profile) redirect("/welcome");
+  const { docs: profileDocs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+  if (!profileDocs[0]) redirect("/welcome");
 
-  const course = await db
-    .select()
-    .from(courses)
-    .where(and(eq(courses.slug, slug), eq(courses.isPublished, true)))
-    .limit(1)
-    .then((r) => r[0] ?? null);
-
+  const course = await getCourse(slug);
   if (!course) notFound();
 
-  const courseLessons = await db
-    .select()
-    .from(lessons)
-    .where(and(eq(lessons.courseId, course.id), eq(lessons.isPublished, true)))
-    .orderBy(asc(lessons.sortOrder));
+  const courseLessons = await getLessonsForCourse(course.id as string);
 
-  const completedIds = new Set(
-    await db
-      .select({ lessonId: courseProgress.lessonId })
-      .from(courseProgress)
-      .where(eq(courseProgress.userId, profile.id))
-      .then((rows) => rows.map((r) => r.lessonId))
+  const completedLessonIds = new Set(
+    (
+      await payload.find({
+        collection: "lesson-progress",
+        where: { userId: { equals: session.user.id } },
+        limit: 1000,
+      })
+    ).docs.map((r) => r.lessonId as string)
   );
 
   const gateLabel: Record<string, string> = {
@@ -69,9 +60,13 @@ export default async function CourseOverviewPage({
             >
               &larr; All courses
             </Link>
-            <h1 className="font-heading text-3xl font-medium tracking-tight">{course.title}</h1>
+            <h1 className="font-heading text-3xl font-medium tracking-tight">
+              {course.title as string}
+            </h1>
             {course.description && (
-              <p className="mt-4 text-base text-muted-foreground">{course.description}</p>
+              <p className="mt-4 text-base text-muted-foreground">
+                {course.description as string}
+              </p>
             )}
           </PageContainer>
         </section>
@@ -79,17 +74,15 @@ export default async function CourseOverviewPage({
         <section>
           <PageContainer className="py-12">
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_2fr]">
-              {/* Left: course meta */}
               <div>
                 <p className="text-sm text-muted-foreground">
                   {courseLessons.length} lesson{courseLessons.length !== 1 ? "s" : ""}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {completedIds.size} completed
+                  {completedLessonIds.size} completed
                 </p>
               </div>
 
-              {/* Right: lesson list */}
               <div>
                 <h2 className="font-heading text-xl font-medium mb-6">Lessons</h2>
                 {courseLessons.length === 0 && (
@@ -97,10 +90,10 @@ export default async function CourseOverviewPage({
                 )}
                 <ol className="flex flex-col gap-3">
                   {courseLessons.map((lesson, i) => {
-                    const completed = completedIds.has(lesson.id);
-                    const gate = lesson.gateType;
+                    const completed = completedLessonIds.has(lesson.id as string);
+                    const gate = lesson.gateType as string;
                     return (
-                      <li key={lesson.id}>
+                      <li key={lesson.id as string}>
                         <Link
                           href={`/courses/${slug}/${lesson.slug}`}
                           className="flex items-center justify-between gap-4 rounded-lg border border-border bg-background px-5 py-4 hover:border-primary transition-colors"
@@ -110,7 +103,7 @@ export default async function CourseOverviewPage({
                               {completed ? "✓" : i + 1}
                             </span>
                             <span className="text-base font-medium text-foreground">
-                              {lesson.title}
+                              {lesson.title as string}
                             </span>
                           </span>
                           {gate !== "free" && (
