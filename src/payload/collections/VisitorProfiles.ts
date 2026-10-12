@@ -5,7 +5,7 @@ export const VisitorProfiles: CollectionConfig = {
   dbName: "visitor_profiles",
   admin: {
     useAsTitle: "displayName",
-    defaultColumns: ["displayName", "userRole", "userId", "createdAt"],
+    defaultColumns: ["displayName", "userRole", "status", "userId", "createdAt"],
     description: "Visitor accounts created via Neon Auth. One record per authenticated user.",
   },
   access: {
@@ -42,6 +42,20 @@ export const VisitorProfiles: CollectionConfig = {
       name: "bio",
       type: "textarea",
       admin: { description: "Optional. 400 characters max." },
+    },
+    {
+      name: "status",
+      type: "select",
+      defaultValue: "active",
+      required: true,
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Suspended", value: "suspended" },
+      ],
+      admin: {
+        description:
+          "Suspended profiles are blocked from posting and accessing community and courses.",
+      },
     },
   ],
 };

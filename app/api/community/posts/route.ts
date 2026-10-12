@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/server";
 import { getPayloadClient } from "@/lib/payload-client";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET() {
   const { data: session } = await auth.getSession();
@@ -35,6 +36,12 @@ export async function POST(request: Request) {
   const { data: session } = await auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Rate limit: 20 posts per user per hour
+  const rl = checkRateLimit(`post:${session.user.id}`, 20, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const payload = await getPayloadClient();
 
   const { docs: profileDocs } = await payload.find({
@@ -44,6 +51,9 @@ export async function POST(request: Request) {
   });
   const profile = profileDocs[0] ?? null;
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+  if ((profile.status as string) === "suspended") {
+    return NextResponse.json({ error: "Account suspended" }, { status: 403 });
+  }
 
   const body = await request.json().catch(() => null);
   const content = typeof body?.content === "string" ? body.content.trim() : "";
