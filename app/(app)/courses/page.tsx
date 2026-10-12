@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { PageContainer } from "@/components/layout/page-container";
+import { auth } from "@/lib/auth/server";
+import { getPayloadClient } from "@/lib/payload-client";
 import { getAllCourses } from "@/lib/payload-courses";
 
 export const metadata: Metadata = {
@@ -11,8 +14,27 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function CoursesPage() {
-  const published = await getAllCourses().catch(() => []);
+  const { data: session } = await auth.getSession();
+  if (!session?.user) redirect("/sign-in?returnTo=/courses");
+
+  const payload = await getPayloadClient();
+  const { docs: profileDocs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+  if (!profileDocs[0]) redirect("/welcome");
+
+  const userRole = profileDocs[0].userRole as string;
+
+  const allCourses = await getAllCourses().catch(() => []);
+  const published = allCourses.filter(
+    (c) =>
+      (c.audience as string) === "all" || (c.audience as string) === userRole
+  );
 
   return (
     <div className="flex flex-1 flex-col">
@@ -47,16 +69,16 @@ export default async function CoursesPage() {
             <PageContainer className="py-12">
               <ul className="grid gap-6 sm:grid-cols-2">
                 {published.map((course) => (
-                  <li key={course.id}>
+                  <li key={course.id as string}>
                     <Link
                       href={`/courses/${course.slug}`}
                       className="group flex flex-col gap-3 rounded-lg border border-border p-6 transition-colors hover:border-primary"
                     >
                       <h2 className="font-heading text-lg font-medium tracking-tight group-hover:text-primary">
-                        {course.title}
+                        {course.title as string}
                       </h2>
                       {course.description && (
-                        <p className="text-sm text-muted-foreground">{course.description}</p>
+                        <p className="text-sm text-muted-foreground">{course.description as string}</p>
                       )}
                     </Link>
                   </li>

@@ -20,6 +20,7 @@ import { Reports } from "./src/payload/collections/Reports";
 import { LessonProgress } from "./src/payload/collections/LessonProgress";
 import { Entitlements } from "./src/payload/collections/Entitlements";
 import { InterestSignups } from "./src/payload/collections/InterestSignups";
+import { Enrollments } from "./src/payload/collections/Enrollments";
 
 import { FAQ } from "./src/payload/globals/FAQ";
 import { Footer } from "./src/payload/globals/Footer";
@@ -59,6 +60,7 @@ export default buildConfig({
     LessonProgress,
     Entitlements,
     InterestSignups,
+    Enrollments,
   ],
   globals: [FAQ, Footer, SiteSettings, About],
   db: postgresAdapter({

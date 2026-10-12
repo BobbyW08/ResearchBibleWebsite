@@ -7,24 +7,9 @@ import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { PageContainer } from "@/components/layout/page-container";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import MarkCompleteButton from "./mark-complete-button";
 
 export const dynamic = "force-dynamic";
-
-async function markLessonComplete(userId: string, lessonId: string) {
-  const payload = await getPayloadClient();
-  const { docs: existing } = await payload.find({
-    collection: "lesson-progress",
-    where: {
-      and: [{ userId: { equals: userId } }, { lessonId: { equals: lessonId } }],
-    },
-    limit: 1,
-  });
-  if (existing.length > 0) return;
-  await payload.create({
-    collection: "lesson-progress",
-    data: { userId, lessonId, completedAt: new Date().toISOString() },
-  });
-}
 
 export default async function LessonPage({
   params,
@@ -43,6 +28,7 @@ export default async function LessonPage({
     limit: 1,
   });
   if (!profileDocs[0]) redirect("/welcome");
+  if ((profileDocs[0].status as string) === "suspended") redirect("/sign-in?error=suspended");
 
   const course = await getCourse(slug);
   if (!course) notFound();
@@ -71,7 +57,7 @@ export default async function LessonPage({
         <div className="flex flex-1 flex-col">
           <Header />
           <main className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
-            <h1 className="font-heading text-2xl font-medium">This lesson is paid</h1>
+            <h1 className="font-heading text-2xl font-medium">This lesson requires access</h1>
             <p className="mt-3 text-base text-muted-foreground max-w-sm">
               Purchase this course to access this lesson and all others in the series.
             </p>
@@ -88,15 +74,24 @@ export default async function LessonPage({
     }
   }
 
-  // Level gate is on hold (gamification backlogged) — lessons always accessible.
+  // Level gate is on hold — always accessible.
 
-  try {
-    await markLessonComplete(session.user.id, lesson.id as string);
-  } catch {
-    // non-fatal
-  }
+  // Check if already completed
+  const { docs: progressDocs } = await payload.find({
+    collection: "lesson-progress",
+    where: {
+      and: [
+        { userId: { equals: session.user.id } },
+        { lessonId: { equals: lesson.id as string } },
+      ],
+    },
+    limit: 1,
+  });
+  const isCompleted = progressDocs.length > 0;
 
   const allLessons = await getLessonsForCourse(course.id as string);
+  const currentIndex = allLessons.findIndex((l) => l.id === lesson.id);
+  const nextLesson = currentIndex >= 0 ? allLessons[currentIndex + 1] ?? null : null;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -111,9 +106,22 @@ export default async function LessonPage({
               >
                 &larr; Back to {course.title as string}
               </Link>
-              <h1 className="font-heading text-3xl font-medium tracking-tight mb-8">
+              <h1 className="font-heading text-3xl font-medium tracking-tight mb-6">
                 {lesson.title as string}
               </h1>
+
+              {lesson.videoUrl && (
+                <div className="mb-8 aspect-video w-full overflow-hidden rounded-lg bg-black">
+                  <iframe
+                    src={lesson.videoUrl as string}
+                    title={lesson.title as string}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="h-full w-full"
+                  />
+                </div>
+              )}
+
               {lesson.body ? (
                 <article className="prose prose-sm max-w-none">
                   <RichText data={lesson.body} />
@@ -121,6 +129,16 @@ export default async function LessonPage({
               ) : (
                 <p className="text-muted-foreground">Content not yet available.</p>
               )}
+
+              <div className="mt-10 flex items-center gap-4">
+                <MarkCompleteButton
+                  courseSlug={slug}
+                  lessonId={lesson.id as string}
+                  isCompleted={isCompleted}
+                  nextLessonSlug={nextLesson ? (nextLesson.slug as string) : null}
+                  courseSlugForNext={slug}
+                />
+              </div>
             </div>
 
             <aside className="hidden lg:block">
