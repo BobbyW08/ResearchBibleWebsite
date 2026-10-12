@@ -367,6 +367,8 @@ node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('file.json')
 
 ## Open Items
 
+- **Production migrations — MUST FIX before enabling auth/community/courses routes** — Payload's `pushDevSchema` only runs in dev; `NODE_ENV=production` (Vercel) skips it. The 8 new collection tables (`visitor_profiles`, `community_posts`, etc.) don't exist in the production DB. Fix: (1) install Node 20, (2) run `npx payload migrate:create --name init_community_collections`, (3) change `package.json` `build` script to `"next build && npx payload migrate"`, (4) commit and deploy. See `docs/operations/migrations.md`.
+- **Media uploads ephemeral** — Payload writes to `public/media/`; Vercel wipes the filesystem on deploy. Configure `@payloadcms/storage-vercel-blob` or similar before uploading images through `/admin`. See `docs/operations/migrations.md`.
 - **`paths-loop.mp4` Chrome decode failure** - video renders as black box on Services hero; Bobby needs to re-export with `-movflags +faststart`
 - **Community/courses platform** - routes built; Neon Auth (`NEON_AUTH_BASE_URL`) must be configured in Vercel before auth flow works; not tested end-to-end
 - **Research Bible Pipeline** - Apps Script trigger installed; first live sync result unconfirmed (check Apps Script Executions for HTTP 200, then check `/admin` for draft)

@@ -23,10 +23,13 @@ This document records findings from the pre-launch review pass. Items marked **B
 
 | Severity | Area | Finding | Action |
 |---|---|---|---|
+| High | Production migrations | 8 new collection tables don't exist in Neon production. Payload's `pushDevSchema` is skipped in `NODE_ENV=production`. See `docs/operations/migrations.md` for the full fix procedure. | **BLOCKED-ON-BOBBY:** generate migration file on Node 20, add `postbuild` hook to `package.json`, commit and deploy — required before enabling community/courses/auth routes |
+| Medium | Account deletion / data export | No "delete account" or "export my data" button exists on the account page. Required for GDPR Article 17/20 if serving EU users. | **BLOCKED-ON-BOBBY:** legal decision on whether this is required at launch; if yes, add to `/account` post-launch |
 | Medium | Rate limiting | In-memory store resets on every Vercel cold start (multiple serverless instances don't share state). A determined actor can bypass by hitting multiple instances. | Acceptable for launch; upgrade to Redis/Upstash if abuse materializes |
 | Low | `WEBHOOK_SECRET` rotation | `drive_content_sync_setup.md` still mentions the old secret value. | **BLOCKED-ON-BOBBY:** rotate `WEBHOOK_SECRET` in Vercel and the Apps Script CONFIG, then rewrite `drive_content_sync_setup.md` to remove the hardcoded value |
 | Low | Session cookie on HTTP | `neon-auth.session_token` (no `__Secure-` prefix) is used in local dev. In production Vercel always uses HTTPS, so only `__Secure-neon-auth.session_token` is set | No action needed — Vercel enforces HTTPS |
 | Low | Missing CSP headers | No `Content-Security-Policy` header is set. Vercel's default headers apply. | Post-launch hardening; add a CSP response header in `next.config.ts` when the page's iframe/script inventory is stable |
+| Low | Media uploads ephemeral | Payload writes media to `public/media/` — lost on every Vercel deploy. See `docs/operations/migrations.md`. | **BLOCKED-ON-BOBBY:** configure a cloud storage adapter before uploading media through `/admin`. Not needed at launch if all images are committed to the repo. |
 
 ---
 
@@ -118,10 +121,25 @@ This document records findings from the pre-launch review pass. Items marked **B
 
 ## Summary: BLOCKED-ON-BOBBY items from this review
 
-1. Rotate `WEBHOOK_SECRET` and rewrite `drive_content_sync_setup.md`
-2. Cookie consent banner decision (GDPR/CCPA)
-3. Google DPA confirmation
-4. Re-export `paths-loop.mp4` with faststart encoding
-5. Keyboard + screen reader test of ADHD interactive components
-6. Set `PARENT_CONTENT_WEBHOOK_SECRET` in Vercel Production (open item from pipeline)
-7. Set `RESEND_API_KEY` + verified sender domain + `NOTIFY_EMAIL` (community report emails)
+**Before enabling community/courses/auth routes:**
+1. Run Payload migrations — see `docs/operations/migrations.md` for the full procedure (needs Node 20; edit `package.json` build script)
+2. Configure cloud media storage before uploading images through `/admin`
+
+**Before public launch:**
+3. Rotate `WEBHOOK_SECRET` and rewrite `drive_content_sync_setup.md`
+4. Cookie consent banner decision (GDPR/CCPA)
+5. Google DPA confirmation
+6. Re-export `paths-loop.mp4` with faststart encoding
+7. Keyboard + screen reader test of ADHD interactive components
+
+**Post-launch backlog:**
+8. Set `PARENT_CONTENT_WEBHOOK_SECRET` in Vercel Production (parent content sync pipeline)
+9. Set `RESEND_API_KEY` + verified sender domain + `NOTIFY_EMAIL` (community report emails)
+10. Account deletion / data export button on `/account` (legal decision)
+
+**Not covered by code review (requires Bobby's environment):**
+- Auth flow end-to-end test (sign-up, email verification, password reset, Google OAuth)
+- Course end-to-end test (create a course, enroll, complete a lesson)
+- Community end-to-end test (post, comment, report)
+- Real Lighthouse measurements (mobile performance scores)
+- Apps Script 49-item verification list — not in the materials Claude Code received; Bobby must confirm or share

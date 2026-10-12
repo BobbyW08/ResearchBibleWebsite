@@ -22,7 +22,7 @@ There is no persistent staging environment. Vercel preview deploys serve that ro
 | Variable | Local (`.env.local`) | Vercel Production | Notes |
 |---|---|---|---|
 | `DATABASE_URI` | Neon dev branch | Production Neon branch | Payload CMS connection |
-| `DATABASE_URL` | Same as above | Same as above | Drizzle / legacy; kept in sync |
+| `DATABASE_URL` | Same as above | Same as above | Kept for legacy compatibility; Drizzle was removed in P0 Task 2 — no code reads this at runtime |
 | `PAYLOAD_SECRET` | Any 32+ char string | Set | JWT / cookie signing |
 | `NEON_AUTH_BASE_URL` | Neon Auth console | Set | Visitor auth |
 | `NEXT_PUBLIC_NEON_AUTH_BASE_URL` | Same as above | Set | Client-side auth UI |
