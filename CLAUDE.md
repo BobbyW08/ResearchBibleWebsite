@@ -70,8 +70,9 @@ All tokens are CSS custom properties in `app/globals.css`. One deliberate light 
 - **Booking:** Cal.com - direct outbound links to `intro-call` (not embedded), except one Cal popup on the Teen page's pinned CTA
 - **Newsletter:** Substack embed in `components/marketing/newsletter-dialog.tsx`. Subdomain in `lib/links.ts`
 - **CMS:** Payload CMS 3.90.2 - active. Admin at `/admin`. 9 collections, 4 globals. Schema in `payload.config.ts` (repo root). Collections and globals source in `src/payload/`. DB tables exist and all content has been migrated. Admin styling comes from `@payloadcms/next/css`, imported in `app/(payload)/admin/[[...segments]]/layout.tsx`.
-- **Payments:** Stripe - `lib/stripe.ts`, `lib/stripe-products.ts`, routes `app/api/stripe/checkout` and `app/api/stripe/webhook`. Not exercised end-to-end; nothing is sold at launch.
-- **Database:** Neon Postgres - provisioned. `neon_auth` schema exists. Payload uses `DATABASE_URI`; Drizzle uses `DATABASE_URL` (same connection string, different var names, both in `.env.local`).
+- **Payments:** Stripe - moved to `graveyard/stripe/`. Not at launch. Revival instructions in `graveyard/stripe/README.md`.
+- **Email:** Resend - `resend` package. Used for community report notifications. **Not yet configured** — requires `RESEND_API_KEY`, verified sender domain, and `NOTIFY_EMAIL` in Vercel (BLOCKED-ON-BOBBY).
+- **Database:** Neon Postgres - provisioned. `neon_auth` schema (Neon Auth). `payload_cms` schema (Payload). `public` schema (legacy Drizzle tables — orphaned, no code reads them).
 - **Hosting:** Vercel
 - **Server-side integrations:** hand-rolled REST clients only (Google Drive and Sheets in `lib/google/`).
 
@@ -112,7 +113,7 @@ Do NOT use: Framer, Aceternity UI, Magic UI Pro, Supabase, self-hosted better-au
 |---|---|
 | `/sign-in` | Built, untested end-to-end |
 | `/welcome` | Built (role selector), untested end-to-end |
-| `/community`, `/community/post/[id]` | Built, gated by `middleware.ts`, not linked live |
+| `/community`, `/community/post/[id]`, `/community-guidelines` | Built, gated by `middleware.ts`, not linked live |
 | `/courses/[slug]`, `/courses/[slug]/[lesson-slug]` | Built, gated by `middleware.ts`, not linked live |
 | `/account` | Built, gated by `middleware.ts` |
 
@@ -239,7 +240,7 @@ Manual-only Drive to Payload pipeline for Pain Point and Awareness Module conten
 
 ## Payload CMS
 
-**Collections (9):** `Users`, `Media`, `Testimonials`, `PainPoints`, `AwarenessModules`, `ResearchBibles`, `DeepDives`, `Courses`, `Lessons`
+**Collections (17):** `Users`, `Media`, `Testimonials`, `PainPoints`, `AwarenessModules`, `ResearchBibles`, `DeepDives`, `Courses`, `Lessons`, `VisitorProfiles`, `Posts`, `Comments`, `Reports`, `LessonProgress`, `Entitlements`, `InterestSignups`, `Enrollments`
 
 **Globals (4):** `FAQ`, `Footer`, `SiteSettings`, `About`
 
@@ -251,28 +252,37 @@ Schema source: `src/payload/collections/` and `src/payload/globals/`. Config: `p
 
 ---
 
-## Community and Courses Platform (v18 Parts J–P - routes built, not yet live)
+## Community and Courses Platform (routes built, not yet live)
 
-DB schema complete in `lib/db/schema.ts`: `profiles` (with community fields), `posts`, `comments`, `likes`, `pointsLedger`, `courseProgress`, `entitlements`, `stripeCustomers`, `stripeSubscriptions`, `stripeOrders`, `postTags`. Drizzle migrations may need to run against Neon to create these tables.
+All visitor data lives in Payload collections (no Drizzle). Key collections:
 
-Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`, `/account`, `/welcome`. Auth middleware in `middleware.ts` (protects `/community`, `/courses`, `/account`). Stripe checkout and webhook routes exist but are untested. See `claude-code-handoff-v18.md` Parts J–P for remaining work.
+- **`VisitorProfiles`** (`visitor_profiles`) - userId (unique), userRole (parent|professional), displayName, bio, status (active|suspended)
+- **`Posts`** (`community_posts`) - content, audience (parent|professional|all), status (visible|hidden|removed), isPinned, commentsCount
+- **`Comments`** (`community_comments`) - content, post (relation), author (relation), status (visible|hidden|removed)
+- **`Reports`** (`community_reports`) - targetType (post|comment), targetId, reason (6 enum values), note, status (open|actioned|dismissed), resolvedAt
+- **`LessonProgress`** (`lesson_progress`) - userId (index), lessonId (index), completedAt
+- **`Entitlements`** (`visitor_entitlements`) - userId, productId, expiresAt
+- **`Enrollments`** (`course_enrollments`) - userId (index), courseSlug (index), source (free|admin)
+
+Auth helpers: `lib/auth/require.ts` — `requireSession()` (redirects if no verified session), `requireProfile()` (redirects if no profile or suspended).
+Rate limiting: `lib/rate-limit.ts` — in-memory sliding window; resets on cold start.
+
+Community moderation API: `/api/community/report`, `/api/community/posts/edit`, `/api/community/comments/edit`.
+Community guidelines page: `/community-guidelines` (draft — BLOCKED-ON-BOBBY: text review before linking live).
+Moderation guide for admins: `docs/operations/moderation.md`.
+
+Routes built but gated and not yet live: `/sign-in`, `/welcome`, `/community`, `/community/post/[id]`, `/community-guidelines`, `/courses`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`, `/account`. Auth middleware in `middleware.ts` (protects `/community`, `/courses`, `/account`).
 
 ---
 
 ## Database
 
-**Neon Postgres:** provisioned. `neon_auth` schema (Neon Auth). `public` schema (Drizzle + Payload coexist, no name conflicts).
+**Neon Postgres:** provisioned. Three schemas:
+- `neon_auth` — Neon Auth (visitor sessions, managed by Neon)
+- `payload_cms` — all Payload CMS tables (auto-managed by Payload)
+- `public` — orphaned Drizzle tables from before P0 Task 2. No code reads them. Candidates for cleanup.
 
-**Drizzle tables (all exist in `public` schema):**
-- `profiles`, `topic_progress`, `interest_signups`, `pending_reviews` - original tables
-- `posts`, `comments`, `likes`, `points_ledger`, `post_tags` - community tables
-- `course_progress`, `entitlements` - courses gating tables
-- `stripe_customers`, `stripe_subscriptions`, `stripe_orders` - Stripe tables
-- `courses`, `lessons` - course catalog tables (Drizzle-managed, separate from Payload's `payload_courses`)
-
-**Payload tables (all exist in `payload_cms` schema):** Payload auto-synced its schema on first run and uses a separate DB schema (`payload_cms`).
-
-**Drizzle migration tracking:** `drizzle."__drizzle_migrations"` has the 5 existing migrations stamped, so `drizzle-kit migrate` works.
+Drizzle ORM and drizzle-kit have been removed. `DATABASE_URL` env var is kept for any legacy reference but is not used at runtime. `DATABASE_URI` is the active Payload connection string.
 
 ---
 
@@ -318,9 +328,9 @@ npm run lint
 npx tsc --noEmit
 ```
 
-**JSON edits:**
+**JSON edits (node, since python3 is not available on this Windows machine):**
 ```
-cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modifications]; print(json.dumps(data, indent=2))" > output.json
+node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('file.json')); /* modifications */; fs.writeFileSync('file.json', JSON.stringify(d,null,2))"
 ```
 
 ---
@@ -357,17 +367,20 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **Vercel env vars** - `PAYLOAD_SECRET` and `DATABASE_URI` are set in Vercel Production. `sslmode=verify-full` already in both `DATABASE_URL` and `DATABASE_URI`.
-- **`paths-loop.mp4` Chrome decode failure** - video renders as black box; Bobby needs to re-export faststart-encoded
-- **Community/courses platform** - DB tables exist; routes built but untested end-to-end; Neon Auth (`NEON_AUTH_BASE_URL`) must be configured before auth flow works; Stripe routes untested
-- **Research Bible Pipeline** - Apps Script trigger installed; first live sync result unconfirmed
-- **Parent Content Sync Pipeline** - not tested end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not in Vercel
-- **`drive_content_sync_setup.md`** - still describes the old GitHub PR flow and contains a webhook secret; rewrite it and rotate `WEBHOOK_SECRET` (Vercel and Apps Script)
-- **Payload admin branding** - default theme; brand red `#9F0000` and logo not applied
+- **`paths-loop.mp4` Chrome decode failure** - video renders as black box on Services hero; Bobby needs to re-export with `-movflags +faststart`
+- **Community/courses platform** - routes built; Neon Auth (`NEON_AUTH_BASE_URL`) must be configured in Vercel before auth flow works; not tested end-to-end
+- **Research Bible Pipeline** - Apps Script trigger installed; first live sync result unconfirmed (check Apps Script Executions for HTTP 200, then check `/admin` for draft)
+- **Parent Content Sync Pipeline** - not exercised end-to-end; Apps Script project not yet created; `PARENT_CONTENT_WEBHOOK_SECRET` not set in Vercel Production
+- **`drive_content_sync_setup.md`** - still references old GitHub PR flow; rewrite it and rotate `WEBHOOK_SECRET` in Vercel and Apps Script CONFIG
+- **Payload admin branding** - default Payload theme; brand red `#9F0000` and Bobby's logo not applied
 - **Start Here Row 2 photos** - temp Unsplash stock; swap `ROW_TWO_PANELS` URL constants when real photos arrive
-- **`siteSettings` global** - not yet wired to `lib/links.ts` or Cal.com URLs
-- **Organizations inquiry form** - `/api/org-inquiry` writes to a Google Sheet only if `INTEREST_SIGNUPS_SHEET_ID` is set; confirm it is set in Vercel Production
-- **Pending copy from Bobby:** About-Bobby page content, FAQ answers
+- **`siteSettings` global** - not yet wired to `lib/links.ts` or Cal.com URLs (hardcoded)
+- **Organizations inquiry form** - confirm `INTEREST_SIGNUPS_SHEET_ID` is set in Vercel Production
+- **Pending copy from Bobby:** About-Bobby page content, FAQ answers, Community Guidelines text
+- **Community report emails** - `RESEND_API_KEY`, verified Resend sender domain, and `NOTIFY_EMAIL` needed in Vercel Production before report notification emails work
+- **Cookie consent banner** - confirm whether GDPR/CCPA consent UI is required for the launch audience (legal decision)
+- **ADHD accessibility** - keyboard + screen reader test of interactive components before promoting `/docs/adhd` as a flagship page
+- **Orphaned Drizzle tables** - `public` schema in Neon still holds legacy Drizzle tables; safe to drop after confirming no references remain
 
 ---
 
@@ -384,9 +397,11 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 | Pain point components | `components/pain-points/teen-route/` (Teen mosaic, unwired) |
 | Payload schema | `payload.config.ts` (root), collections/globals in `src/payload/` |
 | Payload readers | `lib/payload-client.ts`, `lib/payload-globals.ts`, `lib/payload-courses.ts`, `lib/pain-points-reader.ts`, `lib/research-bibles-reader.ts` |
-| DB schema | `lib/db/schema.ts`, `drizzle/` migrations |
-| Stripe config | `lib/stripe.ts`, `lib/stripe-products.ts` |
-| Shared logic | `lib/auth/`, `lib/db/`, `lib/google/`, `lib/research-bibles/`, `lib/parent-content/`, `lib/tools/` |
+| Auth helpers | `lib/auth/require.ts` (requireSession, requireProfile), `lib/auth/server.ts` (Neon Auth client) |
+| Rate limiting | `lib/rate-limit.ts` (in-memory sliding window) |
+| Shared logic | `lib/google/`, `lib/research-bibles/`, `lib/parent-content/`, `lib/tools/` |
+| Stripe (backlogged) | `graveyard/stripe/` — revival instructions in `graveyard/stripe/README.md` |
+| Operations docs | `docs/operations/` — auth.md, auth-audit.md, moderation.md, environments.md, backups.md, dependencies.md, launch-review.md |
 | Reference content (docs MDX, dashboard data, sync config) | `content/docs/`, `content/data/`, `content/sync-config.json` |
 | Middleware | `middleware.ts` |
 | Retired files | `graveyard/` |
