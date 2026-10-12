@@ -45,7 +45,6 @@ export default async function CourseOverviewPage({
   const gateLabel: Record<string, string> = {
     free: "",
     paid: "Paid",
-    level: "Level locked",
   };
 
   return (
@@ -108,9 +107,7 @@ export default async function CourseOverviewPage({
                           </span>
                           {gate !== "free" && (
                             <span className="shrink-0 text-xs font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                              {gate === "level"
-                                ? `Level ${lesson.gateMinLevel}+`
-                                : gateLabel[gate]}
+                              {gateLabel[gate] ?? gate}
                             </span>
                           )}
                         </Link>

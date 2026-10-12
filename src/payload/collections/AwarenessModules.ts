@@ -1,7 +1,15 @@
 import type { CollectionConfig } from "payload";
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
 export const AwarenessModules: CollectionConfig = {
   slug: "awareness-modules",
+  access: {
+    read: () => true,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "tag", "_status"],

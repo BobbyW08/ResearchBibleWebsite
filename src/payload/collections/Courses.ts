@@ -1,18 +1,33 @@
 import type { CollectionConfig } from "payload";
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
 export const Courses: CollectionConfig = {
   slug: "courses",
   dbName: "payload_courses",
+  access: {
+    read: () => true,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
+  },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "audience", "productKey", "_status"],
+    defaultColumns: ["title", "audience", "sortOrder", "_status"],
     description: "Course catalog. Lesson content is in the Lessons collection.",
+    preview: (doc) => `/courses/${doc.slug}`,
   },
   versions: { drafts: true },
   fields: [
     { name: "slug", type: "text", required: true, unique: true },
     { name: "title", type: "text", required: true },
     { name: "description", type: "textarea", required: true },
+    {
+      name: "coverImage",
+      type: "upload",
+      relationTo: "media",
+      admin: { description: "Cover image shown on the course listing page." },
+    },
     {
       name: "audience",
       type: "select",
@@ -23,14 +38,6 @@ export const Courses: CollectionConfig = {
         { label: "Professionals", value: "professional" },
         { label: "Both", value: "all" },
       ],
-    },
-    {
-      name: "productKey",
-      type: "text",
-      admin: {
-        description:
-          "Stripe product key from lib/stripe-products.ts. Leave blank for a free course.",
-      },
     },
     {
       name: "sortOrder",

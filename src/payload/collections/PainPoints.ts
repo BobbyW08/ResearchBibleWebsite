@@ -16,8 +16,16 @@ const APPROVED_ICONS = [
   "TrendingUp",
 ];
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
 export const PainPoints: CollectionConfig = {
   slug: "pain-points",
+  access: {
+    read: () => true,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "tag", "featured", "_status"],

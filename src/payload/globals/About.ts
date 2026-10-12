@@ -1,7 +1,10 @@
 import type { GlobalConfig } from "payload";
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
 export const About: GlobalConfig = {
   slug: "about",
+  access: { read: () => true, update: isAdmin },
   admin: { description: "Content for the /about-bobby page." },
   fields: [
     { name: "heroSubhead", type: "text" },
