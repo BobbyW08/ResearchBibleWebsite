@@ -31,9 +31,19 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const post = postDocs[0] ?? null;
   if (!post) notFound();
 
+  // Enforce audience: parents cannot see professional-only posts and vice versa
+  const postAudience = post.audience as string;
+  const userRole = (profile.userRole as string);
+  if (postAudience !== "all" && postAudience !== userRole) notFound();
+
+  // Hidden/removed posts are not accessible
+  if ((post.status as string) !== "visible") notFound();
+
   const { docs: postComments } = await payload.find({
     collection: "comments",
-    where: { post: { equals: id } },
+    where: {
+      and: [{ post: { equals: id } }, { status: { equals: "visible" } }],
+    },
     sort: "createdAt",
     limit: 200,
   });

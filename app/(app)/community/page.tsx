@@ -31,9 +31,14 @@ export default async function CommunityPage() {
   const { docs: feed } = await payload.find({
     collection: "posts",
     where: {
-      or: [
-        { audience: { equals: profile.userRole as string } },
-        { audience: { equals: "all" } },
+      and: [
+        {
+          or: [
+            { audience: { equals: profile.userRole as string } },
+            { audience: { equals: "all" } },
+          ],
+        },
+        { status: { equals: "visible" } },
       ],
     },
     sort: "-createdAt",

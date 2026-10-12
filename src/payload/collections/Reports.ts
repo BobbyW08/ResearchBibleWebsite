@@ -1,18 +1,29 @@
 import type { CollectionConfig } from "payload";
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
+const REASONS = [
+  { label: "Harassment or bullying", value: "harassment" },
+  { label: "Hate speech", value: "hate_speech" },
+  { label: "Spam or self-promotion", value: "spam" },
+  { label: "Sharing personal information", value: "privacy" },
+  { label: "Misinformation", value: "misinformation" },
+  { label: "Other", value: "other" },
+];
+
 export const Reports: CollectionConfig = {
   slug: "reports",
   dbName: "community_reports",
+  access: {
+    read: isAdmin,
+    create: () => false,
+    update: isAdmin,
+    delete: isAdmin,
+  },
   admin: {
     useAsTitle: "targetId",
-    defaultColumns: ["targetType", "targetId", "reporterUserId", "status", "createdAt"],
-    description: "Community moderation reports. Review and dismiss from here.",
-  },
-  access: {
-    read: ({ req: { user } }) => !!user,
-    create: () => false,
-    update: ({ req: { user } }) => !!user,
-    delete: ({ req: { user } }) => !!user,
+    defaultColumns: ["targetType", "targetId", "reason", "status", "createdAt"],
+    description: "Community moderation reports. Set status to actioned or dismissed after reviewing.",
   },
   fields: [
     {
@@ -38,19 +49,30 @@ export const Reports: CollectionConfig = {
     },
     {
       name: "reason",
+      type: "select",
+      required: true,
+      options: REASONS,
+    },
+    {
+      name: "note",
       type: "textarea",
-      admin: { description: "Optional reason text provided by the reporter." },
+      admin: { description: "Optional additional detail provided by the reporter." },
     },
     {
       name: "status",
       type: "select",
       required: true,
-      defaultValue: "pending",
+      defaultValue: "open",
       options: [
-        { label: "Pending", value: "pending" },
-        { label: "Reviewed", value: "reviewed" },
+        { label: "Open", value: "open" },
+        { label: "Actioned", value: "actioned" },
         { label: "Dismissed", value: "dismissed" },
       ],
+    },
+    {
+      name: "resolvedAt",
+      type: "date",
+      admin: { description: "Set when status changes from open." },
     },
   ],
 };

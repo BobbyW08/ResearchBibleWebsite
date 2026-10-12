@@ -20,9 +20,14 @@ export async function GET() {
   const { docs: feed } = await payload.find({
     collection: "posts",
     where: {
-      or: [
-        { audience: { equals: profile.userRole } },
-        { audience: { equals: "all" } },
+      and: [
+        {
+          or: [
+            { audience: { equals: profile.userRole } },
+            { audience: { equals: "all" } },
+          ],
+        },
+        { status: { equals: "visible" } },
       ],
     },
     sort: "-createdAt",
