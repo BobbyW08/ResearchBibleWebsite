@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
+import { PageContainer } from "@/components/layout/page-container";
 import { getAllCourses } from "@/lib/payload-courses";
 
 export const metadata: Metadata = {
@@ -17,12 +18,12 @@ export default async function CoursesPage() {
       <Header />
       <main className="flex flex-1 flex-col">
         <section className="border-b border-border">
-          <div className="mx-auto max-w-4xl px-4 py-16 sm:px-8 lg:py-20">
+          <PageContainer className="py-16 lg:py-20">
             <h1 className="font-heading text-3xl font-medium tracking-tight">Courses</h1>
             <p className="mt-4 text-base text-muted-foreground">
               Structured learning on parenting topics. Work through at your own pace.
             </p>
-          </div>
+          </PageContainer>
         </section>
 
         {published.length === 0 ? (
@@ -41,24 +42,26 @@ export default async function CoursesPage() {
             </div>
           </section>
         ) : (
-          <section className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-8">
-            <ul className="grid gap-6 sm:grid-cols-2">
-              {published.map((course) => (
-                <li key={course.id}>
-                  <Link
-                    href={`/courses/${course.slug}`}
-                    className="group flex flex-col gap-3 rounded-lg border border-border p-6 transition-colors hover:border-primary"
-                  >
-                    <h2 className="font-heading text-lg font-medium tracking-tight group-hover:text-primary">
-                      {course.title}
-                    </h2>
-                    {course.description && (
-                      <p className="text-sm text-muted-foreground">{course.description}</p>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <section>
+            <PageContainer className="py-12">
+              <ul className="grid gap-6 sm:grid-cols-2">
+                {published.map((course) => (
+                  <li key={course.id}>
+                    <Link
+                      href={`/courses/${course.slug}`}
+                      className="group flex flex-col gap-3 rounded-lg border border-border p-6 transition-colors hover:border-primary"
+                    >
+                      <h2 className="font-heading text-lg font-medium tracking-tight group-hover:text-primary">
+                        {course.title}
+                      </h2>
+                      {course.description && (
+                        <p className="text-sm text-muted-foreground">{course.description}</p>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </PageContainer>
           </section>
         )}
       </main>

@@ -10,9 +10,10 @@ import {
   entitlements,
   pointsLedger,
 } from "@/lib/db/schema";
-import { eq, and, or, isNull, gt, sql } from "drizzle-orm";
+import { eq, and, or, isNull, gt, sql, asc } from "drizzle-orm";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
+import { PageContainer } from "@/components/layout/page-container";
 import { renderBibleBody } from "@/lib/research-bibles/render-mdx";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -88,13 +89,18 @@ export default async function LessonPage({
   const lesson = await db
     .select()
     .from(lessons)
-    .where(and(eq(lessons.courseId, course.id), eq(lessons.slug, lessonSlug), eq(lessons.isPublished, true)))
+    .where(
+      and(
+        eq(lessons.courseId, course.id),
+        eq(lessons.slug, lessonSlug),
+        eq(lessons.isPublished, true)
+      )
+    )
     .limit(1)
     .then((r) => r[0] ?? null);
 
   if (!lesson) notFound();
 
-  // Gate check
   if (lesson.gateType === "paid") {
     const entitled = await db
       .select({ id: entitlements.id })
@@ -152,14 +158,12 @@ export default async function LessonPage({
     }
   }
 
-  // Mark lesson complete (best-effort, non-blocking)
   try {
     await completeLessonIfNeeded(profile.id, lesson.id, 5);
   } catch {
     // non-fatal
   }
 
-  // Render lesson content
   let content: import("react").ReactNode = null;
   try {
     const filePath = path.join(/*turbopackIgnore: true*/ process.cwd(), lesson.contentPath);
@@ -169,26 +173,61 @@ export default async function LessonPage({
     content = null;
   }
 
+  const allLessons = await db
+    .select()
+    .from(lessons)
+    .where(and(eq(lessons.courseId, course.id), eq(lessons.isPublished, true)))
+    .orderBy(asc(lessons.sortOrder));
+
   return (
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-8">
-          <Link
-            href={`/courses/${slug}`}
-            className="text-sm text-muted-foreground hover:text-foreground mb-6 inline-block"
-          >
-            &larr; Back to {course.title}
-          </Link>
-          <h1 className="font-heading text-3xl font-medium tracking-tight mb-8">
-            {lesson.title}
-          </h1>
-          {content ? (
-            <article className="prose prose-sm max-w-none">{content}</article>
-          ) : (
-            <p className="text-muted-foreground">Content not yet available.</p>
-          )}
-        </div>
+        <PageContainer className="py-12">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[2fr_1fr] lg:gap-14">
+            {/* Main: lesson content */}
+            <div>
+              <Link
+                href={`/courses/${slug}`}
+                className="text-sm text-muted-foreground hover:text-foreground mb-6 inline-block"
+              >
+                &larr; Back to {course.title}
+              </Link>
+              <h1 className="font-heading text-3xl font-medium tracking-tight mb-8">
+                {lesson.title}
+              </h1>
+              {content ? (
+                <article className="prose prose-sm max-w-none">{content}</article>
+              ) : (
+                <p className="text-muted-foreground">Content not yet available.</p>
+              )}
+            </div>
+
+            {/* Sidebar: lesson list */}
+            <aside className="hidden lg:block">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+                {course.title}
+              </p>
+              <ol className="flex flex-col gap-2">
+                {allLessons.map((l, i) => (
+                  <li key={l.id}>
+                    <Link
+                      href={`/courses/${slug}/${l.slug}`}
+                      className={`block rounded px-3 py-2 text-sm transition-colors ${
+                        l.id === lesson.id
+                          ? "bg-primary/10 font-medium text-primary"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <span className="mr-2 text-xs">{i + 1}.</span>
+                      {l.title}
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          </div>
+        </PageContainer>
       </main>
       <Footer />
     </div>

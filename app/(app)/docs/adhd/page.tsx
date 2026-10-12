@@ -4,6 +4,7 @@ import Link from "next/link";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
+import { PageContainer } from "@/components/layout/page-container";
 import { getPayloadClient } from "@/lib/payload-client";
 import {
   DualPathwayDiagram,
@@ -100,42 +101,56 @@ export default async function AdhhdPage() {
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-4xl px-4 py-12 sm:px-8 lg:py-16">
-          <nav className="mb-6 text-sm text-muted-foreground">
-            <Link href="/docs" className="hover:text-foreground transition-colors">
-              Deep Dives
-            </Link>
-            <span className="mx-2">/</span>
-            <span>{docTitle}</span>
-          </nav>
+        <PageContainer className="py-12 lg:py-16">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[2fr_1fr] lg:gap-14">
+            <div>
+              <nav className="mb-6 text-sm text-muted-foreground">
+                <Link href="/docs" className="hover:text-foreground transition-colors">
+                  Deep Dives
+                </Link>
+                <span className="mx-2">/</span>
+                <span>{docTitle}</span>
+              </nav>
 
-          <h1 className="font-heading text-3xl font-medium tracking-tight sm:text-4xl">
-            {docTitle}
-          </h1>
+              <h1 className="font-heading text-3xl font-medium tracking-tight sm:text-4xl">
+                {docTitle}
+              </h1>
 
-          <article className="prose prose-neutral mt-8 max-w-none dark:prose-invert">
-            {processedBody ? (
-              <RichText
-                data={processedBody as Parameters<typeof RichText>[0]["data"]}
-                converters={{
-                  // Handle injected ADHD component marker nodes
-                  "adhd-component-marker": ({ node }: { node: { markerKey?: string; injectionIndex?: number } }) => {
-                    const injection = node.injectionIndex !== undefined
-                      ? injections[node.injectionIndex]
-                      : undefined;
-                    if (!injection) return null;
-                    const Component = injection.Component;
-                    return <Component key={injection.key} />;
-                  },
-                }}
-              />
-            ) : (
-              <p className="text-muted-foreground">
-                ADHD deep dive content is being migrated. Check back soon.
-              </p>
-            )}
-          </article>
-        </div>
+              <article className="prose prose-neutral mt-8 max-w-none dark:prose-invert">
+                {processedBody ? (
+                  <RichText
+                    data={processedBody as Parameters<typeof RichText>[0]["data"]}
+                    converters={{
+                      "adhd-component-marker": ({ node }: { node: { markerKey?: string; injectionIndex?: number } }) => {
+                        const injection = node.injectionIndex !== undefined
+                          ? injections[node.injectionIndex]
+                          : undefined;
+                        if (!injection) return null;
+                        const Component = injection.Component;
+                        return <Component key={injection.key} />;
+                      },
+                    }}
+                  />
+                ) : (
+                  <p className="text-muted-foreground">
+                    ADHD deep dive content is being migrated. Check back soon.
+                  </p>
+                )}
+              </article>
+            </div>
+
+            <aside className="hidden lg:block">
+              <div className="sticky top-8">
+                <Link
+                  href="/docs"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  &larr; All deep dives
+                </Link>
+              </div>
+            </aside>
+          </div>
+        </PageContainer>
       </main>
       <Footer />
     </div>

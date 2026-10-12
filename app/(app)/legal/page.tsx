@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
+import { PageContainer } from "@/components/layout/page-container";
 
 export const metadata: Metadata = {
   title: "Legal & Disclaimers",
@@ -39,11 +40,11 @@ export default function LegalPage() {
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-8 lg:py-16">
+        <PageContainer className="py-12 lg:py-16">
           <h1 className="font-heading text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
             Legal &amp; Disclaimers
           </h1>
-          <div className="mt-10 flex flex-col gap-8">
+          <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
             {SECTIONS.map((section) => (
               <section key={section.heading} className="flex flex-col gap-2">
                 <h2 className="font-heading text-lg font-medium tracking-tight text-foreground">
@@ -53,7 +54,7 @@ export default function LegalPage() {
               </section>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </main>
       <Footer />
     </div>

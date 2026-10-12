@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
+import { PageContainer } from "@/components/layout/page-container";
 import OrgInquiryForm from "@/components/marketing/organizations/org-inquiry-form";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -22,7 +23,7 @@ const OFFER_CARDS = [
   {
     title: "Nonclinical Family Support Program",
     description:
-      "For families a partner refers who are not a fit for clinical services, or who need practical support alongside them. A structured 90-day pathway: referral, engagement, a closed cohort or workshop, a warm handoff when appropriate, a summary report, and a continue/adapt/stop decision. Building with partners, one pilot at a time. This is not a billable clinical or peer service.",
+      "A Medicaid-covered peer services model for any agency with PBRSS certification. Your agency holds the certification, supervision and billing. I deliver the peer parent support to the families you refer, working alongside your clinical team and inside your existing workflow.",
   },
   {
     title: "Parent Education Workshops",
@@ -36,57 +37,6 @@ const OFFER_CARDS = [
   },
 ];
 
-const PILOT_STEPS = [
-  {
-    number: 1,
-    label: "Referral",
-    detail: "Partner identifies families who need support and do not fit clinical criteria.",
-  },
-  {
-    number: 2,
-    label: "Engagement",
-    detail: "Initial outreach and intake. Building trust before any structured work begins.",
-  },
-  {
-    number: 3,
-    label: "Cohort or workshop",
-    detail: "Closed group, topic-focused, delivered over a defined period.",
-  },
-  {
-    number: 4,
-    label: "Warm handoff",
-    detail:
-      "When a family needs more than peer support, connections are made before the program ends.",
-  },
-  {
-    number: 5,
-    label: "Summary report",
-    detail:
-      "A plain-language summary of participation and outcomes. No clinical language, no private identifying information.",
-  },
-  {
-    number: 6,
-    label: "Decision point",
-    detail: "Continue, adapt, or stop. No automatic renewal.",
-  },
-];
-
-const WHAT_I_PROVIDE = [
-  "Peer support and family engagement",
-  "Group facilitation",
-  "Practical skill building",
-  "Progress notes and a summary report",
-  "Warm handoffs to clinical or community resources",
-];
-
-const WHAT_YOU_RETAIN = [
-  "Clinical decisions",
-  "Child safety determination",
-  "Crisis response",
-  "Mandated reporting",
-  "Clinical documentation",
-];
-
 export default function OrganizationsPage() {
   return (
     <div className="flex flex-1 flex-col">
@@ -94,7 +44,7 @@ export default function OrganizationsPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="border-b border-border">
-          <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-8 lg:py-24">
+          <PageContainer className="py-16 text-center lg:py-24">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">
               For Organizations and Nonprofits
             </p>
@@ -107,12 +57,12 @@ export default function OrganizationsPage() {
               support fills a gap that no clinical hire fills, especially with families who are
               hardest to reach through traditional services.
             </p>
-          </div>
+          </PageContainer>
         </section>
 
         {/* Offer cards */}
         <section className="border-b border-border">
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 lg:py-20">
+          <PageContainer className="py-16 lg:py-20">
             <h2 className="font-heading text-2xl font-medium tracking-tight sm:text-3xl">
               What I Offer
             </h2>
@@ -123,92 +73,14 @@ export default function OrganizationsPage() {
                     <h3 className="font-heading text-xl font-medium text-foreground">
                       {card.title}
                     </h3>
-                    <p className="text-base font-normal text-muted-foreground">{card.description}</p>
+                    <p className="text-base font-normal text-muted-foreground">
+                      {card.description}
+                    </p>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* How a pilot works */}
-        <section className="border-b border-border bg-muted/40">
-          <div className="mx-auto max-w-4xl px-4 py-16 sm:px-8 lg:py-20">
-            <h2 className="font-heading text-2xl font-medium tracking-tight sm:text-3xl">
-              How a pilot works
-            </h2>
-            <ol className="mt-10 flex flex-col gap-6">
-              {PILOT_STEPS.map((step) => (
-                <li key={step.number} className="flex gap-5">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                    {step.number}
-                  </span>
-                  <div className="pt-0.5">
-                    <p className="font-heading text-base font-medium text-foreground">
-                      {step.label}
-                    </p>
-                    <p className="mt-1 text-base font-normal text-muted-foreground">{step.detail}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        {/* What I do vs what you keep */}
-        <section className="border-b border-border">
-          <div className="mx-auto max-w-4xl px-4 py-16 sm:px-8 lg:py-20">
-            <h2 className="font-heading text-2xl font-medium tracking-tight sm:text-3xl">
-              What I do and what you keep
-            </h2>
-            <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div className="rounded-lg border border-border bg-background p-6">
-                <p className="font-heading text-base font-semibold text-foreground">
-                  What I provide
-                </p>
-                <ul className="mt-4 flex flex-col gap-2">
-                  {WHAT_I_PROVIDE.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rounded-lg border border-border bg-background p-6">
-                <p className="font-heading text-base font-semibold text-foreground">
-                  What your organization retains
-                </p>
-                <ul className="mt-4 flex flex-col gap-2">
-                  {WHAT_YOU_RETAIN.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/30" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <p className="mt-6 text-sm font-medium text-foreground">
-              This is peer support, not therapy, clinical case management, or a mandated service.
-            </p>
-          </div>
-        </section>
-
-        {/* How this gets funded */}
-        <section className="border-b border-border bg-muted/40">
-          <div className="mx-auto max-w-4xl px-4 py-16 sm:px-8 lg:py-20">
-            <h2 className="font-heading text-2xl font-medium tracking-tight sm:text-3xl">
-              How this gets funded
-            </h2>
-            <p className="mt-5 max-w-2xl text-base font-normal text-muted-foreground">
-              These services typically fit within family engagement, prevention, peer support, or
-              grant deliverable budget lines. Structures include a fixed-scope pilot, a sponsored
-              cohort, a per-cohort fee, or a longer retainer after a pilot completes. No prices are
-              published. All engagements are fixed scope with a fixed cap. Request a quote to start
-              the conversation.
-            </p>
-          </div>
+          </PageContainer>
         </section>
 
         {/* Inquiry form */}
