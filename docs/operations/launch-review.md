@@ -92,8 +92,9 @@ This document records findings from the pre-launch review pass. Items marked **B
 
 | Severity | Area | Finding | Action |
 |---|---|---|---|
+| High | Redirect chain | `bobby-washburn.com` redirects to `www.bobby-washburn.com` which redirects back, wasting ~1.6 s on every page load. Lighthouse LCP: 7.5 s (score 4/100). | **BLOCKED-ON-BOBBY:** In Vercel domain settings, enforce one canonical host and remove the bounce-back redirect. Affects every page. |
 | Low | Recharts bundle size | Recharts adds ~150 KB to the ADHD page JS bundle. It's only used on `/docs/adhd`. | Acceptable for launch; lazy-load with `next/dynamic` if Lighthouse score becomes a concern |
-| Low | Motion library | `motion` adds bundle weight. Currently used for hero parallax only. | Same — acceptable for launch |
+| Low | Motion library | `motion` adds bundle weight. Currently used for hero parallax only. | Same -- acceptable for launch |
 
 ---
 
@@ -113,8 +114,11 @@ This document records findings from the pre-launch review pass. Items marked **B
 
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| Medium | ADHD interactive components | `DelayAversionSlider`, `EvidenceTierToggle`, `StrategyExplorer` — keyboard accessibility not audited. | **BLOCKED-ON-BOBBY:** manual keyboard and screen reader test before promoting `/docs/adhd` as a flagship page |
-| Low | Tech Safety wizard | Step-by-step wizard — focus management between steps not audited. | Test with keyboard-only navigation before launch |
+| Medium | ADHD interactive components | `DelayAversionSlider`, `EvidenceTierToggle`, `StrategyExplorer` -- keyboard accessibility not audited. | **BLOCKED-ON-BOBBY:** manual keyboard and screen reader test before promoting `/docs/adhd` as a flagship page |
+| Low | Missing `<main>` landmark | Lighthouse audit: no `<main>` landmark on the homepage. Screen readers can't navigate to main content. | Add `<main>` wrapper to `app/(app)/layout.tsx` |
+| Low | Logo link accessible name | `<a href="/">` logo link has no `aria-label`. Lighthouse: link-name failure. | Add `aria-label="Home"` to the logo anchor in `components/marketing/header.tsx` |
+| Low | LinkedIn link accessible name | LinkedIn icon link has no discernible text. | Add `aria-label="LinkedIn"` to the link in the footer/header |
+| Low | Tech Safety wizard | Step-by-step wizard -- focus management between steps not audited. | Test with keyboard-only navigation before launch |
 | Low | Flip cards (Services page) | `ModalityCards` flip cards at `sm`+: confirm keyboard focus enters the card back. | Test with keyboard-only navigation |
 
 ---
