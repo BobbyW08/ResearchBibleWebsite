@@ -27,6 +27,8 @@ import { Footer } from "./src/payload/globals/Footer";
 import { SiteSettings } from "./src/payload/globals/SiteSettings";
 import { About } from "./src/payload/globals/About";
 
+import * as migration_20261013_000000 from "./src/migrations/20261013_000000_init_community_collections";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

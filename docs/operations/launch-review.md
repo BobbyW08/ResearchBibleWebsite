@@ -23,7 +23,7 @@ This document records findings from the pre-launch review pass. Items marked **B
 
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| High | Production migrations | 8 new collection tables don't exist in Neon production. Payload's `pushDevSchema` is skipped in `NODE_ENV=production`. See `docs/operations/migrations.md` for the full fix procedure. | **BLOCKED-ON-BOBBY:** generate migration file on Node 20, add `postbuild` hook to `package.json`, commit and deploy — required before enabling community/courses/auth routes |
+| High | Production migrations | 8 new collection tables don't exist in Neon production. Payload's `pushDevSchema` is skipped in `NODE_ENV=production`. Migration file exists at `src/migrations/20261013_000000_init_community_collections.ts`. See `docs/operations/migrations.md` for the fix procedure. | **BLOCKED-ON-BOBBY:** add import + `prodMigrations` config to `payload.config.ts`, commit and deploy -- required before enabling community/courses/auth routes |
 | Medium | Account deletion / data export | No "delete account" or "export my data" button exists on the account page. Required for GDPR Article 17/20 if serving EU users. | **BLOCKED-ON-BOBBY:** legal decision on whether this is required at launch; if yes, add to `/account` post-launch |
 | Medium | Rate limiting | In-memory store resets on every Vercel cold start (multiple serverless instances don't share state). A determined actor can bypass by hitting multiple instances. | Acceptable for launch; upgrade to Redis/Upstash if abuse materializes |
 | Low | `WEBHOOK_SECRET` rotation | `drive_content_sync_setup.md` still mentions the old secret value. | **BLOCKED-ON-BOBBY:** rotate `WEBHOOK_SECRET` in Vercel and the Apps Script CONFIG, then rewrite `drive_content_sync_setup.md` to remove the hardcoded value |
@@ -122,7 +122,7 @@ This document records findings from the pre-launch review pass. Items marked **B
 ## Summary: BLOCKED-ON-BOBBY items from this review
 
 **Before enabling community/courses/auth routes:**
-1. Run Payload migrations — see `docs/operations/migrations.md` for the full procedure (needs Node 20; edit `package.json` build script)
+1. Apply `prodMigrations` config to `payload.config.ts` and commit -- see `docs/operations/migrations.md` (migration file already written; two manual edits needed)
 2. Configure cloud media storage before uploading images through `/admin`
 
 **Before public launch:**

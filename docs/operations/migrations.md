@@ -31,57 +31,63 @@ The **8 new collections** added in the P0 sprint do NOT have tables in productio
 
 **Impact at launch:** The community, courses, and auth routes (`/sign-in`, `/welcome`, `/account`, `/community/*`, `/courses/*`) are all gated and not linked live, so this does not affect the public launch. But these routes will throw database errors if visited before migrations run.
 
+## How the migration runs in production
+
+The Payload CLI (`npx payload migrate:create`) is blocked by a tsx ESM incompatibility on Node 20/22/24. The reliable alternative is `prodMigrations` in `payload.config.ts`.
+
+When `prodMigrations` is set, Payload's `connect()` runs `migrate()` automatically at startup. It checks `payload_cms.payload_migrations` first; already-run migrations are skipped. This is safe to have permanently set.
+
+---
+
 ## Fix: one-time step before enabling community/courses
 
-### 1. Use Node 20
+The migration file already exists at `src/migrations/20261013_000000_init_community_collections.ts`. Bobby must apply two manual changes.
 
-The Payload CLI fails on Node 24 (ESM async module incompatibility). Vercel uses Node 20.
+### 1. Add the import to `payload.config.ts`
 
-```bash
-# If you have nvm:
-nvm install 20
-nvm use 20
-node --version  # should print v20.x.x
+After the existing `About` import at the top:
+
+```typescript
+import * as migration_20261013_000000 from "./src/migrations/20261013_000000_init_community_collections";
 ```
 
-### 2. Generate the migration
+### 2. Add `prodMigrations` to the postgres adapter in `payload.config.ts`
 
-```bash
-cd C:\dev\ResearchBibleWebsite
-npx payload migrate:create --name init_community_collections
+```typescript
+db: postgresAdapter({
+  pool: {
+    connectionString: process.env.DATABASE_URI,
+  },
+  schemaName: "payload_cms",
+  prodMigrations: [
+    {
+      name: "20261013_000000_init_community_collections",
+      up: migration_20261013_000000.up,
+      down: migration_20261013_000000.down,
+    },
+  ],
+}),
 ```
 
-This creates a file in `src/migrations/` (or a `migrations/` folder at the repo root — check where Payload puts it).
+### 3. Test against preview first
 
-### 3. Hook it into the build
+Confirm all 8 tables appear in `payload_cms` after the first preview deploy:
 
-Edit `package.json` — change the `build` script from:
-```json
-"build": "next build"
 ```
-to:
-```json
-"build": "next build && npx payload migrate"
+visitor_profiles, community_posts, community_comments, community_reports,
+lesson_progress, visitor_entitlements, interest_signups_payload, course_enrollments
 ```
-
-`npx payload migrate` is a no-op if there are no pending migrations. With the file from step 2, the next Vercel deploy will create the tables.
 
 ### 4. Commit and deploy
 
 ```bash
-git add migrations/  # or src/migrations/
-git add package.json
-git commit -m "chore: Payload migration for community collections"
+git add src/migrations/
+git add payload.config.ts
+git commit -m "chore: Payload migration for community/courses collections"
 git push
 ```
 
-Vercel will pick up the change and run the migration as part of the build.
-
----
-
-## Why the build script change was not committed automatically
-
-The Claude Code sandbox blocked modifying `package.json` (flagged as a production deploy change). Bobby must apply this change manually.
+On first cold start after deploy, Payload runs the migration automatically.
 
 ---
 
@@ -90,9 +96,12 @@ The Claude Code sandbox blocked modifying `package.json` (flagged as a productio
 For every future schema change (new collection, new field):
 
 1. Make the schema change in `src/payload/collections/`.
-2. Run `npx payload migrate:create --name describe_the_change` on Node 20.
-3. Commit the generated migration file alongside the schema change.
-4. The next deploy runs the migration automatically via the postbuild hook.
+2. Write a migration file by hand in `src/migrations/YYYYMMDD_HHMMSS_describe_the_change.ts`.
+3. Add it to the `prodMigrations` array in `payload.config.ts`.
+4. Test against the preview Neon branch.
+5. Commit both files alongside the schema change.
+
+The Payload CLI (`npx payload migrate:create`) would be more ergonomic but fails on all Node versions due to a tsx ESM incompatibility in `payload/node_modules/tsx@4.22.4`. Hand-written migrations are the workaround until Payload ships a fix.
 
 Never commit a schema change without a matching migration file unless the affected routes are not yet live.
 
