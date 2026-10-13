@@ -9,10 +9,12 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
       <Header logoAnimatesIn />
-      <Hero />
-      <StartHere />
-      <QuickCredential />
-      <Faq />
+      <main className="flex-1 flex flex-col">
+        <Hero />
+        <StartHere />
+        <QuickCredential />
+        <Faq />
+      </main>
       <Footer />
     </div>
   );
