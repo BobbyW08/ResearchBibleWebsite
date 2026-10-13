@@ -53,13 +53,19 @@ The privacy page promises deletion on request. Deletion is manual at launch:
 
 1. User contacts Bobby via the contact email.
 2. Bobby identifies the Neon Auth user ID from the admin panel.
-3. Bobby deletes from Payload in this order (Local API or `/admin`):
+3. Bobby deletes from Payload in this order (Local API or `/admin`).
+   Order matters: child records before parent records.
    - `lesson-progress` where `userId = <id>`
+   - `enrollments` where `userId = <id>`
+   - `entitlements` where `userId = <id>`
+   - `community_reports` where `reporterUserId = <id>` (see note below)
    - `comments` where `author = <profileId>`
    - `posts` where `author = <profileId>`
    - `visitor-profiles` where `userId = <id>`
 4. Bobby removes the user from the Neon Auth admin panel.
 5. Bobby confirms deletion to the user.
+
+Note on reports: The `community_reports` collection stores the reporter's `userId`. Deleting these removes the record of who filed reports. An alternative is to set `reporterUserId` to an anonymized value (e.g., `deleted-user`) rather than deleting the report, which preserves the moderation audit trail. Bobby decides which approach to take.
 
 A self-service delete action on `/account` is a post-launch backlog item.
 
