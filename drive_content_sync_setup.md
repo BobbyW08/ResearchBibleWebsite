@@ -29,7 +29,7 @@ silently skipped.
 const CONFIG = {
   // From content/sync-config.json -> researchBibles.driveFolderId
   driveFolderId: "YOUR_DRIVE_FOLDER_ID",
-  webhookUrl: "https://bobby-washburn.com/api/webhooks/drive-content-sync",
+  webhookUrl: "https://www.bobby-washburn.com/api/webhooks/drive-content-sync",
   // Must match the WEBHOOK_SECRET env var in Vercel exactly.
   // Get this value from Vercel Dashboard -> Project -> Environment Variables.
   // Never commit this value to the repository.
@@ -100,7 +100,7 @@ function postToWebhook(fileId, fileName) {
   };
 
   const response = UrlFetchApp.fetch(CONFIG.webhookUrl, options);
-  Logger.log(`${fileName}: HTTP ${response.getResponseCode()} — ${response.getContentText()}`);
+  Logger.log(`${fileName}: HTTP ${response.getResponseCode()} - ${response.getContentText()}`);
 }
 ```
 
@@ -113,23 +113,31 @@ function postToWebhook(fileId, fileName) {
 3. Paste the script above. Fill in:
    - `CONFIG.driveFolderId`: from `content/sync-config.json` `researchBibles.driveFolderId`
    - `CONFIG.webhookSecret`: from Vercel Dashboard -> Project -> Environment Variables ->
-     `WEBHOOK_SECRET`. Do not copy this value into the file — paste it directly into the script
-     property in Apps Script.
+     `WEBHOOK_SECRET`. Paste it only into the Apps Script editor. Never put the real value in
+     this file or anywhere else in the repo.
 4. Run `setup()` once manually from the editor. Authorize when prompted.
 5. Optionally run `checkForChanges()` manually to confirm no errors.
 6. Confirm the trigger: Triggers (clock icon) should show `checkForChanges` on a 15-minute
    schedule.
 
-## Secret rotation (action required)
+## Notes
 
-The previous version of this file contained the `WEBHOOK_SECRET` value in the repository.
-That value is in git history. Bobby must rotate it:
+- Use the `www` URL. The bare domain redirects to `www`, and Apps Script turns a redirected
+  POST into a GET, which the webhook rejects with HTTP 405.
+- Synced bibles are saved as drafts only. `version` and `tags` are site-owned and never come
+  from Drive.
+
+## Secret rotation (BLOCKED-ON-BOBBY)
+
+A real `WEBHOOK_SECRET` value is in this repository's git history, so the live secret must be
+rotated:
 
 1. Generate a new secret: `openssl rand -hex 32` (or any long random string).
-2. Update `WEBHOOK_SECRET` in Vercel Production (Dashboard -> Project -> Environment Variables).
+2. Update `WEBHOOK_SECRET` in Vercel Production (Dashboard -> Project -> Environment Variables)
+   and redeploy.
 3. Update `CONFIG.webhookSecret` in the Apps Script project to match.
-4. The old secret remains in git history. If this is a concern, contact Bobby about rewriting
-   git history (destructive — requires force push and coordination).
+
+After rotation the value in git history is dead. Rewriting history is not needed.
 
 ## Known limitations
 

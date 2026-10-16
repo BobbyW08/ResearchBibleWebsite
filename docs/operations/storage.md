@@ -2,7 +2,7 @@
 
 ## Current state
 
-**No cloud storage is configured.** Payload writes uploaded media to `public/media/` on the local filesystem.
+**No cloud storage is configured.** Payload writes uploaded media to `media/` at the project root on the local filesystem.
 
 On Vercel, the filesystem is **ephemeral**: anything written at runtime is lost on the next deploy. Media uploaded through `/admin` will disappear after the next Vercel deploy.
 
@@ -26,6 +26,6 @@ Choose one storage provider and add the Payload adapter:
 
 ## Start Here Row 2 photos
 
-The three panel images in the Start Here section (`components/marketing/start-here.tsx`, `ROW_TWO_PANELS`) are currently Unsplash stock photo URLs. These are real URLs committed to the repo -- they work but are placeholder content.
+The three panel images in the Start Here section (`components/marketing/start-here.tsx`, `ROW_TWO_PANELS`) are currently Unsplash stock photo URLs. These are real URLs committed to the repo - they work but are placeholder content.
 
 **BLOCKED-ON-BOBBY:** Swap `ROW_TWO_PANELS` URL constants when real photos are available. Real photos should be committed to `public/` (not uploaded through `/admin`) until cloud storage is configured.

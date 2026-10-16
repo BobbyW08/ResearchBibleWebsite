@@ -1,149 +1,68 @@
-# Launch Review — Security, Privacy, Mobile, Performance, Accessibility
+# Launch Review: Open Findings
 
-This document records findings from the pre-launch review pass. Items marked **BLOCKED-ON-BOBBY** require a decision or action from Bobby before they can be closed.
+Open findings from the pre-launch review of security, privacy, mobile, performance and accessibility. Remove a row when it is resolved. Items marked **BLOCKED-ON-BOBBY** need a decision or action from Bobby.
 
 ---
 
 ## Security
 
-### Findings — Green
-
-| Area | Finding |
-|---|---|
-| Webhook auth | Both webhook routes (`/api/webhooks/drive-content-sync`, `/api/webhooks/parent-content-sync`) use `crypto.timingSafeEqual` for constant-time secret comparison — safe against timing attacks |
-| Payload REST auth | Public content collections have `read: () => true`; write operations are `isAdmin` (requires Payload session). Lesson bodies are `read: isAdmin` to prevent paid content leakage |
-| Community rate limiting | Post: 20/hr, Comment: 60/hr, Set-role: covered by emailVerified check. In-memory sliding window; resets on server restart (acceptable for now) |
-| Suspension enforcement | Suspended profiles are blocked at the API layer (`status === "suspended"` check) on every write route |
-| JSON-LD in layout | `JSON.stringify(personJsonLd)` passed to `dangerouslySetInnerHTML` — the object is hardcoded in the file, not user-controlled, so XSS is not possible here |
-| Middleware | Cookie-presence gate on `/community/*`, `/courses/*`, `/account/*`. Full session + profile validation happens server-side on each page; middleware is defense-in-depth |
-| No SQL injection surface | All DB access goes through Payload Local API (parameterized) — no raw SQL |
-| robots.txt | `/api/`, `/admin`, `/community`, `/courses`, `/account`, `/sign-in`, `/welcome` disallowed for all crawlers |
-
-### Findings — Action Required
-
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| High | Production migrations | 8 new collection tables don't exist in Neon production. Payload's `pushDevSchema` is skipped in `NODE_ENV=production`. Migration file exists at `src/migrations/20261013_000000_init_community_collections.ts`. See `docs/operations/migrations.md` for the fix procedure. | **BLOCKED-ON-BOBBY:** add import + `prodMigrations` config to `payload.config.ts`, commit and deploy -- required before enabling community/courses/auth routes |
-| Medium | Account deletion / data export | No "delete account" or "export my data" button exists on the account page. Required for GDPR Article 17/20 if serving EU users. | **BLOCKED-ON-BOBBY:** legal decision on whether this is required at launch; if yes, add to `/account` post-launch |
-| Medium | Rate limiting | In-memory store resets on every Vercel cold start (multiple serverless instances don't share state). A determined actor can bypass by hitting multiple instances. | Acceptable for launch; upgrade to Redis/Upstash if abuse materializes |
-| Low | `WEBHOOK_SECRET` rotation | `drive_content_sync_setup.md` still mentions the old secret value. | **BLOCKED-ON-BOBBY:** rotate `WEBHOOK_SECRET` in Vercel and the Apps Script CONFIG, then rewrite `drive_content_sync_setup.md` to remove the hardcoded value |
-| Low | Session cookie on HTTP | `neon-auth.session_token` (no `__Secure-` prefix) is used in local dev. In production Vercel always uses HTTPS, so only `__Secure-neon-auth.session_token` is set | No action needed — Vercel enforces HTTPS |
-| Low | Missing CSP headers | No `Content-Security-Policy` header is set. Vercel's default headers apply. | Post-launch hardening; add a CSP response header in `next.config.ts` when the page's iframe/script inventory is stable |
-| Low | Media uploads ephemeral | Payload writes media to `public/media/` — lost on every Vercel deploy. See `docs/operations/migrations.md`. | **BLOCKED-ON-BOBBY:** configure a cloud storage adapter before uploading media through `/admin`. Not needed at launch if all images are committed to the repo. |
+| High | Production migrations | The community and courses tables do not exist in Neon production. The migration `src/migrations/20261013_000000_init_community_collections.ts` is applied on `preview` only. | **BLOCKED-ON-BOBBY:** finish the production cutover in `docs/operations/migrations.md` (push, preview dry run, merge). Required before enabling community, courses or auth routes |
+| High | Payload `Users` access | `src/payload/collections/Users.ts` has no `access` block, so Payload's default applies: any logged-in admin user can create, update or delete users, including changing their own `role`. | Add role-based access to `Users` before creating any moderator account |
+| Medium | Moderator role | Every collection except `VisitorProfiles` uses an `isAdmin` helper that checks only `!!user`. A moderator has the same access as an admin everywhere else. | Add role checks before creating moderator accounts. See `docs/operations/roles-and-permissions.md` |
+| Medium | Suspension enforcement | Suspension is checked only on new posts, new comments and lesson pages. `requireSession()` and `requireProfile()` in `lib/auth/require.ts` are not called anywhere. | Use `requireProfile()` on every gated page and community, course and account route |
+| Medium | Account deletion and data export | No self-service delete or export on `/account`. Deletion is manual (`docs/operations/auth.md`). | **BLOCKED-ON-BOBBY:** legal decision on whether self-service is required at launch |
+| Medium | Rate limiting | In-memory store resets on every Vercel cold start and is not shared between instances. | Acceptable for launch; move to a shared store if abuse appears |
+| Low | `WEBHOOK_SECRET` rotation | A real `WEBHOOK_SECRET` value is in git history in `drive_content_sync_setup.md`. | **BLOCKED-ON-BOBBY:** rotate `WEBHOOK_SECRET` in Vercel and the Apps Script `CONFIG` |
+| Low | Missing CSP header | No `Content-Security-Policy` header is set. | Add one in `next.config.ts` once the iframe and script inventory is stable |
+| Low | Media uploads ephemeral | Payload writes media to `media/` at the project root, which Vercel wipes on deploy. See `docs/operations/storage.md`. | **BLOCKED-ON-BOBBY:** approve or decline a storage adapter before uploading media through `/admin` |
+| Low | `middleware.ts` file convention | Next 16 deprecates the `middleware` file and export name in favor of `proxy` (`proxy.ts`, Node.js runtime). The build prints a deprecation warning. | Rename to `proxy.ts` and the function to `proxy`; confirm the cookie gate still works on `/account`, `/community`, `/courses` |
+| Low | Public forms | `/api/interest-signups` and `/api/org-inquiry` have no CAPTCHA. | Add one if spam appears |
 
 ---
 
 ## Privacy
 
-### Findings — Green
-
-| Area | Finding |
-|---|---|
-| PII schema | Visitor profiles store: userId, userRole, displayName, bio, status. No email (email lives only in Neon Auth's `neon_auth` schema). No child names, no partner names — compliant with the locked PII policy |
-| Children's data | No child-name column anywhere in Payload collections or the schema. Tech Safety tool text mentions "child's name" only as instruction copy inside Google/Apple UI strings — not collected data |
-| Analytics | Vercel Analytics + Google Analytics 4 (`G-5ZLMM0G7CV`). GA4 is loaded via `next/script` with `strategy="afterInteractive"` — fires after hydration, not on server |
-| Privacy policy | `/privacy` route exists and is live |
-| robots.txt training block | All known training crawlers (GPTBot, ClaudeBot, CCBot, etc.) are blocked site-wide |
-
-### Findings — Action Required
-
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| Medium | Cookie consent | No cookie consent banner is shown. GA4 sets cookies. GDPR/CCPA compliance depends on Bobby's legal advice and target audience geography. | **BLOCKED-ON-BOBBY:** confirm whether a consent banner is required for the launch audience |
-| Low | GA4 data processing agreement | A Google DPA should be in place for GA4 if any EU traffic is expected. | **BLOCKED-ON-BOBBY:** confirm with Bobby's legal counsel |
+| Medium | Cookie consent | No consent banner. GA4 sets cookies. | **BLOCKED-ON-BOBBY:** confirm whether a consent banner is required for the launch audience |
+| Low | GA4 data processing agreement | A Google DPA should be in place if EU traffic is expected. | **BLOCKED-ON-BOBBY:** confirm with legal counsel |
 
 ---
 
 ## Mobile
 
-### Findings — Green
-
-| Area | Finding |
-|---|---|
-| Viewport meta | `<meta name="viewport" content="width=device-width, initial-scale=1">` is set in `app/(app)/layout.tsx` |
-| Mobile testimonial carousel | `MobileTestimonialCarousel` (horizontal scroll-snap, auto-advance) used on hero below `md:` breakpoint |
-| Pain point layout | `PainPointSidebarLayout` renders a single-column layout on mobile; sidebar collapses |
-| Services modality cards | `ModalityCards` uses accordion pattern on mobile (< `sm`) |
-| Side gutters | 16px side gutter (`px-4`) used throughout — no horizontal scroll on content pages |
-| Cal.com links | Direct outbound links, not embeds (except Teen page popup) — no iframe sizing issues on mobile |
-
-### Findings — Action Required
-
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| Medium | Services hero video | `public/videos/paths-loop.mp4` fails to decode in Chrome (non-faststart encoding) — renders as a black box. This is a known open item. | **BLOCKED-ON-BOBBY:** re-export the video with `-movflags +faststart` |
-| Low | Teen page pinned CTA | Cal.com popup (`data-cal-link`) on the Teen page's pinned CTA — untested on small screens. | Test on mobile before enabling the Teen route |
+| Medium | Services hero video | `public/videos/paths-loop.mp4` fails to decode in Chrome (non-faststart encoding) and renders as a black box. | **BLOCKED-ON-BOBBY:** re-export with `-movflags +faststart` |
+| Low | Teen page pinned CTA | The Cal.com popup on the Teen page's pinned CTA is untested on small screens. The Teen mosaic is not wired. | Test on mobile before wiring `TeenRebellionRoute` |
 
 ---
 
 ## Performance
 
-### Findings — Green
-
-| Area | Finding |
-|---|---|
-| Next.js Image optimization | `next/image` used for all images in components (hero, credential, pain point icons) |
-| Static prerendering | Homepage, About, Services, Legal, Privacy, Docs index, ADHD page are all statically prerendered (`○` in build output) |
-| `force-dynamic` scoped correctly | Only routes that need per-request data (`/community`, `/community/post/[id]`, `/courses`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`) are marked `force-dynamic` |
-| Script loading | GA4 scripts use `strategy="afterInteractive"` — no render blocking |
-| Vercel Analytics | `<Analytics />` component — lightweight, async |
-
-### Findings — Action Required
-
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| High | Redirect chain | `bobby-washburn.com` redirects to `www.bobby-washburn.com` which redirects back, wasting ~1.6 s on every page load. Lighthouse LCP: 7.5 s (score 4/100). | **BLOCKED-ON-BOBBY:** In Vercel domain settings, enforce one canonical host and remove the bounce-back redirect. Affects every page. |
-| Low | Recharts bundle size | Recharts adds ~150 KB to the ADHD page JS bundle. It's only used on `/docs/adhd`. | Acceptable for launch; lazy-load with `next/dynamic` if Lighthouse score becomes a concern |
-| Low | Motion library | `motion` adds bundle weight. Currently used for hero parallax only. | Same -- acceptable for launch |
+| High | Redirect chain | `bobby-washburn.com` and `www.bobby-washburn.com` redirect to each other before serving, costing about 1.6 s per load. See `docs/operations/lighthouse.md`. | **BLOCKED-ON-BOBBY:** in Vercel domain settings, pick one canonical host with a single 301 from the other |
+| Low | Recharts bundle | Recharts adds about 150 KB to `/docs/adhd`. | Lazy-load with `next/dynamic` if needed |
+| Low | `text-primary` contrast | Lighthouse flagged `#9F0000` small text on some surfaces. | Audit surfaces and adjust small text |
 
 ---
 
 ## Accessibility
 
-### Findings — Green
-
-| Area | Finding |
-|---|---|
-| Semantic HTML | Page-level `<main>`, `<header>`, `<footer>` elements present in all templates |
-| Heading hierarchy | H1 present on all content pages; H2/H3 used for subsections |
-| Focus visible | Tailwind `focus-visible` ring utilities used on interactive elements |
-| Color contrast | Brand red `#9F0000` on white `#F8F8F8`: contrast ratio ~5.5:1 — passes WCAG AA for normal text |
-| Alt text | `next/image` `alt` props set on media components |
-
-### Findings — Action Required
-
 | Severity | Area | Finding | Action |
 |---|---|---|---|
-| Medium | ADHD interactive components | `DelayAversionSlider`, `EvidenceTierToggle`, `StrategyExplorer` -- keyboard accessibility not audited. | **BLOCKED-ON-BOBBY:** manual keyboard and screen reader test before promoting `/docs/adhd` as a flagship page |
-| Low | Missing `<main>` landmark | Lighthouse audit: no `<main>` landmark on the homepage. Screen readers can't navigate to main content. | Add `<main>` wrapper to `app/(app)/layout.tsx` |
-| Low | Logo link accessible name | `<a href="/">` logo link has no `aria-label`. Lighthouse: link-name failure. | Add `aria-label="Home"` to the logo anchor in `components/marketing/header.tsx` |
-| Low | LinkedIn link accessible name | LinkedIn icon link has no discernible text. | Add `aria-label="LinkedIn"` to the link in the footer/header |
-| Low | Tech Safety wizard | Step-by-step wizard -- focus management between steps not audited. | Test with keyboard-only navigation before launch |
-| Low | Flip cards (Services page) | `ModalityCards` flip cards at `sm`+: confirm keyboard focus enters the card back. | Test with keyboard-only navigation |
+| Medium | ADHD interactive components | `DelayAversionSlider`, `EvidenceTierToggle`, `StrategyExplorer` keyboard and screen reader behavior not audited. | **BLOCKED-ON-BOBBY:** manual test before promoting `/docs/adhd` |
+| Low | Tech Safety wizard | Focus management between steps not audited. | Keyboard-only test |
+| Low | Services flip cards | `ModalityCards` at `sm`+: keyboard focus into the card back not confirmed. | Keyboard-only test |
 
 ---
 
-## Summary: BLOCKED-ON-BOBBY items from this review
+## Not covered by code review (requires Bobby's environment)
 
-**Before enabling community/courses/auth routes:**
-1. Apply `prodMigrations` config to `payload.config.ts` and commit -- see `docs/operations/migrations.md` (migration file already written; two manual edits needed)
-2. Configure cloud media storage before uploading images through `/admin`
-
-**Before public launch:**
-3. Rotate `WEBHOOK_SECRET` and rewrite `drive_content_sync_setup.md`
-4. Cookie consent banner decision (GDPR/CCPA)
-5. Google DPA confirmation
-6. Re-export `paths-loop.mp4` with faststart encoding
-7. Keyboard + screen reader test of ADHD interactive components
-
-**Post-launch backlog:**
-8. Set `PARENT_CONTENT_WEBHOOK_SECRET` in Vercel Production (parent content sync pipeline)
-9. Set `RESEND_API_KEY` + verified sender domain + `NOTIFY_EMAIL` (community report emails)
-10. Account deletion / data export button on `/account` (legal decision)
-
-**Not covered by code review (requires Bobby's environment):**
-- Auth flow end-to-end test (sign-up, email verification, password reset, Google OAuth)
-- Course end-to-end test (create a course, enroll, complete a lesson)
-- Community end-to-end test (post, comment, report)
-- Real Lighthouse measurements (mobile performance scores)
-- Apps Script 49-item verification list — not in the materials Claude Code received; Bobby must confirm or share
+- Auth flow end-to-end (sign-up, email verification, password reset, Google OAuth)
+- Course end-to-end (create a course, enroll, complete a lesson)
+- Community end-to-end (post, comment, report)
+- Apps Script verification list: not in the repo; Bobby confirms or shares it

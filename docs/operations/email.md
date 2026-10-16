@@ -5,12 +5,12 @@
 **Resend is not yet configured.** The community report notification route (`app/api/community/report/route.ts`) imports Resend and attempts to send an email when a report is submitted, but it is guarded by an env var check:
 
 ```typescript
-if (process.env.RESEND_API_KEY) {
+if (process.env.RESEND_API_KEY && process.env.NOTIFY_EMAIL) {
   // send email
 }
 ```
 
-Without `RESEND_API_KEY`, report submissions are still saved to the Payload `community_reports` collection -- only the email notification is skipped.
+Without both variables, report submissions are still saved to the Payload `reports` collection (table `community_reports`) - only the email notification is skipped.
 
 ## What email is used for
 
@@ -28,7 +28,7 @@ No other transactional email is in scope at launch. Password reset and auth emai
 4. Set `RESEND_API_KEY` in Vercel Production and Preview scopes.
 5. Set `NOTIFY_EMAIL` to the address that should receive report notifications.
 
-Update the `from` address in `app/api/community/report/route.ts` to use the verified sender domain once it is confirmed.
+The sender is hardcoded as `notifications@bobby-washburn.com` in `app/api/community/report/route.ts`. Verify that domain in Resend, or change the `from` address to match the domain that is verified.
 
 ## Env vars required
 

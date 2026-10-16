@@ -15,9 +15,9 @@ Two separate identity systems. They never check each other.
 | Role | Default | What they can do in `/admin` |
 |---|---|---|
 | `admin` | No | Full read/write/delete on all Payload collections and globals. Bobby's account. |
-| `moderator` | Yes (default on new user creation) | Can read and update `community_posts`, `community_comments`, `community_reports`, `visitor_profiles` (status only). Cannot access financial data, course content editing, or site settings. |
+| `moderator` | Yes (default on new user creation) | Intended: moderate posts, comments, reports and profile status. As enforced: see below. |
 
-The access control functions in each collection (`isAdmin`) currently check only that a Payload session exists (`!!user`), not the specific role. This means all logged-in Payload users currently have equal access. Per-role Payload access controls are a post-launch hardening task.
+Only `VisitorProfiles` checks the role: moderators can read profiles and update only `status`, and only admins can delete. Every other collection uses an `isAdmin` helper that checks only that a Payload session exists (`!!user`), and `Users` has no `access` block, so a moderator can edit any content and change any user's role, including their own. The `role` field's admin description in `Users.ts` describes the intended rules, not the enforced ones. Add role checks before creating moderator accounts.
 
 **How to create a moderator:**
 1. Bobby logs in to `/admin`
@@ -43,7 +43,7 @@ The access control functions in each collection (`isAdmin`) currently check only
 
 Audience enforcement happens server-side in `app/(app)/community/post/[id]/page.tsx` and the community feed query. The API routes (`/api/community/*`) re-verify the session and profile before writing.
 
-**Suspension:** Bobby can set `status: "suspended"` on a `visitor_profiles` record in `/admin`. The `requireProfile()` helper in `lib/auth/require.ts` redirects suspended visitors to `/sign-in?error=suspended`.
+**Suspension:** Bobby can set `status: "suspended"` on a `visitor_profiles` record in `/admin`. It blocks new posts, new comments and lesson pages. Other gated pages and routes do not check it yet; see "Suspended profiles" in `docs/operations/auth.md`.
 
 **How to suspend a visitor:**
 1. Bobby logs in to `/admin`
@@ -55,5 +55,5 @@ Audience enforcement happens server-side in `app/(app)/community/post/[id]/page.
 
 ## What is NOT currently enforced
 
-- Granular Payload RBAC (admin vs. moderator) -- all logged-in Payload users have equal access to all collections. Post-launch task.
-- Rate limiting persistence across Vercel serverless instances -- in-memory only; resets on cold start. Acceptable for launch.
+- Payload role checks (admin vs. moderator) outside `VisitorProfiles`, including on `Users`.
+- Rate limiting persistence across Vercel serverless instances. In-memory only; resets on cold start. Acceptable for launch.

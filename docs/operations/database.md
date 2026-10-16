@@ -3,8 +3,8 @@
 ## Provider
 
 Neon Postgres (serverless). Two branches:
-- `main` -- production data. Never connect to this outside of Vercel Production env vars.
-- `preview` (branch ID: `br-young-dew-ay31f3xs`) -- staging/dev data. Used by Vercel Preview deploys and local `.env.local`.
+- `main` - production data. Never connect to this outside of Vercel Production env vars.
+- `preview` (branch ID: `br-young-dew-ay31f3xs`) - staging/dev data. Used by Vercel Preview deploys and local `.env.local`.
 
 ## Schemas
 
@@ -14,7 +14,7 @@ Three schemas coexist in the same Neon instance:
 |---|---|---|
 | `payload_cms` | Payload CMS | All Payload collections, globals, and metadata tables |
 | `neon_auth` | Neon Auth | Visitor session and identity tables (managed by Neon) |
-| `public` | (orphaned) | Legacy Drizzle tables from P0 Task 2 -- Drizzle was removed; these tables are no longer written or read by any live code |
+| `public` | (orphaned) | Legacy Drizzle tables. No live code reads or writes them |
 
 ## Connection strings
 
@@ -38,7 +38,7 @@ Never print the full connection string. Compare the endpoint name to the Neon co
 
 Any new Payload collection requires a migration. See `docs/operations/migrations.md` for the full workflow.
 
-The `public` schema orphaned tables (`profiles`, `topic_progress`, `interest_signups`, `pending_reviews`, `posts`, `comments`, `likes`, `points_ledger`, `post_tags`, `course_progress`, `entitlements`, `stripe_customers`, `stripe_subscriptions`, `stripe_orders`, `courses`, `lessons`) are safe to drop in a future cleanup sprint once the community/courses routes are confirmed live on the Payload-native data layer.
+The `public` schema holds 17 orphaned tables, checked against the `preview` branch: `comments`, `course_progress`, `courses`, `entitlements`, `interest_signups`, `lessons`, `likes`, `pending_reviews`, `points_ledger`, `post_tags`, `posts`, `profiles`, `profiles_v1`, `stripe_customers`, `stripe_orders`, `stripe_subscriptions`, `topic_progress`. No live code reads them. They are safe to drop once the community and courses routes are confirmed live on the Payload collections.
 
 ## Backups
 

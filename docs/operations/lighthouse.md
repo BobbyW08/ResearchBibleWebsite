@@ -37,17 +37,17 @@ the other does a single 301 redirect with no bounce-back. This alone is
 expected to bring LCP from 7.5 s to ~5.5-6 s.
 
 Secondary issues (after fixing the redirect):
-- 108 KB unused Next.js JS -- acceptable for app size; consider lazy-loading
+- 108 KB unused Next.js JS - acceptable for app size; consider lazy-loading
   Recharts on `/docs/adhd` with `next/dynamic` to save ~150 KB on other routes
 - GA4 script adds ~71 KB of unused JS on load
 
 ### Accessibility issues (3)
 
-| Issue | Impact | Fix |
+| Issue | Impact | Current state |
 |---|---|---|
-| `color-contrast` | Moderate | `text-primary` (`#9F0000`) on some backgrounds fails 4.5:1 ratio. Audit which surfaces, add a slightly lighter tint for small text. |
-| `link-name` | Serious | Logo `<a href="/">` has no accessible name; LinkedIn link has no discernible text. Add `aria-label` to both. |
-| `landmark-one-main` | Moderate | Page missing a `<main>` landmark element. The `(app)` layout template should wrap content in `<main>`. |
+| `color-contrast` | Moderate | Open. `text-primary` (`#9F0000`) on some backgrounds fails the 4.5:1 ratio. Audit which surfaces and adjust small text. |
+| `link-name` | Serious | Fixed in code, not yet re-measured. Logo links and LinkedIn links in `header.tsx` and `footer.tsx` have an `aria-label`. |
+| `landmark-one-main` | Moderate | Fixed in code, not yet re-measured. `app/(app)/page.tsx` wraps homepage content in `<main>`. |
 
 ---
 
@@ -103,7 +103,6 @@ After the redirect fix:
 | Accessibility | 91 | 95+ |
 
 Quickest wins after the redirect:
-1. Add `aria-label` to logo link and social links (A11y, easy)
-2. Add `<main>` to the `(app)` layout (A11y, easy)
-3. Lazy-load Recharts on `/docs/adhd` with `next/dynamic` (Perf, ~150 KB)
-4. Audit `text-primary` contrast on non-hero surfaces (A11y, medium)
+1. Re-measure to confirm the `link-name` and `landmark-one-main` fixes
+2. Lazy-load Recharts on `/docs/adhd` with `next/dynamic` (Perf, ~150 KB)
+3. Audit `text-primary` contrast on non-hero surfaces (A11y, medium)
