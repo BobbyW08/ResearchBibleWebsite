@@ -1,116 +1,98 @@
 # Payload CMS Migrations
 
-## Why this matters
+## How schema changes reach production
 
-Payload's `pushDevSchema` (the auto-sync you see in `npm run dev`) only runs when `NODE_ENV !== 'production'`. Vercel always deploys with `NODE_ENV=production`. So new collection tables are **never auto-created on Vercel** — they require an explicit migration.
+Payload only syncs its schema automatically when `NODE_ENV` is not `production` (the push you see in `npm run dev`). Vercel always builds with `NODE_ENV=production`, so a new collection or field never reaches Neon unless a migration file creates it.
 
-Verified in: `node_modules/@payloadcms/db-postgres/dist/connect.js`
-```js
-// Only push schema if not in production
-if (process.env.NODE_ENV !== 'production' && ...) {
-  await pushDevSchema(this);
-}
-if (process.env.NODE_ENV === 'production' && this.prodMigrations) {
-  await this.migrate({ migrations: this.prodMigrations });
-}
-```
+Schema changes ship as migration files in `src/migrations/`. They run once per deploy, in a single process, before the build starts:
 
-## Current state
+- `package.json` script `ci` is `payload migrate && next build`.
+- Vercel's Build Command is `npm run ci` (Bobby sets this in the Vercel dashboard). Any branch or commit without the `ci` script fails to build with `missing script: ci`, and the previous deployment keeps serving.
+- The `build` script stays `next build`, so a local `npm run build` never touches a database.
+- `payload.config.ts` sets `migrationDir` to `src/migrations` and has no migration code in the database adapter. The running app and the build's page workers never migrate.
 
-The **original 9 collections** (Users, Media, Testimonials, PainPoints, AwarenessModules, ResearchBibles, DeepDives, Courses, Lessons) have tables in the production Neon database — they were created when Payload first ran locally in dev mode and the database was already provisioned.
+## Module type and Node version
 
-The **8 new collections** added in the P0 sprint do NOT have tables in production yet:
-- `VisitorProfiles` → `visitor_profiles`
-- `Posts` → `community_posts`
-- `Comments` → `community_comments`
-- `Reports` → `community_reports`
-- `LessonProgress` → `lesson_progress`
-- `Entitlements` → `visitor_entitlements`
-- `InterestSignups` → `interest_signups_payload`
-- `Enrollments` → `course_enrollments`
+`package.json` sets `"type": "module"` because the Payload config is ESM, and the Payload CLI needs it. Without it, the CLI loads `payload.config.ts` as CommonJS and fails with `ERR_REQUIRE_ASYNC_MODULE` when it reaches the ESM-only Payload packages. Root config files use `.mjs` or `.ts`, and no `.js` or `.cjs` file in the repo uses `require()` or `module.exports`.
 
-**Impact at launch:** The community, courses, and auth routes (`/sign-in`, `/welcome`, `/account`, `/community/*`, `/courses/*`) are all gated and not linked live, so this does not affect the public launch. But these routes will throw database errors if visited before migrations run.
-
-## How the migration runs in production
-
-The Payload CLI (`npx payload migrate:create`) is blocked by a tsx ESM incompatibility on Node 20/22/24. The reliable alternative is `prodMigrations` in `payload.config.ts`.
-
-When `prodMigrations` is set, Payload's `connect()` runs `migrate()` automatically at startup. It checks `payload_cms.payload_migrations` first; already-run migrations are skipped. This is safe to have permanently set.
-
----
-
-## Fix: one-time step before enabling community/courses
-
-The migration file already exists at `src/migrations/20261013_000000_init_community_collections.ts`. Bobby must apply two manual changes.
-
-### 1. Add the import to `payload.config.ts`
-
-After the existing `About` import at the top:
-
-```typescript
-import * as migration_20261013_000000 from "./src/migrations/20261013_000000_init_community_collections";
-```
-
-### 2. Add `prodMigrations` to the postgres adapter in `payload.config.ts`
-
-```typescript
-db: postgresAdapter({
-  pool: {
-    connectionString: process.env.DATABASE_URI,
-  },
-  schemaName: "payload_cms",
-  prodMigrations: [
-    {
-      name: "20261013_000000_init_community_collections",
-      up: migration_20261013_000000.up,
-      down: migration_20261013_000000.down,
-    },
-  ],
-}),
-```
-
-### 3. Test against preview first
-
-Confirm all 8 tables appear in `payload_cms` after the first preview deploy:
-
-```
-visitor_profiles, community_posts, community_comments, community_reports,
-lesson_progress, visitor_entitlements, interest_signups_payload, course_enrollments
-```
-
-### 4. Commit and deploy
+The Vercel project's Node.js Version is set to 20.x, and the migrate, rollback and build sequence is proven on Node 20. Bobby's system Node is v24, where the CLI also loads (`migrate:status` works). Use a temporary Node 20 locally so local runs match Vercel, without changing the system Node:
 
 ```bash
-git add src/migrations/
-git add payload.config.ts
-git commit -m "chore: Payload migration for community/courses collections"
-git push
+npx -y node@20 node_modules/payload/bin.js <command>
 ```
 
-On first cold start after deploy, Payload runs the migration automatically.
+Commands: `migrate:status`, `migrate`, `migrate:down`, `migrate:create --name <name>`.
 
----
+## Local rules
 
-## Ongoing migration workflow
+- Run migration commands only against the `preview` Neon branch or a personal dev branch. Never against production. Confirm the target first with the endpoint check in `docs/operations/database.md`.
+- `npm run dev` pushes the schema straight to the database and writes a row to `payload_cms.payload_migrations` with `name = 'dev'` and `batch = -1`. Later `payload migrate` runs stop at an interactive prompt on that row, which hangs a non-interactive build. Do not run `npm run dev` against a database you use to test migrations.
+- If a database has the dev row, remove it before running `migrate`:
 
-For every future schema change (new collection, new field):
+```sql
+DELETE FROM payload_cms.payload_migrations WHERE batch = -1;
+```
 
-1. Make the schema change in `src/payload/collections/`.
-2. Write a migration file by hand in `src/migrations/YYYYMMDD_HHMMSS_describe_the_change.ts`.
-3. Add it to the `prodMigrations` array in `payload.config.ts`.
-4. Test against the preview Neon branch.
-5. Commit both files alongside the schema change.
+## Current migration
 
-The Payload CLI (`npx payload migrate:create`) would be more ergonomic but fails on all Node versions due to a tsx ESM incompatibility in `payload/node_modules/tsx@4.22.4`. Hand-written migrations are the workaround until Payload ships a fix.
+`src/migrations/20261013_000000_init_community_collections.ts` is hand-reviewed SQL for the `payload_cms` schema.
 
-Never commit a schema change without a matching migration file unless the affected routes are not yet live.
+New tables:
 
----
+- `visitor_profiles` (VisitorProfiles)
+- `community_posts` (Posts)
+- `community_comments` (Comments)
+- `community_reports` (Reports)
+- `lesson_progress` (LessonProgress)
+- `visitor_entitlements` (Entitlements)
+- `interest_signups_payload` (InterestSignups)
+- `course_enrollments` (Enrollments)
 
-## Media uploads in production
+Altered tables:
 
-**Separate issue.** Payload currently writes media to `public/media/` — a path on the local filesystem. Vercel's filesystem is ephemeral: files written at runtime are lost on the next deploy.
+- `users`: adds `role` (existing rows become `admin`, new users default to `moderator`)
+- `payload_lessons` and `_payload_lessons_v`: add `video_url`, `product_key`
+- `payload_courses` and `_payload_courses_v`: add `cover_image_id`
+- `payload_locked_documents_rels`: adds a foreign key column per new collection
 
-**Impact:** Images uploaded through `/admin` after a deploy are lost on the next deploy. Images committed to the repo and deployed with the build are durable.
+Its `down` reverses all of the above.
 
-**Fix (before uploading media through admin):** Configure Payload to use a cloud storage adapter (e.g. `@payloadcms/storage-vercel-blob` or `@payloadcms/storage-s3`). This requires Bobby to provision a Vercel Blob store or S3 bucket and add the adapter to `payload.config.ts`. Not needed at launch if all media is committed to the repo.
+## Status by environment
+
+| Environment | State |
+|---|---|
+| Preview Neon branch | Applied, batch 1 |
+| Production Neon branch | Not applied. Restore branch `pre-community-migration` exists and the dev row is removed. Community, courses, and auth routes are gated and not linked live, so the public site is unaffected until cutover |
+
+Update this table whenever a migration is applied to production.
+
+## Production cutover
+
+Steps 1 to 3 are done. Delete the `pre-community-migration` branch only after production is stable.
+
+1. In the Neon console, create a restore point on the `main` branch.
+2. In the Neon SQL editor on `main`, run `DELETE FROM payload_cms.payload_migrations WHERE batch = -1;`.
+3. In Vercel, set the project Build Command to `npm run ci` and confirm the Node.js Version is 20.x. Any branch without the `ci` script fails with `missing script: ci`.
+4. Push the branch and let the preview deployment run `ci` against the `preview` Neon branch. Its log shows no `Migrated:` line because `preview` is already migrated. Then merge the PR to `main`.
+5. In the build log, confirm one `Migrated: 20261013_000000_init_community_collections` line and a successful `next build`.
+6. In Neon, confirm `payload_migrations` has the migration at batch 1 and `users.role` is `admin` for existing users.
+7. Run the post-deploy smoke test in `docs/operations/environments.md`.
+
+Preview deployments use the same Build Command, so they run `payload migrate` against the `preview` branch. That is intended.
+
+## Creating the next migration
+
+1. Change the collection or global in `src/payload/`.
+2. Run `npx -y node@20 node_modules/payload/bin.js migrate:create --name <describe_the_change>` against the `preview` branch. This writes `src/migrations/YYYYMMDD_HHMMSS_<name>.ts`.
+3. Review the SQL by hand. Remove statements for things that already exist. Make sure `down` works.
+4. Run `migrate`, then `migrate:status`, then `migrate:down` and `migrate` again on `preview` to prove the round trip.
+5. Run `npm run build`, `npm run lint`, and `npx tsc --noEmit`.
+6. Commit the migration file with the code change that needs it.
+
+Never merge a schema change without its migration file unless the affected routes are not live.
+
+## Rolling back
+
+- Before cutover or any risky migration, create a Neon restore point (`docs/operations/backups.md`).
+- A Vercel rollback restores the previous code only. It does not revert the schema. Migrations are additive, so the previous deployment keeps working against the newer schema.
+- To revert a migration on a dev or preview branch, run `migrate:down`. On production, restore from the Neon restore point or apply the migration's `down` SQL by hand.

@@ -27,8 +27,6 @@ import { Footer } from "./src/payload/globals/Footer";
 import { SiteSettings } from "./src/payload/globals/SiteSettings";
 import { About } from "./src/payload/globals/About";
 
-import * as migration_20261013_000000 from "./src/migrations/20261013_000000_init_community_collections";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -69,9 +67,8 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-    // Isolate Payload's tables in their own schema so drizzle-kit push
-    // doesn't see (and prompt to drop) our community tables in public.
     schemaName: "payload_cms",
+    migrationDir: path.resolve(__dirname, "src/migrations"),
   }),
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET ?? "",
