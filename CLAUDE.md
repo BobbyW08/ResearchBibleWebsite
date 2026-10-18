@@ -14,7 +14,7 @@ This file states current facts only - what the site is, what's live, what's in p
 - **Trust this file's facts without re-verifying via `grep`/`find`/`Read` first.** Use the File Map below to go straight to the right file instead of exploring the tree.
 - **`AGENTS.md`** only requires reading `node_modules/next/dist/docs/` for genuinely unfamiliar Next.js 16 APIs - not for every edit. Content/styling/component changes don't need it.
 - **If you find code that contradicts this file** - stop, confirm the real state, and correct this file before moving on.
-- **JSON edits:** use the Python scripting pattern under Build Rules, never manual editing.
+- **JSON edits:** use the node scripting pattern under Build Rules, never manual editing.
 - **Before every commit:** `npm run build`, `npm run lint`, and `npx tsc --noEmit` must all exit zero.
 - **Iterate in a branch** without committing until ready. Never commit a broken build.
 - Give commands one at a time; keep file content and terminal commands clearly separated.
@@ -37,9 +37,11 @@ Content philosophy: research bibles are internal practitioner documents. Parent-
 
 Two auth systems coexist. They are completely independent.
 
-**Payload admin auth** - Built into Payload. Bobby's `/admin` account created at `/admin/create-first-user`. Exists only in Payload's `users` table. No relationship to site visitor accounts.
+**Payload admin auth** - Built into Payload. Bobby's `/admin` account created at `/admin/create-first-user`. Exists only in Payload's `users` table, with a `role` of `admin` or `moderator`. No relationship to site visitor accounts.
 
-**Neon Auth (visitor auth)** - `@neondatabase/auth` and `@neondatabase/auth-ui`. Env vars `NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET` already in Vercel. Handles sign-in, sign-up, and Google OAuth for parents and professionals. Auth tables live in the `neon_auth` schema of the existing Neon Postgres instance. Never check Payload auth on visitor routes or Neon Auth on admin routes.
+**Neon Auth (visitor auth)** - `@neondatabase/auth` and `@neondatabase/auth-ui`. Env vars `NEON_AUTH_BASE_URL`, `NEXT_PUBLIC_NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET` are in Vercel. Handles sign-in, sign-up, and Google OAuth for parents and professionals. Auth tables live in the `neon_auth` schema of the Neon Postgres instance. Never check Payload auth on visitor routes or Neon Auth on admin routes.
+
+Details: `docs/operations/auth.md`, `docs/operations/auth-audit.md`, `docs/operations/roles-and-permissions.md`.
 
 ---
 
@@ -47,8 +49,8 @@ Two auth systems coexist. They are completely independent.
 
 | Role | Value |
 |---|---|
-| Title (hero-level) | Archivo - placeholder for "Philly Sans" (licensing pending). One-line swap: `titlePlaceholder` component + `--font-title-placeholder` in `app/layout.tsx` |
-| Subtitle | **Arvo** - final. `arvo` / `--font-arvo` in `app/layout.tsx`, aliased to `--font-subtitle` / `font-subtitle` in `app/globals.css` |
+| Title (hero-level) | Archivo - placeholder for "Philly Sans" (licensing pending). One-line swap: `titlePlaceholder` + `--font-title-placeholder` in `app/(app)/layout.tsx` |
+| Subtitle | **Arvo** - final. `arvo` / `--font-arvo` in `app/(app)/layout.tsx`, aliased to `--font-subtitle` / `font-subtitle` in `app/globals.css` |
 | Heading / Body | Libre Franklin - final. `libreFranklin` → `--font-heading` / `--font-sans` |
 | Quotes | Caveat - final. `font-quote` utility |
 | Red (primary) | `#9F0000` (`--primary` / `bg-primary` / `text-primary`) |
@@ -64,15 +66,16 @@ All tokens are CSS custom properties in `app/globals.css`. One deliberate light 
 
 ## Tech Stack (locked - no new dependencies without approval)
 
-- **Framework:** Next.js 16 (App Router)
+- **Framework:** Next.js 16 (App Router). `package.json` sets `"type": "module"`.
 - **UI components:** shadcn/ui + ShadcnSpace (free tier)
 - **Animation:** Motion
-- **Booking:** Cal.com - direct outbound links to `intro-call` (not embedded), except one Cal popup on the Teen page's pinned CTA
+- **Booking:** Cal.com - direct outbound links to `intro-call` (not embedded). The only Cal popup is in the unwired Teen mosaic.
 - **Newsletter:** Substack embed in `components/marketing/newsletter-dialog.tsx`. Subdomain in `lib/links.ts`
-- **CMS:** Payload CMS 3.90.2 - active. Admin at `/admin`. 9 collections, 4 globals. Schema in `payload.config.ts` (repo root). Collections and globals source in `src/payload/`. DB tables exist and all content has been migrated. Admin styling comes from `@payloadcms/next/css`, imported in `app/(payload)/admin/[[...segments]]/layout.tsx`.
-- **Payments:** Stripe - `lib/stripe.ts`, `lib/stripe-products.ts`, routes `app/api/stripe/checkout` and `app/api/stripe/webhook`. Not exercised end-to-end; nothing is sold at launch.
-- **Database:** Neon Postgres - provisioned. `neon_auth` schema exists. Payload uses `DATABASE_URI`; Drizzle uses `DATABASE_URL` (same connection string, different var names, both in `.env.local`).
-- **Hosting:** Vercel
+- **CMS:** Payload CMS 3.90.2. Admin at `/admin`. 17 collections, 4 globals. Config in `payload.config.ts` (repo root). Collections and globals source in `src/payload/`. Admin styling comes from `@payloadcms/next/css` plus brand overrides in `src/payload/admin/custom.css` (brand red) and `src/payload/admin/Logo.tsx`, both wired in `app/(payload)/admin/[[...segments]]/layout.tsx` and `payload.config.ts`.
+- **Payments:** none at launch. Stripe code lives in `graveyard/stripe/`, with revival instructions in `graveyard/stripe/README.md`.
+- **Email:** Resend (`resend` package) for community report notifications. **Not configured:** requires `RESEND_API_KEY`, a verified sender domain, and `NOTIFY_EMAIL` in Vercel (BLOCKED-ON-BOBBY).
+- **Database:** Neon Postgres. `neon_auth` schema (Neon Auth), `payload_cms` schema (Payload), `public` schema (orphaned legacy tables; no code reads them).
+- **Hosting:** Vercel. Build Command `npm run ci`, Node.js 20.x.
 - **Server-side integrations:** hand-rolled REST clients only (Google Drive and Sheets in `lib/google/`).
 
 Do NOT use: Framer, Aceternity UI, Magic UI Pro, Supabase, self-hosted better-auth, any SaaS boilerplate.
@@ -89,32 +92,34 @@ Do NOT use: Framer, Aceternity UI, Magic UI Pro, Supabase, self-hosted better-au
 | `/about-bobby` | About Bobby | Live. `/about` 301s here |
 | `/services` | Services for Parents | Live, static content |
 | `/services/organizations` | Services for Organizations | Live. Inquiry form posts to `/api/org-inquiry` |
+| `/services/organizations/documents` | Partner documents list | Live, unlinked. Only the Privacy Policy entry is available |
 | `/common-pain-points` | Pain Point index (10 cards + 2 modules) | Live. `/help` 301s here |
-| `/common-pain-points/teen` | Teen pain point - uses `PainPointSidebarLayout` for launch | Live (temporary layout) |
+| `/common-pain-points/teen` | Teen pain point - uses `PainPointSidebarLayout` | Live |
 | `/common-pain-points/[slug]` | Other 9 pain points + 2 awareness modules | Live. `/help/[slug]` 301s here |
 | `/docs` | 36-topic categorized gallery | Live |
 | `/docs/adhd` | ADHD Deep Dive - dedicated route with 8 interactive components | Live |
-| `/docs/[topic]` | 35 remaining deep dives | Live as prose |
-| `/dashboard` | Redirects to `/dashboard/adhd` | Live |
-| `/dashboard/adhd` | ADHD quick-reference dashboard | Live |
-| `/dashboard/[topic]` | Other topic dashboards | Not built - needs JSON data |
+| `/docs/[slug]` | 35 remaining deep dives | Live as prose |
+| `/dashboard` | Lists topic dashboards; redirects straight to the topic when only one exists | Live, redirects to `/dashboard/adhd` |
+| `/dashboard/[slug]` | Quick-reference dashboard for any topic with a JSON file in `content/data/` | Live for `adhd` only (the only data file) |
 | `/tools` | Tools index (unlisted) | Live |
-| `/tech-safety` | Tech Safety wizard | Live, unlisted. `/tools/tech-safety-tool` 301s here |
+| `/tech-safety` | Tech Safety wizard | Live, unlisted. `/tools/tech-safety-tool` and `/tech-consequences` 301 here |
 | `/research` | Research Bible Library index | Live, unlisted. Entries appear once a synced draft is published in `/admin` |
 | `/research/[slug]` | Individual research bible | Live, unlisted |
 | `/legal` | Legal & Disclaimers | Live, static |
-| `/courses` | Course listing | Coming-soon state only |
 | `/privacy` | Privacy policy | Live |
+| `/community-guidelines` | Community guidelines | Built, public, not linked. BLOCKED-ON-BOBBY: text review |
 
 ### Auth / Account Routes (not needed for launch)
 
 | Route | Status |
 |---|---|
 | `/sign-in` | Built, untested end-to-end |
-| `/welcome` | Built (role selector), untested end-to-end |
-| `/community`, `/community/post/[id]` | Built, gated by `middleware.ts`, not linked live |
-| `/courses/[slug]`, `/courses/[slug]/[lesson-slug]` | Built, gated by `middleware.ts`, not linked live |
-| `/account` | Built, gated by `middleware.ts` |
+| `/welcome` | Built (role selector), requires a session, untested end-to-end |
+| `/community`, `/community/post/[id]` | Built, gated (middleware + page session and profile check), not linked live |
+| `/courses`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]` | Built, gated (middleware + page session and profile check), not linked live |
+| `/account` | Built, gated (middleware + page session and profile check) |
+| `/account/[path]` | Neon Auth `AccountView` pages, gated by middleware only |
+| `/auth/[path]` | Neon Auth UI pages, reachable, unproven end-to-end |
 
 ### CMS / Admin / Internal
 
@@ -123,15 +128,22 @@ Do NOT use: Framer, Aceternity UI, Magic UI Pro, Supabase, self-hosted better-au
 | `/admin` | Live. Payload admin (own login, separate from visitor auth) |
 | `/internal/pages` | Live, `noindex` |
 
-### Dormant Routes
+### API Routes (`app/api/`)
 
-| Route | Status |
+| Route | Purpose |
 |---|---|
-| `/auth/[path]` | Reachable, unproven end-to-end |
-| `/onboarding` | Not needed for launch |
-| `/api/refresh` | Not wired. Doc→MDX half superseded by Drive webhook. Do not build further |
-| `/api/research-bible/notify-change` | Superseded. Do not build further |
-| `/api/account/pending-reviews` | Audit log only - candidate for removal |
+| `/api/auth/[...path]` | Neon Auth proxy |
+| `/api/auth/set-role` | Creates the visitor profile (requires a verified email) |
+| `/api/account/profile` | Profile edits |
+| `/api/community/posts`, `/api/community/comments` | Community reads and writes (rate limited, suspension checked) |
+| `/api/community/posts/edit`, `/api/community/comments/edit` | Author edits and deletes within 15 minutes |
+| `/api/community/report` | Report a post or comment |
+| `/api/courses/complete` | Mark a lesson complete |
+| `/api/interest-signups`, `/api/org-inquiry` | Public forms, rows appended to the Google Sheet in `INTEREST_SIGNUPS_SHEET_ID` |
+| `/api/search` | Public content search |
+| `/api/webhooks/drive-content-sync`, `/api/webhooks/parent-content-sync` | Drive sync webhooks |
+
+Payload's REST API lives at `app/(payload)/api/[...slug]`.
 
 **301 redirects** (`next.config.ts`): `/about` → `/about-bobby`, `/tools/tech-safety-tool` → `/tech-safety`, `/help` → `/common-pain-points`, `/help/:slug` → `/common-pain-points/:slug`, `/tech-consequences` → `/tech-safety`.
 
@@ -139,7 +151,7 @@ Do NOT use: Framer, Aceternity UI, Magic UI Pro, Supabase, self-hosted better-au
 
 ## Homepage Structure
 
-Section order in `app/page.tsx`:
+Section order in `app/(app)/page.tsx` (content wrapped in `<main>`):
 
 1. **Header** (`components/marketing/header.tsx`) - nav: About, Start Here (`/#start-here`), Parents (`/services`), Organizations, Courses and Community (both non-links with a "Coming soon" hover tooltip), FAQs (`/#faq`). On the homepage only, header is transparent over the hero and renders light-on-dark.
 2. **Hero - "Proof Wall"** (`hero.tsx` + `proof-wall-hero.tsx`) - flat `bg-brand-black` field. Five tilted testimonial cards (cursor-parallax) around a two-tone headline. Cards sourced from Payload `testimonials` collection with hardcoded fallback. Mobile uses `MobileTestimonialCarousel` (horizontal scroll-snap, auto-advance). CTA links to Cal.com intro-call.
@@ -153,7 +165,7 @@ Section order in `app/page.tsx`:
 ## Services Pages
 
 **`/services` (For Parents):**
-- Hero: pinned scroll section (`components/marketing/services/wedged-hero-headline.tsx`) - "We Build"/"Your Path" converge over a looping video, then "Together" reveals. **Known issue:** `public/videos/paths-loop.mp4` fails to decode in Chrome (non-faststart encoding) - renders as black box until Bobby re-exports the video.
+- Hero: pinned scroll section (`components/marketing/services/wedged-hero-headline.tsx`) - "We Build"/"Your Path" converge over a looping video, then "Together" reveals. **Known issue:** `public/videos/paths-loop.mp4` fails to decode in Chrome (non-faststart encoding) and renders as a black box until Bobby re-exports the video.
 - "My Approach" section: `ModalityCards` (`components/marketing/services/modality-cards.tsx`) - 4 flip-cards at `sm`+, accordion on mobile. Inverted palette (`bg-brand-charcoal`).
 - "What I Offer": 4 `OfferCard`s. 1:1 Sessions → Cal.com. Weekly Group/Live Q&As/Cohorts → `InterestSignupWidget` POSTs to `/api/interest-signups`.
 - `OfferCard`s for 1:1 Sessions and Weekly Group have anchor IDs (`#one-on-one`, `#weekly-group`) for Start Here deep links.
@@ -185,15 +197,15 @@ Custom layout - not Fumadocs. All 10 slugs + 2 modules render via `PainPointSide
 
 ---
 
-## Teen Page (`TeenRebellionRoute` - not currently wired)
+## Teen Page (`TeenRebellionRoute` - not wired)
 
-`app/common-pain-points/teen/page.tsx` temporarily renders `PainPointSidebarLayout` for launch. The newspaper-mosaic-grid rebuild (`TeenRebellionRoute`) exists in `components/pain-points/teen-route/` and still builds - swap `teen/page.tsx`'s JSX back to `<TeenRebellionRoute />` when ready. Content in `lib/pain-points/teen-rebellion-panels.ts`. The pinned CTA panel (`pinned-cta-panel.tsx`) uses Cal.com popup - the only place on the site using Cal's popup pattern.
+`app/(app)/common-pain-points/teen/page.tsx` renders `PainPointSidebarLayout`. The newspaper-mosaic-grid build (`TeenRebellionRoute`) is in `components/pain-points/teen-route/` and builds - swap the page's JSX to `<TeenRebellionRoute />` to use it. Content in `lib/pain-points/teen-rebellion-panels.ts`. Its pinned CTA panel (`pinned-cta-panel.tsx`, with `cal-booking-trigger.tsx`) uses the Cal.com popup, the only Cal popup in the codebase.
 
 ---
 
 ## Deep Dive Topics (`/docs/[slug]`)
 
-36 topics in 4 pillars, rendered via Payload `deep-dives` collection. `app/docs/[slug]/page.tsx` renders Lexical `body` via `@payloadcms/richtext-lexical/react`'s `<RichText>`. `app/docs/adhd/page.tsx` intercepts `[COMPONENT: X]` markers and injects the real components from `components/mdx/adhd/index.ts`.
+36 topics in 4 pillars, rendered via Payload `deep-dives` collection. `app/(app)/docs/[slug]/page.tsx` renders Lexical `body` via `@payloadcms/richtext-lexical/react`'s `<RichText>`. `app/(app)/docs/adhd/page.tsx` intercepts `[COMPONENT: X]` markers and injects the real components from `components/mdx/adhd/index.ts`.
 
 **🔴 Stabilize (9):** What Do You Want · De-Escalation · Parent Emotional Regulation · Structure & Routine · Understanding Behavior · **Understanding ADHD** · Understanding Autism Spectrum Disorder · Understanding Anxiety & Depression · Trauma Informed Parenting
 
@@ -211,12 +223,12 @@ Custom layout - not Fumadocs. All 10 slugs + 2 modules render via `PainPointSide
 
 **Flow:** `research-bible-refinement` skill updates a Drive-synced bible → the Apps Script time trigger (every 15 minutes, posts to the `www` URL) calls the webhook → `app/api/webhooks/drive-content-sync/route.ts` parses the file and writes to Payload as `_status: 'draft'` → Bobby reviews and publishes at `/admin` → live at `/research/[slug]`.
 
-`pending_reviews` is an audit log only.
-
 **Built:** `lib/research-bibles/parse.ts`, `lib/research-bibles/frontmatter.ts`, `lib/research-bibles-reader.ts`, `lib/google/drive.ts`, webhook route, `drive_content_sync_setup.md` (Apps Script reference).
 
-**Still outstanding:**
-- Apps Script trigger is installed; first live sync result still needs confirming (HTTP 200 in Apps Script Executions, draft visible in `/admin`)
+**Auth:** `X-Webhook-Secret` header against `WEBHOOK_SECRET`. A real value of that secret is in git history, so it must be rotated in Vercel and the Apps Script `CONFIG` (BLOCKED-ON-BOBBY).
+
+**Outstanding:**
+- Apps Script trigger is installed; first live sync result needs confirming (HTTP 200 in Apps Script Executions, draft visible in `/admin`)
 - Only files named `RB_*.md` are handled. The Drive folder also holds same-named Google Doc copies of some bibles, which are ignored
 
 **Bible metadata rules:** `version` and `tags` are site-owned, never sourced from Drive. `version` auto-increments on each sync. `tags` Bobby sets manually via `/admin`.
@@ -233,46 +245,60 @@ Manual-only Drive to Payload pipeline for Pain Point and Awareness Module conten
 
 **Auth:** `X-Webhook-Secret` header against `PARENT_CONTENT_WEBHOOK_SECRET` (separate from the bible route's `WEBHOOK_SECRET`).
 
-**Still outstanding:** not exercised end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not set in Vercel Production.
+**Outstanding:** not exercised end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not set in Vercel Production.
 
 ---
 
 ## Payload CMS
 
-**Collections (9):** `Users`, `Media`, `Testimonials`, `PainPoints`, `AwarenessModules`, `ResearchBibles`, `DeepDives`, `Courses`, `Lessons`
+**Collections (17):** `Users`, `Media`, `Testimonials`, `PainPoints`, `AwarenessModules`, `ResearchBibles`, `DeepDives`, `Courses`, `Lessons`, `VisitorProfiles`, `Posts`, `Comments`, `Reports`, `LessonProgress`, `Entitlements`, `InterestSignups`, `Enrollments`
 
 **Globals (4):** `FAQ`, `Footer`, `SiteSettings`, `About`
 
 Schema source: `src/payload/collections/` and `src/payload/globals/`. Config: `payload.config.ts` (repo root).
 
-**`siteSettings` global** (`substackSubdomain`, `calComUrl`) - nothing reads from it yet. `lib/links.ts` and Cal.com URLs are still hardcoded.
+**Access:** most collections use a local `isAdmin` helper that checks only `!!user` (any Payload user). `VisitorProfiles` is the only collection that checks `role`. `Users` has no `access` block, so any Payload user can edit any user's `role`. Do not create moderator accounts until role checks are added.
+
+**Media:** `Media` uses Payload's default upload directory, `media/` at the project root, which is not durable on Vercel. See `docs/operations/storage.md`.
+
+**`siteSettings` global** (`substackSubdomain`, `calComUrl`) - nothing reads from it. `lib/links.ts` and Cal.com URLs are hardcoded.
 
 **Content:** 5 testimonials, 6 FAQ items, 10 pain points, 2 awareness modules, 36 deep dives, footer, site settings and about global are in Payload. `PAYLOAD_SECRET` and `DATABASE_URI` are set in Vercel Production.
 
 ---
 
-## Community and Courses Platform (v18 Parts J–P - routes built, not yet live)
+## Community and Courses Platform (routes built, not live)
 
-DB schema complete in `lib/db/schema.ts`: `profiles` (with community fields), `posts`, `comments`, `likes`, `pointsLedger`, `courseProgress`, `entitlements`, `stripeCustomers`, `stripeSubscriptions`, `stripeOrders`, `postTags`. Drizzle migrations may need to run against Neon to create these tables.
+All visitor data lives in Payload collections. Key collections:
 
-Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[slug]`, `/courses/[slug]/[lesson-slug]`, `/account`, `/welcome`. Auth middleware in `middleware.ts` (protects `/community`, `/courses`, `/account`). Stripe checkout and webhook routes exist but are untested. See `claude-code-handoff-v18.md` Parts J–P for remaining work.
+- **`VisitorProfiles`** (`visitor_profiles`) - userId (unique), userRole (parent|professional), displayName, bio, status (active|suspended)
+- **`Posts`** (`community_posts`) - content, audience (parent|professional|all), status (visible|hidden|removed), isPinned, commentsCount. The feed sorts newest first and does not use `isPinned`
+- **`Comments`** (`community_comments`) - content, post (relation), author (relation), status (visible|hidden|removed)
+- **`Reports`** (`community_reports`) - targetType (post|comment), targetId, reason (6 enum values), note, status (open|actioned|dismissed), resolvedAt
+- **`LessonProgress`** (`lesson_progress`) - userId (index), lessonId (index), completedAt
+- **`Entitlements`** (`visitor_entitlements`) - userId, productId, expiresAt
+- **`Enrollments`** (`course_enrollments`) - userId (index), courseSlug (index), source (free|admin)
+
+Gated pages call `auth.getSession()` and look up the profile themselves. Email verification is enforced when the profile is created (`/api/auth/set-role`). Suspension is checked only on new posts, new comments and lesson pages. `lib/auth/require.ts` defines `requireSession()` and `requireProfile()`, but nothing calls them.
+Rate limiting: `lib/rate-limit.ts` - in-memory sliding window; resets on cold start.
+
+Community moderation API: `/api/community/report`, `/api/community/posts/edit`, `/api/community/comments/edit`.
+Moderation guide for admins: `docs/operations/moderation.md`.
+
+Middleware (`middleware.ts`) redirects requests without a Neon Auth session cookie on `/account/*`, `/community/*` and `/courses/*` to `/sign-in`. Next 16 deprecates the `middleware` file convention in favor of `proxy.ts`; the build prints a warning.
 
 ---
 
 ## Database
 
-**Neon Postgres:** provisioned. `neon_auth` schema (Neon Auth). `public` schema (Drizzle + Payload coexist, no name conflicts).
+**Neon Postgres:** three schemas:
+- `neon_auth` - Neon Auth (visitor sessions, managed by Neon)
+- `payload_cms` - all Payload CMS tables
+- `public` - 17 orphaned legacy tables (listed in `docs/operations/database.md`). No code reads them
 
-**Drizzle tables (all exist in `public` schema):**
-- `profiles`, `topic_progress`, `interest_signups`, `pending_reviews` - original tables
-- `posts`, `comments`, `likes`, `points_ledger`, `post_tags` - community tables
-- `course_progress`, `entitlements` - courses gating tables
-- `stripe_customers`, `stripe_subscriptions`, `stripe_orders` - Stripe tables
-- `courses`, `lessons` - course catalog tables (Drizzle-managed, separate from Payload's `payload_courses`)
+`DATABASE_URI` is the only database connection variable.
 
-**Payload tables (all exist in `payload_cms` schema):** Payload auto-synced its schema on first run and uses a separate DB schema (`payload_cms`).
-
-**Drizzle migration tracking:** `drizzle."__drizzle_migrations"` has the 5 existing migrations stamped, so `drizzle-kit migrate` works.
+**Migrations:** schema changes ship as files in `src/migrations/`; `payload.config.ts` sets `migrationDir` and has no migration code in the adapter. `payload migrate` applies them once per deploy, before the build, through the `ci` script (`payload migrate && next build`), which is the Vercel Build Command. The `build` script is `next build`. `package.json` sets `"type": "module"` because the Payload config is ESM, and the Payload CLI needs it. Vercel's Node.js Version is 20.x; to match it locally use `npx -y node@20 node_modules/payload/bin.js <command>` against the `preview` Neon branch only. Procedure, cutover steps, and per-environment status are in `docs/operations/migrations.md`.
 
 ---
 
@@ -282,7 +308,7 @@ Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[sl
 |---|---|
 | LinkedIn | Live outbound link |
 | Instagram `bobby__washburn` | Disabled (`coming-soon-trigger.tsx`). Re-enable once content exists |
-| Cal.com `bobby-washburn/intro-call` | Live outbound link site-wide. One popup embed on Teen page only |
+| Cal.com `bobby-washburn/intro-call` | Live outbound link site-wide. The Teen mosaic's popup embed is not wired |
 | Substack `bwparentsupport` | On-page modal (`newsletter-dialog.tsx`). Subdomain in `lib/links.ts` |
 
 ---
@@ -297,16 +323,15 @@ Routes built but gated and not yet live: `/sign-in`, `/community`, `/courses/[sl
 
 ## Content Protection / SEO
 
-- `app/robots.ts`: disallows `/docs/` and `/common-pain-points/` for all non-Googlebot agents. `/research/` not disallowed - per-entry `noindex` controls visibility.
+- `app/robots.ts`: Googlebot and retrieval crawlers (ChatGPT Search, Perplexity, Claude search) may crawl everything except `/admin`. Training crawlers (GPTBot, ClaudeBot, CCBot and others) are blocked site-wide. All other agents are blocked from `/docs/`, `/common-pain-points/`, `/admin`, `/api/` and the auth and gated routes. `/research/` is not disallowed - per-entry `noindex` controls visibility.
 - `app/sitemap.ts`: static routes + `/docs/[slug]` + `/common-pain-points/[slug]` + `/research/[slug]` (non-`noindex` only)
-- Rate limiting on content routes via Vercel middleware
 
 ---
 
 ## Analytics
 
-- **Vercel Analytics** (`@vercel/analytics/next`, `<Analytics />`) - in `app/layout.tsx`
-- **Google Analytics 4** (`G-5ZLMM0G7CV`) - `gtag.js` via two `next/script` tags (`strategy="afterInteractive"`) in `app/layout.tsx`
+- **Vercel Analytics** (`@vercel/analytics/next`, `<Analytics />`) - in `app/(app)/layout.tsx`
+- **Google Analytics 4** (`G-5ZLMM0G7CV`) - `gtag.js` via two `next/script` tags (`strategy="afterInteractive"`) in `app/(app)/layout.tsx`
 
 ---
 
@@ -318,9 +343,11 @@ npm run lint
 npx tsc --noEmit
 ```
 
-**JSON edits:**
+Vercel runs `npm run ci` (`payload migrate && next build`). Do not run `payload migrate` against any database except the `preview` branch. A branch or commit without the `ci` script fails to build on Vercel with `missing script: ci`.
+
+**JSON edits (node, since python3 is not available on this Windows machine):**
 ```
-cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modifications]; print(json.dumps(data, indent=2))" > output.json
+node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('file.json')); /* modifications */; fs.writeFileSync('file.json', JSON.stringify(d,null,2))"
 ```
 
 ---
@@ -335,11 +362,10 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## What Is NOT Being Built for Launch
 
-- Subscription / paywall (Stripe routes exist, untested)
+- Subscription / paywall (Stripe code is in `graveyard/stripe/`)
 - Auth gates on content
 - Onboarding intake flow
 - Community feed and full courses platform (routes exist, not launched)
-- Old Google Drive sync via `/api/refresh`: superseded
 - Word doc / video script cascade
 
 ---
@@ -357,17 +383,24 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 ## Open Items
 
-- **Vercel env vars** - `PAYLOAD_SECRET` and `DATABASE_URI` are set in Vercel Production. `sslmode=verify-full` already in both `DATABASE_URL` and `DATABASE_URI`.
-- **`paths-loop.mp4` Chrome decode failure** - video renders as black box; Bobby needs to re-export faststart-encoded
-- **Community/courses platform** - DB tables exist; routes built but untested end-to-end; Neon Auth (`NEON_AUTH_BASE_URL`) must be configured before auth flow works; Stripe routes untested
-- **Research Bible Pipeline** - Apps Script trigger installed; first live sync result unconfirmed
-- **Parent Content Sync Pipeline** - not tested end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not in Vercel
-- **`drive_content_sync_setup.md`** - still describes the old GitHub PR flow and contains a webhook secret; rewrite it and rotate `WEBHOOK_SECRET` (Vercel and Apps Script)
-- **Payload admin branding** - default theme; brand red `#9F0000` and logo not applied
+- **Production migration cutover** - the community/courses migration is applied to the `preview` branch, not production. Restore branch `pre-community-migration`, dev-row removal and the `npm run ci` Build Command are done. Remaining: confirm Vercel Node.js 20.x, push, let the preview deployment dry-run `ci`, merge, watch for one `Migrated:` line. Steps in `docs/operations/migrations.md`. Required before enabling auth/community/courses routes
+- **Payload role checks** - `Users` has no `access` block and every collection except `VisitorProfiles` treats any Payload user as admin. Fix before creating moderator accounts
+- **Suspension and verification helpers unused** - wire `requireProfile()` into gated pages and community, course and account routes
+- **`middleware.ts` → `proxy.ts`** - Next 16 deprecates the middleware file convention
+- **Redirect chain** - apex and `www` redirect to each other (about 1.6 s per load, LCP 7.5 s). Vercel domain setting (BLOCKED-ON-BOBBY). See `docs/operations/lighthouse.md`
+- **Media uploads ephemeral** - Payload writes to `media/`; Vercel wipes the filesystem on deploy. A persistent storage adapter needs Bobby's approval before uploading images through `/admin`. See `docs/operations/storage.md`
+- **`paths-loop.mp4` Chrome decode failure** - video renders as black box on Services hero; Bobby needs to re-export with `-movflags +faststart`
+- **Community/courses platform** - routes built; Neon Auth console settings (verification, reset, sender, Google credentials, redirect URLs) need Bobby's confirmation; not tested end-to-end
+- **Research Bible Pipeline** - first live sync result unconfirmed (check Apps Script Executions for HTTP 200, then check `/admin` for a draft); rotate `WEBHOOK_SECRET`
+- **Parent Content Sync Pipeline** - not exercised end-to-end; Apps Script project not created; `PARENT_CONTENT_WEBHOOK_SECRET` not set in Vercel Production
 - **Start Here Row 2 photos** - temp Unsplash stock; swap `ROW_TWO_PANELS` URL constants when real photos arrive
-- **`siteSettings` global** - not yet wired to `lib/links.ts` or Cal.com URLs
-- **Organizations inquiry form** - `/api/org-inquiry` writes to a Google Sheet only if `INTEREST_SIGNUPS_SHEET_ID` is set; confirm it is set in Vercel Production
-- **Pending copy from Bobby:** About-Bobby page content, FAQ answers
+- **`siteSettings` global** - not wired to `lib/links.ts` or Cal.com URLs (hardcoded)
+- **Organizations inquiry form** - confirm `INTEREST_SIGNUPS_SHEET_ID` is set in Vercel Production
+- **Pending copy from Bobby:** About-Bobby page content, FAQ answers, Community Guidelines text and crisis notice wording
+- **Community report emails** - `RESEND_API_KEY`, verified Resend sender domain, and `NOTIFY_EMAIL` needed in Vercel Production before report notification emails work
+- **Cookie consent banner** - confirm whether GDPR/CCPA consent UI is required for the launch audience (legal decision)
+- **ADHD accessibility** - keyboard + screen reader test of interactive components before promoting `/docs/adhd` as a flagship page
+- **Orphaned `public` tables** - safe to drop once community and courses are confirmed live on Payload
 
 ---
 
@@ -375,18 +408,24 @@ cat file.json | python3 -c "import json, sys; data = json.load(sys.stdin); [modi
 
 | Area | Location |
 |---|---|
-| Routes | `app/` (App Router) |
-| Reusable UI | `components/ui/` (shadcn) |
+| Routes | `app/(app)/` (site pages and `layout.tsx`), `app/(payload)/` (Payload admin and REST API), `app/api/` (route handlers); `app/globals.css`, `app/robots.ts`, `app/sitemap.ts` |
+| Migrations | `src/migrations/` (see `docs/operations/migrations.md`) |
+| Reusable UI | `components/ui/` (shadcn), `components/layout/` |
 | Marketing sections | `components/marketing/` |
 | Tools UI | `components/marketing/tools/tech-safety-tool/` |
 | MDX components | `components/mdx/`, ADHD in `components/mdx/adhd/` |
-| Dashboard UI | `components/dashboard/` |
+| Dashboard UI | `components/dashboard/`; data in `content/data/`, loaded by `lib/dashboard-data.ts` |
 | Pain point components | `components/pain-points/teen-route/` (Teen mosaic, unwired) |
-| Payload schema | `payload.config.ts` (root), collections/globals in `src/payload/` |
+| Payload schema | `payload.config.ts` (root), collections/globals in `src/payload/`, admin branding in `src/payload/admin/` |
 | Payload readers | `lib/payload-client.ts`, `lib/payload-globals.ts`, `lib/payload-courses.ts`, `lib/pain-points-reader.ts`, `lib/research-bibles-reader.ts` |
-| DB schema | `lib/db/schema.ts`, `drizzle/` migrations |
-| Stripe config | `lib/stripe.ts`, `lib/stripe-products.ts` |
-| Shared logic | `lib/auth/`, `lib/db/`, `lib/google/`, `lib/research-bibles/`, `lib/parent-content/`, `lib/tools/` |
+| Auth helpers | `lib/auth/server.ts` (Neon Auth client), `lib/auth/require.ts` (requireSession, requireProfile; not called) |
+| Rate limiting | `lib/rate-limit.ts` (in-memory sliding window) |
+| Shared logic | `lib/google/`, `lib/research-bibles/`, `lib/parent-content/`, `lib/tools/`, `hooks/` |
+| Source assets (photos, logo) | `assets/` |
+| Stripe (backlogged) | `graveyard/stripe/` - revival instructions in `graveyard/stripe/README.md` |
+| Operations docs | `docs/operations/` - auth, auth-audit, backups, database, dependencies, deployment, email, environments, launch-review, lighthouse, migrations, moderation, roles-and-permissions, storage |
+| Apps Script references | `drive_content_sync_setup.md`, `parent_content_sync_setup.md` |
 | Reference content (docs MDX, dashboard data, sync config) | `content/docs/`, `content/data/`, `content/sync-config.json` |
 | Middleware | `middleware.ts` |
+| Env template | `.env.example` |
 | Retired files | `graveyard/` |

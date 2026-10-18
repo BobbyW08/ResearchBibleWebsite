@@ -1,28 +1,38 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { profiles, posts } from "@/lib/db/schema";
-import { desc, eq, or } from "drizzle-orm";
+import { getPayloadClient } from "@/lib/payload-client";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET() {
   const { data: session } = await auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const profile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
+  const payload = await getPayloadClient();
 
+  const { docs: profileDocs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+  const profile = profileDocs[0] ?? null;
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
-  const feed = await db
-    .select()
-    .from(posts)
-    .where(or(eq(posts.audience, profile.userRole), eq(posts.audience, "all" as never)))
-    .orderBy(desc(posts.createdAt))
-    .limit(30);
+  const { docs: feed } = await payload.find({
+    collection: "posts",
+    where: {
+      and: [
+        {
+          or: [
+            { audience: { equals: profile.userRole } },
+            { audience: { equals: "all" } },
+          ],
+        },
+        { status: { equals: "visible" } },
+      ],
+    },
+    sort: "-createdAt",
+    limit: 30,
+  });
 
   return NextResponse.json(feed);
 }
@@ -31,14 +41,24 @@ export async function POST(request: Request) {
   const { data: session } = await auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const profile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
+  // Rate limit: 20 posts per user per hour
+  const rl = checkRateLimit(`post:${session.user.id}`, 20, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
+  const payload = await getPayloadClient();
+
+  const { docs: profileDocs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+  const profile = profileDocs[0] ?? null;
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+  if ((profile.status as string) === "suspended") {
+    return NextResponse.json({ error: "Account suspended" }, { status: 403 });
+  }
 
   const body = await request.json().catch(() => null);
   const content = typeof body?.content === "string" ? body.content.trim() : "";
@@ -49,10 +69,10 @@ export async function POST(request: Request) {
   if (!content) return NextResponse.json({ error: "Content is required" }, { status: 400 });
   if (content.length > 2000) return NextResponse.json({ error: "Content too long" }, { status: 400 });
 
-  const [post] = await db
-    .insert(posts)
-    .values({ authorId: profile.id, content, audience })
-    .returning();
+  const post = await payload.create({
+    collection: "posts",
+    data: { author: profile.id as string, content, audience },
+  });
 
   return NextResponse.json(post, { status: 201 });
 }

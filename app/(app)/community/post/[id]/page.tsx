@@ -1,8 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { profiles, posts, comments } from "@/lib/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { getPayloadClient } from "@/lib/payload-client";
+import Link from "next/link";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import CommentComposer from "./comment-composer";
@@ -14,61 +13,75 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const { data: session } = await auth.getSession();
   if (!session?.user) redirect(`/sign-in?returnTo=/community/post/${id}`);
 
-  const profile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
+  const payload = await getPayloadClient();
 
+  const { docs: profileDocs } = await payload.find({
+    collection: "visitor-profiles",
+    where: { userId: { equals: session.user.id } },
+    limit: 1,
+  });
+  const profile = profileDocs[0] ?? null;
   if (!profile) redirect("/welcome");
 
-  const post = await db
-    .select()
-    .from(posts)
-    .where(eq(posts.id, id))
-    .limit(1)
-    .then((r) => r[0] ?? null);
-
+  const { docs: postDocs } = await payload.find({
+    collection: "posts",
+    where: { id: { equals: id } },
+    limit: 1,
+  });
+  const post = postDocs[0] ?? null;
   if (!post) notFound();
 
-  const postComments = await db
-    .select()
-    .from(comments)
-    .where(eq(comments.postId, id))
-    .orderBy(asc(comments.createdAt));
+  // Enforce audience: parents cannot see professional-only posts and vice versa
+  const postAudience = post.audience as string;
+  const userRole = (profile.userRole as string);
+  if (postAudience !== "all" && postAudience !== userRole) notFound();
+
+  // Hidden/removed posts are not accessible
+  if ((post.status as string) !== "visible") notFound();
+
+  const { docs: postComments } = await payload.find({
+    collection: "comments",
+    where: {
+      and: [{ post: { equals: id } }, { status: { equals: "visible" } }],
+    },
+    sort: "createdAt",
+    limit: 200,
+  });
 
   return (
     <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-8">
-          <div className="rounded-lg border border-border bg-background p-6 mb-8">
-            <p className="text-base leading-relaxed text-foreground">{post.content}</p>
-            <p className="mt-3 text-xs text-muted-foreground">
-              {post.likesCount} like{post.likesCount !== 1 ? "s" : ""}
-            </p>
+        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-8 lg:max-w-5xl">
+          <div className="flex flex-col gap-6">
+            <Link
+              href="/community"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              &larr; Back to community
+            </Link>
+
+            <div className="rounded-lg border border-border bg-background p-6">
+              <p className="text-base leading-relaxed text-foreground">{post.content as string}</p>
+            </div>
+
+            <h2 className="font-heading text-lg font-medium">
+              {postComments.length} comment{postComments.length !== 1 ? "s" : ""}
+            </h2>
+
+            <div className="flex flex-col gap-4">
+              {postComments.map((comment) => (
+                <div
+                  key={comment.id as string}
+                  className="rounded-lg border border-border bg-muted/30 px-5 py-4"
+                >
+                  <p className="text-sm leading-relaxed text-foreground">{comment.content as string}</p>
+                </div>
+              ))}
+            </div>
+
+            <CommentComposer postId={id} />
           </div>
-
-          <h2 className="font-heading text-lg font-medium mb-4">
-            {postComments.length} comment{postComments.length !== 1 ? "s" : ""}
-          </h2>
-
-          <div className="flex flex-col gap-4 mb-8">
-            {postComments.map((comment) => (
-              <div
-                key={comment.id}
-                className="rounded-lg border border-border bg-muted/30 px-5 py-4"
-              >
-                <p className="text-sm leading-relaxed text-foreground">{comment.content}</p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {comment.likesCount} like{comment.likesCount !== 1 ? "s" : ""}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <CommentComposer postId={id} />
         </div>
       </main>
       <Footer />

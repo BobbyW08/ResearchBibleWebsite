@@ -145,5 +145,4 @@ no-op - safe to run as often as you want, "just in case."
   `LAST_RUN_PROPERTY_KEY`'s stored value back (Project Settings → Script Properties) or
   just re-save the file in Drive to bump its `modifiedTime`.
 - Single folder only, matching this pipeline's scope (`parentFacingContent`). Deep Dive
-  Page ingestion (`Website Copy` folder, `DeepDive_*.md`) is a later phase - not this
-  script's job, and not this repo's webhook's job either yet.
+  content is not synced by this script or any webhook.

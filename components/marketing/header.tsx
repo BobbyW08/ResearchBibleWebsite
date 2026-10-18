@@ -259,6 +259,7 @@ const Header = ({ logoAnimatesIn = false }: HeaderProps) => {
                         href="https://www.linkedin.com/in/bobby-washburn/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="LinkedIn"
                         className="flex items-center justify-center rounded-full outline outline-border hover:bg-muted transition p-3 shadow-xs"
                       >
                         <LinkedinIcon />

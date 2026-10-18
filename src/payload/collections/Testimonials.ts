@@ -1,7 +1,15 @@
 import type { CollectionConfig } from "payload";
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
 export const Testimonials: CollectionConfig = {
   slug: "testimonials",
+  access: {
+    read: () => true,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
+  },
   admin: { useAsTitle: "attribution" },
   fields: [
     { name: "quote", type: "textarea", required: true },

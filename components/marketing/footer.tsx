@@ -77,6 +77,7 @@ async function Footer() {
                   href="https://www.linkedin.com/in/bobby-washburn/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="LinkedIn"
                   className="text-brand-offwhite/70 hover:text-brand-offwhite"
                 >
                   <LinkedinIcon />

@@ -1,7 +1,10 @@
 import type { GlobalConfig } from "payload";
 
+const isAdmin = ({ req: { user } }: { req: { user: unknown } }) => !!user;
+
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
+  access: { read: () => true, update: isAdmin },
   admin: {
     description:
       "Subdomain and booking URL constants. Wiring these to lib/links.ts is a separate task.",

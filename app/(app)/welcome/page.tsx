@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { getPayloadClient } from "@/lib/payload-client";
 import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import RoleSelector from "./role-selector";
@@ -28,19 +26,16 @@ export default async function WelcomePage() {
     redirect("/sign-in");
   }
 
-  let existing: { id: string }[] = [];
   try {
-    existing = await db
-      .select({ id: profiles.id })
-      .from(profiles)
-      .where(eq(profiles.userId, session.user.id))
-      .limit(1);
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "visitor-profiles",
+      where: { userId: { equals: session.user.id } },
+      limit: 1,
+    });
+    if (docs.length > 0) redirect("/community");
   } catch {
-    // DB not yet migrated — treat as no profile
-  }
-
-  if (existing.length > 0) {
-    redirect("/community");
+    // Payload not yet available — treat as no profile
   }
 
   return (

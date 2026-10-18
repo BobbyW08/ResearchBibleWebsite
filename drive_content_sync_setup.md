@@ -1,51 +1,45 @@
-# Drive Content Sync — Apps Script Setup (Research Bibles only)
+# Drive Content Sync: Research Bible Pipeline
 
-**Status:** reference documentation only — this is not runnable by Claude Code. Bobby
-pastes the script below into Apps Script (script.google.com) himself, fills in `CONFIG`,
-and runs `setup()` once from the Apps Script editor to install the time-driven trigger.
+**Status:** reference documentation only. Bobby pastes the script below into Apps Script
+(script.google.com), fills in `CONFIG`, and runs `setup()` once from the Apps Script editor to
+install the time-driven trigger.
 
-This covers **only** the `researchBibles` Drive folder → `/api/webhooks/drive-content-sync`
-webhook. It is a separate script from the existing `drive_sync_setup/` and `notify_change.gs`
-files at the repo root, which serve the live old Doc/Sheet pipeline (`/api/refresh`,
-`/api/research-bible/notify-change`) — **do not touch those**, they're unrelated and still in
-use for their own topics.
+This covers the `researchBibles` Drive folder to `/api/webhooks/drive-content-sync` webhook only.
+The parent-facing content pipeline has its own Apps Script project and secret; see
+`parent_content_sync_setup.md`.
 
 ## What it does
 
-1. On a time-driven trigger (every N minutes, your choice — 15 is reasonable for a
-   low-traffic internal folder), lists files in a single Drive folder (the one whose ID goes
-   in `content/sync-config.json`'s `researchBibles.driveFolderId`) modified since the last
-   run.
-2. Persists "last run" as a timestamp in `PropertiesService` (script properties), so each run
-   only looks at what changed since the previous run — no full folder re-scan every time.
-3. For each changed file, POSTs `{ fileId, fileName, folderKey: "researchBibles" }` to the
-   webhook, with an `X-Webhook-Secret` header matching `WEBHOOK_SECRET`.
-4. The webhook route (`app/api/webhooks/drive-content-sync/route.ts`) does the actual
-   fetch-from-Drive / parse / dedup / GitHub-PR work — this script's only job is "tell the
-   webhook what changed."
+1. Runs on a time-driven trigger (every 15 minutes by default). Lists files in the Drive folder
+   (`content/sync-config.json` `researchBibles.driveFolderId`) modified since the last run.
+2. Persists "last run" as a timestamp in `PropertiesService`, so each run only processes new
+   or changed files.
+3. For each `RB_*.md` file, POSTs `{ fileId, fileName, folderKey: "researchBibles" }` to the
+   webhook with an `X-Webhook-Secret` header.
+4. The webhook route (`app/api/webhooks/drive-content-sync/route.ts`) fetches the file from
+   Drive, parses it, and writes a Payload draft in the `research-bibles` collection.
+5. Bobby reviews and publishes drafts at `/admin`.
 
-Only files matching `RB_*.md` are treated as bibles by the webhook — anything else in that
-folder currently 400s with `{ success: false, error: "not yet supported" }`. Filtering by
-filename here too (rather than just relying on the webhook to reject) avoids firing pointless
-webhook calls for every unrelated file someone drops in the folder.
+Only files matching `RB_*.md` are treated as bibles. Non-matching files in the folder are
+silently skipped.
 
 ## Script
 
 ```javascript
 const CONFIG = {
-  // content/sync-config.json -> researchBibles.driveFolderId
-  driveFolderId: "1DYDwFPEyWFmsHR-XKvviajypNlDQedT2",
-  webhookUrl: "https://bobby-washburn.com/api/webhooks/drive-content-sync",
-  // Must match the WEBHOOK_SECRET env var on Vercel exactly.
-  webhookSecret: "6848a5b3dc7f7003ea79ad20cea03a194e23c3fbad12f0615fd63f0671d93475",
+  // From content/sync-config.json -> researchBibles.driveFolderId
+  driveFolderId: "YOUR_DRIVE_FOLDER_ID",
+  webhookUrl: "https://www.bobby-washburn.com/api/webhooks/drive-content-sync",
+  // Must match the WEBHOOK_SECRET env var in Vercel exactly.
+  // Get this value from Vercel Dashboard -> Project -> Environment Variables.
+  // Never commit this value to the repository.
+  webhookSecret: "PASTE_SECRET_HERE",
   folderKey: "researchBibles",
 };
 
 const LAST_RUN_PROPERTY_KEY = "driveContentSync_lastRunIso";
 
 function setup() {
-  // Removes any pre-existing trigger for this function before creating a
-  // fresh one, so re-running setup() is idempotent.
   ScriptApp.getProjectTriggers()
     .filter((trigger) => trigger.getHandlerFunction() === "checkForChanges")
     .forEach((trigger) => ScriptApp.deleteTrigger(trigger));
@@ -55,8 +49,6 @@ function setup() {
     .everyMinutes(15)
     .create();
 
-  // Seed last-run so the first real run doesn't try to sync every file ever
-  // placed in the folder.
   PropertiesService.getScriptProperties().setProperty(
     LAST_RUN_PROPERTY_KEY,
     new Date().toISOString(),
@@ -108,33 +100,48 @@ function postToWebhook(fileId, fileName) {
   };
 
   const response = UrlFetchApp.fetch(CONFIG.webhookUrl, options);
-  Logger.log(`${fileName}: HTTP ${response.getResponseCode()} — ${response.getContentText()}`);
+  Logger.log(`${fileName}: HTTP ${response.getResponseCode()} - ${response.getContentText()}`);
 }
 ```
 
 ## Setup steps (Bobby)
 
-1. In Apps Script (script.google.com), create a new project (or reuse an existing one scoped
-   to this purpose — do not add this to the script backing the old `notify_change.gs`
-   pipeline, keep them separate).
-2. Enable the **Drive API advanced service** (`Drive.Files.list` above needs it): Services (+)
-   → Google Workspace APIs → "Drive API" → Add.
-3. Paste the script above, fill in `CONFIG.driveFolderId` (matches
-   `content/sync-config.json`'s `researchBibles.driveFolderId`) and `CONFIG.webhookSecret`
-   (matches the `WEBHOOK_SECRET` env var on Vercel).
-4. Run `setup()` once manually from the editor (authorize when prompted).
-5. Optionally run `checkForChanges()` manually once to confirm it doesn't error before relying
-   on the trigger.
-6. Confirm the trigger exists: Triggers (clock icon in the left sidebar) should show
-   `checkForChanges` on a time-based 15-minute schedule.
+1. In Apps Script (script.google.com), create a new project scoped to this purpose. Do not
+   reuse the parent-content project.
+2. Enable the **Drive API advanced service**: Services (+) -> Google Workspace APIs -> "Drive
+   API" -> Add.
+3. Paste the script above. Fill in:
+   - `CONFIG.driveFolderId`: from `content/sync-config.json` `researchBibles.driveFolderId`
+   - `CONFIG.webhookSecret`: from Vercel Dashboard -> Project -> Environment Variables ->
+     `WEBHOOK_SECRET`. Paste it only into the Apps Script editor. Never put the real value in
+     this file or anywhere else in the repo.
+4. Run `setup()` once manually from the editor. Authorize when prompted.
+5. Optionally run `checkForChanges()` manually to confirm no errors.
+6. Confirm the trigger: Triggers (clock icon) should show `checkForChanges` on a 15-minute
+   schedule.
+
+## Notes
+
+- Use the `www` URL. The bare domain redirects to `www`, and Apps Script turns a redirected
+  POST into a GET, which the webhook rejects with HTTP 405.
+- Synced bibles are saved as drafts only. `version` and `tags` are site-owned and never come
+  from Drive.
+
+## Secret rotation (BLOCKED-ON-BOBBY)
+
+A real `WEBHOOK_SECRET` value is in this repository's git history, so the live secret must be
+rotated:
+
+1. Generate a new secret: `openssl rand -hex 32` (or any long random string).
+2. Update `WEBHOOK_SECRET` in Vercel Production (Dashboard -> Project -> Environment Variables)
+   and redeploy.
+3. Update `CONFIG.webhookSecret` in the Apps Script project to match.
+
+After rotation the value in git history is dead. Rewriting history is not needed.
 
 ## Known limitations
 
-- No retry/backoff on webhook failures — a failed POST is logged (Apps Script execution log)
-  but not retried until the next changed-file scan, and even then only if the file's
-  `modifiedTime` still falls after the (now-advanced) `lastRunIso` cutoff. A file that fails to
-  sync and isn't touched again in Drive will need a manual re-save (or a manual
-  `checkForChanges()` run after temporarily rolling back `lastRunIso`) to retry.
-- Single folder only, matching this round's bibles-only scope — extending to a second folder
-  for pain-point/module sync is explicitly out of scope (see CLAUDE.md's Content Sync
-  Pipeline section) and would need its own `folderKey` + filename-matching branch here.
+- No retry on webhook failures. A failed POST is logged in the Apps Script Executions log but
+  not retried. A file that fails and is not touched again in Drive must be manually re-saved
+  (or `checkForChanges()` run after temporarily rolling back `lastRunIso`) to retry.
+- Single folder only; one `folderKey`. The parent-content pipeline is a separate script.
