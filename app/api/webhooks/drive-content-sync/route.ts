@@ -130,6 +130,7 @@ async function handleBibleSync(
     where: { slug: { equals: slug } },
     limit: 1,
     depth: 0,
+    draft: true,
   });
 
   const newHash = crypto
@@ -167,6 +168,7 @@ async function handleBibleSync(
         lastUpdated: todayUtcIsoDate(),
         _status: "draft",
       },
+      draft: true,
     });
 
     return { success: true, status: 200, slug, action: "updated", status_value: "draft" };
@@ -193,6 +195,7 @@ async function handleBibleSync(
       noindex: false,
       _status: "draft",
     },
+    draft: true,
   });
 
   return { success: true, status: 200, slug, action: "created", status_value: "draft" };
