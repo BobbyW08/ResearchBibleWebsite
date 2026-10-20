@@ -383,7 +383,7 @@ node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('file.json')
 
 ## Open Items
 
-- **Production migration cutover** - the community/courses migration is applied to the `preview` branch, not production. Restore branch `pre-community-migration`, dev-row removal and the `npm run ci` Build Command are done. Remaining: confirm Vercel Node.js 20.x, push, let the preview deployment dry-run `ci`, merge, watch for one `Migrated:` line. Steps in `docs/operations/migrations.md`. Required before enabling auth/community/courses routes
+- **Production migration status** - migration `20261013_000000_init_community_collections` is applied to Production (batch 1, 2026-10-16 18:03 UTC, confirmed in Neon; deployment 22233d0 Ready and Current). See `docs/operations/migrations.md`.
 - **Payload role checks** - `Users` has no `access` block and every collection except `VisitorProfiles` treats any Payload user as admin. Fix before creating moderator accounts
 - **Suspension and verification helpers unused** - wire `requireProfile()` into gated pages and community, course and account routes
 - **`middleware.ts` → `proxy.ts`** - Next 16 deprecates the middleware file convention
