@@ -62,21 +62,13 @@ Its `down` reverses all of the above.
 | Environment | State |
 |---|---|
 | Preview Neon branch | Applied, batch 1 |
-| Production Neon branch | Not applied. Restore branch `pre-community-migration` exists and the dev row is removed. Community, courses, and auth routes are gated and not linked live, so the public site is unaffected until cutover |
+| Production Neon branch | Applied, batch 1, 2026-10-16 18:03 UTC (confirmed in Neon). Deployment 22233d0 Ready and Current. |
 
 Update this table whenever a migration is applied to production.
 
 ## Production cutover
 
-Steps 1 to 3 are done. Delete the `pre-community-migration` branch only after production is stable.
-
-1. In the Neon console, create a restore point on the `main` branch.
-2. In the Neon SQL editor on `main`, run `DELETE FROM payload_cms.payload_migrations WHERE batch = -1;`.
-3. In Vercel, set the project Build Command to `npm run ci` and confirm the Node.js Version is 20.x. Any branch without the `ci` script fails with `missing script: ci`.
-4. Push the branch and let the preview deployment run `ci` against the `preview` Neon branch. Its log shows no `Migrated:` line because `preview` is already migrated. Then merge the PR to `main`.
-5. In the build log, confirm one `Migrated: 20261013_000000_init_community_collections` line and a successful `next build`.
-6. In Neon, confirm `payload_migrations` has the migration at batch 1 and `users.role` is `admin` for existing users.
-7. Run the post-deploy smoke test in `docs/operations/environments.md`.
+Complete. Migration `20261013_000000_init_community_collections` is applied to Production (batch 1, 2026-10-16 18:03 UTC, confirmed in Neon). Deployment 22233d0 is Ready and Current. Delete the `pre-community-migration` Neon restore branch when production is stable.
 
 Preview deployments use the same Build Command, so they run `payload migrate` against the `preview` branch. That is intended.
 
