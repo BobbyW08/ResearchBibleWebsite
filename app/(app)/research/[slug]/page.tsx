@@ -9,6 +9,8 @@ type ResearchBiblePageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const bibles = await getAllResearchBibles();
   return bibles.map((bible) => ({ slug: bible.slug }));
@@ -47,7 +49,12 @@ export default async function ResearchBiblePage({ params }: ResearchBiblePagePro
           </h1>
           {entry.lastUpdated ? (
             <p className="mt-2 text-sm text-muted-foreground">
-              Last updated {entry.lastUpdated}
+              Last updated{" "}
+              {new Date(entry.lastUpdated).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
           ) : null}
 
@@ -64,7 +71,7 @@ export default async function ResearchBiblePage({ params }: ResearchBiblePagePro
             </div>
           ) : null}
 
-          <article className="prose prose-neutral mt-8 max-w-none dark:prose-invert">
+          <article className="prose prose-neutral mt-8 max-w-[70ch] prose-headings:font-heading prose-headings:text-foreground prose-a:text-primary">
             {entry.body ? (
               <RichText data={entry.body as Parameters<typeof RichText>[0]["data"]} />
             ) : (
