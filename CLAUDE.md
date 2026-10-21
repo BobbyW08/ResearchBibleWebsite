@@ -381,6 +381,17 @@ node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('file.json')
 
 ---
 
+## Guardrails
+
+- The Production database changes only through the Vercel build running `payload migrate`.
+- Local work uses only the preview Neon branch.
+- Never print, decrypt or pull secrets or connection strings.
+- Report command output as evidence, not summaries.
+- No new handoff documents; status lives in Open Items.
+- State only what the project does.
+
+---
+
 ## Open Items
 
 - **Production migration status** - migration `20261013_000000_init_community_collections` is applied to Production (batch 1, 2026-10-16 18:03 UTC, confirmed in Neon; deployment 22233d0 Ready and Current). See `docs/operations/migrations.md`.
