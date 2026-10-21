@@ -113,7 +113,7 @@ export default async function DeepDivePage({ params }: PageProps) {
                 <p className="mt-3 text-base text-muted-foreground">{doc.description}</p>
               )}
 
-              <article className="prose prose-neutral mt-8 max-w-none dark:prose-invert">
+              <article className="prose prose-neutral mt-8 max-w-[70ch] prose-headings:font-heading prose-headings:text-foreground prose-a:text-primary">
                 {doc.body ? (
                   <RichText data={doc.body as Parameters<typeof RichText>[0]["data"]} />
                 ) : (

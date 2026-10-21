@@ -4,6 +4,8 @@ import Header from "@/components/marketing/header";
 import Footer from "@/components/marketing/footer";
 import { getAllResearchBibles } from "@/lib/research-bibles-reader";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Research Bibles",
   description:
